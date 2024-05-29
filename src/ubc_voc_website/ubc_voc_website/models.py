@@ -71,7 +71,6 @@ class Profile(models.model):
     student_number = models.CharField(max_length=8)
     birthdate = models.DateField()
     blurb = models.TextField()
-    exec_role = models.CharField(max_length=32)
     acc = models.BooleanField()
     vocene = models.BooleanField()
     trip_org_email = models.BooleanField()
