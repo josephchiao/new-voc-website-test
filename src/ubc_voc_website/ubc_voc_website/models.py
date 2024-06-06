@@ -17,7 +17,7 @@ class MyUserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
         return user
 
     def create_superuser(self, email, password, **extra_fields):
@@ -58,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.email
     
-class Profile(models.model):
+class Profile(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.PROTECT,

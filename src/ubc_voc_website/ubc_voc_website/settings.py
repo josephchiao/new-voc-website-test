@@ -125,3 +125,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Use custom AUTH_USER_MODEL to use email instead of username for auth
 AUTH_USER_MODEL = "ubc_voc_website.User"
+
+AUTHENTICATION_BACKENDS = ['ubc_voc_website.backends.EmailBackend']
