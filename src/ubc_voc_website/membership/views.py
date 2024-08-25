@@ -1,13 +1,26 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import OuterRef, Subquery
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from .models import Exec, Membership, Profile
 from ubc_voc_website.decorators import Members, Execs
+from .forms import MembershipForm
+
+@login_required
+def apply(request):
+    if request.method == 'POST':
+        form = MembershipForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = MembershipForm(user=request.user)
+    return render(request, 'membership/apply.html', {'form': form})
 
 @Members
 def member_list(request):
     members = Profile.objects.all().filter(user__is_active=True)
-    return render(request, 'membership/members.html', {'members': members})
+    return render(request, 'membership/members.html', {'members': list(members)})
 
 @Members
 def profile(request, id):
