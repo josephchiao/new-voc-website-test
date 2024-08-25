@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Join the VOC{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Join the VOC</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}
