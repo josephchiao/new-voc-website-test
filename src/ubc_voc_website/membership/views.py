@@ -4,7 +4,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from .models import Exec, Membership, Profile
 from ubc_voc_website.decorators import Members, Execs
-from .forms import MembershipForm
+from .forms import MembershipForm, WaiverForm
+from django.http import HttpResponseForbidden
+from django.core.files.base import ContentFile
+
+import base64
 
 @login_required
 def apply(request):
@@ -16,6 +20,32 @@ def apply(request):
     else:
         form = MembershipForm(user=request.user)
     return render(request, 'membership/apply.html', {'form': form})
+
+@login_required
+def waiver(request, membership_id):
+    membership = get_object_or_404(Membership, id=membership_id)
+    if membership.user != request.user:
+        return HttpResponseForbidden()
+    
+    if request.method == "POST":
+        form = WaiverForm(request.POST, request.FILES)
+        if form.is_valid():
+            waiver = form.save(commit=False)
+            waiver.membership = membership
+            signature_data = request.POST['signature']
+
+            f, imgstr = signature_data.split(';base64')
+            data = ContentFile(base64.base64decode(imgstr))
+
+            waiver.signature.save('signature.png', data, save=False)
+
+            waiver = form.save()
+            return redirect('home')
+        
+    else:
+        form = WaiverForm()
+
+    return render(request, 'membership/waiver.html', {'form': form, 'membership': membership})
 
 @Members
 def member_list(request):
