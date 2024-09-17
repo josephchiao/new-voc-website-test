@@ -1,8 +1,40 @@
 from django import forms
-from .models import Membership, Waiver
+from .models import Membership, Profile, Waiver
 
 from .utils import *
 import datetime
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('first_name', 'last_name', 'pronouns', 'phone', 'student_number', 'birthdate', 'blurb', 'acc', 'vocene', 'trip_org_email')
+
+    first_name = forms.CharField(max_length=64, required=True)
+    last_name = forms.CharField(max_length=64, required=True)
+    pronouns = forms.CharField(max_length=32, required=False)
+    phone = forms.CharField(max_length=32, required=True)
+    student_number = forms.CharField(max_length=8, required=False)
+    birthdate = forms.DateField(required=True)
+    blurb = forms.CharField(
+        required=False,
+        widget=forms.TextInput()
+    )
+    acc = forms.BooleanField(
+        required=True,
+        label="Would you like a membership in the Alpine Club of Canada (ACC) for no additional cost?",
+        widget=forms.RadioSelect(choices=[(True, 'Yes'), (False, 'No')])
+    )
+    vocene = forms.BooleanField(
+        required=True,
+        label="Would you like to receive the VOCene (our ~monthly newsletter)?",
+        widget=forms.RadioSelect(choices=[(True, 'Yes'), (False, 'No')])
+    )
+    trip_org_email = forms.BooleanField(
+        required=True,
+        label="Would you like to receive the trip organizer info email after posting a trip?",
+        widget=forms.RadioSelect(choices=[(True, 'Yes'), (False, 'No')])
+    )
+
 
 class MembershipForm(forms.ModelForm):
     class Meta:
@@ -45,16 +77,20 @@ class MembershipForm(forms.ModelForm):
 class WaiverForm(forms.ModelForm):
     class Meta:
         model = Waiver
-        fields = ('full_name', 'student_number', 'guardian_name', 'paper_waiver')
+        fields = ('full_name', 'student_number', 'guardian_name', 'signature')
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        user_is_minor = is_minor(datetime.datetime.today(), user.profile.birthdate)
+        if user_is_minor:
+            self.fields['guardian_name'].required = True
+        else:
+            self.fields.pop('guardian_name')
 
     full_name = forms.CharField(max_length=128, required=True)
     student_number = forms.CharField(max_length=8, required=False)
     guardian_name = forms.CharField(max_length=128, required=False)
-    # signature = forms.ImageField(required=True)
-    paper_waiver = forms.BooleanField()
-
-
-
-
-    
+    signature = forms.ImageField(required=False)
 

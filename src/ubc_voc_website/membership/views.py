@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from .models import Exec, Membership, Profile
 from ubc_voc_website.decorators import Members, Execs
-from .forms import MembershipForm, WaiverForm
+from .forms import MembershipForm, ProfileForm, WaiverForm
 from django.http import HttpResponseForbidden
 from django.core.files.base import ContentFile
 
@@ -15,8 +15,8 @@ def apply(request):
     if request.method == 'POST':
         form = MembershipForm(request.POST, user=request.user)
         if form.is_valid():
-            form.save()
-            return redirect('home')
+            membership = form.save()
+            return redirect(f'waiver/{membership.id}')
     else:
         form = MembershipForm(user=request.user)
     return render(request, 'membership/apply.html', {'form': form})
@@ -28,7 +28,7 @@ def waiver(request, membership_id):
         return HttpResponseForbidden()
     
     if request.method == "POST":
-        form = WaiverForm(request.POST, request.FILES)
+        form = WaiverForm(request.POST, user=request.user)
         if form.is_valid():
             waiver = form.save(commit=False)
             waiver.membership = membership
@@ -43,9 +43,9 @@ def waiver(request, membership_id):
             return redirect('home')
         
     else:
-        form = WaiverForm()
+        form = WaiverForm(user=request.user)
 
-    return render(request, 'membership/waiver.html', {'form': form, 'membership': membership})
+    return render(request, 'membership/waiver.html', {'form': form})
 
 @Members
 def member_list(request):
@@ -56,19 +56,22 @@ def member_list(request):
 def profile(request, id):
     user = get_object_or_404(get_user_model(), id=id)
     profile = Profile.objects.get(user=user)
-    return render(request, 'membership/profile.html', {'user': user, 'profile': profile})
+    return render(request, 'membership/profile.html', {'user': user, 'profile': profile, 'edit': False})
 
 @Members
-def my_profile(request):
+def edit_profile(request):
     user = request.user
     profile = Profile.objects.get(user=user)
-    return render(request, 'membership/profile.html', {'user': user, 'profile': profile})
 
-@Execs
-def edit_user_profile(request, id):
-    user = get_object_or_404(get_user_model(), id=id)
-    profile = Profile.objects.get(user=user)
-    return render(request, 'membership/profile.html', {'user': user, 'profile': profile})
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect(f'membership/profile/{user.id}')
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, 'membership/edit_profile.html', {'form': form})
 
 @Execs
 def manage_roles(request): # not sure what i had in mind for this one but i'll sort it out later

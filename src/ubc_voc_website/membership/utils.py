@@ -14,3 +14,15 @@ def get_end_date(today):
     
     else:
         return datetime.datetime(current_year + 1, 9, 30)
+    
+def is_minor(today, birthdate):
+    """
+    Determine whether a user is a minor based on their birthdate. This is required to determine 
+    whether they are eligible to sign their own waiver or if a parent/guardian must sign on
+    their behalf
+
+    Returns True if the user is under 19 years of age
+    Returns False if the user is 19 years of age or older
+    """
+    age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    return age < 19
