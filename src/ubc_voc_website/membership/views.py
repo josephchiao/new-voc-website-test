@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import OuterRef, Subquery
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 from .models import Exec, Membership, Profile
 from ubc_voc_website.decorators import Members, Execs
 from .forms import MembershipForm, ProfileForm, WaiverForm
@@ -74,10 +75,59 @@ def edit_profile(request):
     return render(request, 'membership/edit_profile.html', {'form': form})
 
 @Execs
-def manage_roles(request): # not sure what i had in mind for this one but i'll sort it out later
-    execs = Exec.objects.filter(user=OuterRef('user'))
-    users = Profile.objects.all().filter(user__in=Subquery(execs.values('user')))
-    return render(request, 'membership/manage_roles.html', {'execs': execs, 'users': users})
+def manage_roles(request): # for managing who has the exec role
+    exec_group, created = Group.objects.get_or_create(name='Exec')
+
+    if request.method == "POST":
+        user_id = request.POST.get('member')
+        exec_role = request.POST.get('position')
+
+        try:
+            User = get_user_model()
+            user = get_object_or_404(User, id=user_id)
+            profile = get_object_or_404(Profile, user=user)
+
+            if Exec.objects.filter(user=user).exists():
+                messages.error(request, f"{profile.first_name} {profile.last_name} already has an exec position")
+            else:
+                exec = Exec.objects.create(user=user, exec_role=exec_role)
+                exec.save()
+
+                exec_group.user_set.add(user)
+
+                messages.success(request, f"{profile.first_name} {profile.last_name} has been added to Exec with the role {exec_role}")
+
+        except User.DoesNotExist:
+            messages.error(request, "Selected user does not exist")
+
+        return redirect('manage_roles')
+
+    else:
+        # Ignore anyone who has somehow ended up with an entry in the exec table without the group role, although this should (hopefully) never happen
+        execs = Exec.objects.filter(user__groups__id=exec_group.id)
+
+        execs_extended_info = []
+
+        for exec in execs:
+            profile = Profile.objects.get(user=exec.user)
+            execs_extended_info.append({
+                'id': exec.user.id,
+                'role': exec.exec_role,
+                'first_name': profile.first_name,
+                'last_name': profile.last_name
+            })
+
+        non_execs = Profile.objects.exclude(user__groups=exec_group)
+        non_execs_extended_info = []
+
+        for profile in non_execs:
+            non_execs_extended_info.append({
+                'id': profile.user.id,
+                'first_name': profile.first_name,
+                'last_name': profile.last_name
+            })
+
+        return render(request, 'membership/manage_roles.html', {'execs': execs_extended_info, 'members': non_execs_extended_info})
 
 @Execs
 def membership_stats(request):
