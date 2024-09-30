@@ -2,6 +2,93 @@
 
 {% block title %}Member List{% endblock %}
 
+{% block head_content %}
+    <link href="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.js" type="text/javascript"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let memberTable = document.getElementById("member-table");
+            let renderedMemberTable = new DataTable(memberTable, {
+                paging: true,
+                ordering: true,
+                searching: true,
+                labels: {
+                    "perPage": "{select} members per page",
+                    "noRows": "No members found",
+                    "info": "Showing {start} to {end} of {rows} members",
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
-<p>{{ members }}</p>
+    <div class="container">
+        <h2>Exec</h2>
+        <table id="exec-table" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exec in execs %}
+                    <tr>
+                        <td>{{ exec.name }}</td>
+                        <td>{{ exec.position }}</td>
+                        <td>{{ exec.email }}</td>
+                        <td>{{ exec.phone }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            
+        </table>
+    </div>
+
+    <div class="container">
+        <h2>Peer Support Group (PSG)</h2>
+        <table id="psg-table" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for psg in psg_members %}
+                    <tr>
+                        <td>{{ psg.name }}</td>
+                        <td>{{ psg.email }}</td>
+                        <td>{{ psg.phone }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container">
+        <h2>Members</h2>
+        <table id="member-table" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                    <tr>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.email }}</td>
+                        <td>{{ member.phone }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

@@ -51,8 +51,41 @@ def waiver(request, membership_id):
 
 @Members
 def member_list(request):
-    members = Profile.objects.all().filter(user__is_active=True)
-    return render(request, 'membership/members.html', {'members': list(members)})
+    members_group, created = Group.objects.get_or_create(name='Members')
+    exec_group, created = Group.objects.get_or_create(name='Exec')
+    psg_group, created = Group.objects.get_or_create(name='PSG')
+
+    exec_profiles = Profile.objects.filter(user__groups__id=exec_group.id)
+    execs = []
+    for profile in exec_profiles:
+        exec = Exec.objects.get(user=profile.user)
+        execs.append({
+            'name': f'{profile.first_name} {profile.last_name}',
+            'position': exec.exec_role,
+            'email': profile.user.email,
+            'phone': profile.phone
+        })
+
+    psg_profiles = Profile.objects.filter(user__groups__id=psg_group.id)
+    psg_members = []
+    for profile in psg_profiles:
+        psg = PSG.objects.get(user=profile.user)
+        psg_members.append({
+            'name': f'{profile.first_name} {profile.last_name}',
+            'email': profile.user.email,
+            'phone': profile.phone
+        })
+
+    member_profiles = Profile.objects.all().exclude(user__in=exec_profiles).exclude(user__in=psg_profiles).filter(user__groups__id=members_group.id)
+    members = []
+    for profile in member_profiles:
+        members.append({
+            'name': f'{profile.first_name} {profile.last_name}',
+            'email': profile.user.email,
+            'phone': profile.phone
+        })
+
+    return render(request, 'membership/members.html', {'execs': execs, 'psg_members': psg_members, 'members': members})
 
 @Members
 def profile(request, id):
