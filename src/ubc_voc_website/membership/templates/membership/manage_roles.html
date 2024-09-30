@@ -18,6 +18,13 @@
                 <tr>
                     <td>{{ exec.first_name }} {{ exec.last_name }}</td>
                     <td>{{ exec.role }}</td>
+                    <td>
+                        <form method="post" onsubmit="return confirm('Are you sure you want to remove this user from Exec?');">
+                            {% csrf_token %}
+                            <input type="hidden" name="remove-exec" value="{{ exec.id }}">
+                            <button class="btn btn-danger">Remove</button>
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -48,6 +55,13 @@
             {% for member in psg %}
                 <tr>
                     <td>{{ member.first_name }} {{ member.last_name }}</td>
+                    <td>
+                        <form method="post" onsubmit="return confirm('Are you sure you want to remove this user from the PSG?');">
+                            {% csrf_token %}
+                            <input type="hidden" name="remove-psg" value="{{ member.id }}">
+                            <button class="btn btn-danger">Remove</button>
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

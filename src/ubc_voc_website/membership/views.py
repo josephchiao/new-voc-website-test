@@ -81,7 +81,20 @@ def manage_roles(request): # for managing who has the exec role
     psg_group, created = Group.objects.get_or_create(name='PSG')
 
     if request.method == "POST":
-        if 'exec-user' in request.POST:
+        remove_exec = request.POST.get('remove-exec')
+        remove_psg = request.POST.get('remove-psg')
+
+        if remove_exec:
+            user = get_object_or_404(User, id=remove_exec)
+            Exec.objects.filter(user=user).delete()
+            exec_group.user_set.remove(user)
+
+        elif remove_psg:
+            user = get_object_or_404(User, id=remove_psg)
+            PSG.objects.filter(user=user).delete()
+            psg_group.user_set.remove(user)
+
+        elif 'exec-user' in request.POST: # add/modify existing exec
             user = get_object_or_404(User, id=request.POST['exec-user'])
             exec_instance = get_object_or_404(Exec, user=user)
             form = ExecForm(request.POST, instance=exec_instance, prefix='exec')
@@ -92,7 +105,7 @@ def manage_roles(request): # for managing who has the exec role
 
             return redirect('manage_roles')
         
-        elif 'psg-user' in request.POST:
+        elif 'psg-user' in request.POST: # add/modify existing PSG member
             user = get_object_or_404(User, id=request.POST['psg-user'])
             form  = PSGForm(request.POST, prefix='psg')
 
@@ -101,6 +114,8 @@ def manage_roles(request): # for managing who has the exec role
                 psg_group.user_set.add(user)
 
             return redirect('manage_roles')
+        
+        return redirect('manage_roles')
 
     else:
         exec_form = ExecForm(prefix="exec")
