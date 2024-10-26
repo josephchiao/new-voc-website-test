@@ -27,6 +27,21 @@ def join(request):
     return render(request, 'membership/join.html', {'form': form})
 
 @login_required
+def edit_profile(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect(f'profile/{user.id}')
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, 'membership/edit_profile.html', {'form': form})
+
+@login_required
 def waiver(request, membership_id):
     membership = get_object_or_404(Membership, id=membership_id)
     if membership.user != request.user:
@@ -98,21 +113,6 @@ def profile(request, id):
     user = get_object_or_404(User, id=id)
     profile = Profile.objects.get(user=user)
     return render(request, 'membership/profile.html', {'user': user, 'profile': profile})
-
-@Members
-def edit_profile(request):
-    user = request.user
-    profile = Profile.objects.get(user=user)
-
-    if request.method == "POST":
-        form = ProfileForm(request.POST, instance=profile)
-        if form.is_valid():
-            form.save()
-            return redirect(f'profile/{user.id}')
-    else:
-        form = ProfileForm(instance=profile)
-
-    return render(request, 'membership/edit_profile.html', {'form': form})
 
 @Admin
 def manage_roles(request): # for managing who has the exec role
