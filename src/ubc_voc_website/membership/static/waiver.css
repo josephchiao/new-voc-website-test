@@ -122,8 +122,12 @@ input {
 #canvas {
   width: 100%;
   height: 150px;
-  border: 1px solid black;
   background-color: white;
+  border: 1px solid darkgray;
+}
+
+#canvas.saved {
+  border: 2px solid green;
 }
 
 #form-inputs {
