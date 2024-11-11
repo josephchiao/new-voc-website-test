@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
 from .models import Exec, Membership, Profile, PSG
 from ubc_voc_website.decorators import Admin, Members, Execs
 from .forms import ExecForm, MembershipForm, ProfileForm, PSGForm, WaiverForm
@@ -86,14 +85,16 @@ def member_list(request):
     psg_profiles = Profile.objects.filter(user__in=PSG.objects.values('user'))
     psg_members = []
     for profile in psg_profiles:
-        psg = PSG.objects.get(user=profile.user)
         psg_members.append({
             'name': f'{profile.first_name} {profile.last_name}',
             'email': profile.user.email,
             'phone': profile.phone
         })
 
-    member_profiles = Profile.objects.all().exclude(user__in=exec_profiles).exclude(user__in=psg_profiles).filter(user__in=Membership.objects.filter(end_date__gte=datetime.now()).values('user'))
+    member_profiles = Profile.objects.all().exclude(user__in=exec_profiles).exclude(user__in=psg_profiles).filter(user__in=Membership.objects.filter(
+            end_date__gte=datetime.now(),
+            active=True
+        ).values('user'))
     members = []
     for profile in member_profiles:
         members.append({
@@ -112,7 +113,14 @@ def profile(request, id):
 
 @Execs
 def manage_memberships(request):
-    pass
+    profiles = Profile.objects.filter(user__in=Membership.objects.all().values('user'))
+    memberships = Membership.objects.all()
+
+    memberships_by_user = {}
+    for m in memberships:
+        memberships_by_user.setdefault(m.user.id, []).append(m)
+        
+    return render(request, 'membership/manage_memberships.html', {'profiles': profiles, 'memberships_by_user': memberships_by_user})
 
 @Admin
 def manage_roles(request): # for managing who has the exec role

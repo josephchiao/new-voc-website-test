@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Memberships{% endblock %}
+
+{% block head_content %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.toggle-arrow').forEach(function (arrow) {
+                const collapseTarget = document.querySelector(arrow.getAttribute('data-target'));
+                const bsCollapse = new bootstrap.Collapse(collapseTarget, { toggle: true });
+
+                collapseTarget.addEventListener('show.bs.collapse', function () {
+                    arrow.classList.remove('fa-chevron-right');
+                    arrow.classList.add('fa-chevron-down');
+                });
+
+                collapseTarget.addEventListener('hide.bs.collapse', function () {
+                    arrow.classList.remove('fa-chevron-down');
+                    arrow.classList.add('fa-chevron-right');
+                });
+
+                arrow.addEventListener('click', function () {
+                    bsCollapse.toggle();
+                });
+            });
+        });
+    </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.js" type="text/javascript"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let memberTable = document.getElementById("member-table");
+            let renderedMemberTable = new DataTable(memberTable, {
+                paging: true,
+                perPage: 25,
+                ordering: true,
+                searching: true,
+                labels: {
+                    "perPage": "{select} members per page",
+                    "noRows": "No members found",
+                    "info": "Showing {start} to {end} of {rows} members",
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <table id="table" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>End Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            {% for profile in profiles %}
+                <tr>
+                    <td>{{ profile.first_name }} {{ profile.last_name }}</td>
+                    <td>{{ profile.user.email }}</td>
+                    <td></td>
+                    <td>
+                        <i class="fas fa-chevron-right toggle-arrow" data-toggle="collapse" 
+                        data-target="#collapseRow{{ profile.user.id }}" aria-expanded="false" 
+                        aria-controls="collapseRow{{ profile.user.id }}" style="cursor: pointer;">
+                        </i>
+                    </td>
+                </tr>
+                <tr id="collapseRow{{ profile.user.id }}" class="collapse">
+                    <td colspan="4">Test</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
