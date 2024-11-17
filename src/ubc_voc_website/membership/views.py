@@ -245,3 +245,18 @@ def membership_stats(request):
         })
     
     # TODO add more stats that would be useful/interesting (trip signups, etc.)
+
+@Execs
+def membership_export(request, type):
+    if type == "acc":
+        memberships = Membership.objects.filter(mapped_status="Active", type=Membership.MembershipType.REGULAR)
+        members = Profile.objects.filter(user__in=memberships.values('user', flat=True), acc=True)
+    else:
+        memberships = Membership.objects.filter(mapped_status="Active")
+        members = Profile.objects.filter(user__in=memberships.values('user', flat=True))
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="voc_members.csv"'
+
+    fields = ['first_name', 'last_name', ]
+
