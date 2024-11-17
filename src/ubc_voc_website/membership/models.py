@@ -28,9 +28,9 @@ class Profile(models.Model):
     
 class Membership(models.Model):
     class MembershipType(models.TextChoices):
-        REGULAR = "R", "Regular"
-        ASSOCIATE = "A", "Associate"
-        HONORARY = "H", "Honorary"
+        REGULAR = "R"
+        ASSOCIATE = "A"
+        HONORARY = "H"
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
@@ -47,6 +47,24 @@ class Membership(models.Model):
 
     def __str__(self):
         return f'{str(self.user)} - {self.type}'
+    
+    @property
+    def type_display_name(self):
+        if self.type == Membership.MembershipType.REGULAR:
+            return "Regular"
+        elif self.type == Membership.MembershipType.ASSOCIATE:
+            return "Associate"
+        else:
+            return "Honourary"
+    
+    @property
+    def mapped_status(self):
+        if not self.active:
+            return "Inactive"
+        elif self.enddate >= datetime.datetime.today():
+            return "Active"
+        else:
+            return "Expired"
 
 class Exec(models.Model):
     user = models.OneToOneField(

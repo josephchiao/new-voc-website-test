@@ -155,3 +155,18 @@ input {
   justify-content: right;
   width: 100%;
 }
+
+.checkbox {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 1px solid black;
+  margin-right: 5px;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 1em;
+}
+.checkbox.checked::after {
+  content: "✔";
+  font-size: 0.8em;
+}

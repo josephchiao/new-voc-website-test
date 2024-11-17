@@ -1,11 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from .models import Exec, Membership, Profile, PSG
+from .models import Exec, Membership, Profile, PSG, Waiver
 from ubc_voc_website.decorators import Admin, Members, Execs
 from .forms import ExecForm, MembershipForm, ProfileForm, PSGForm, WaiverForm
 from django.http import HttpResponseForbidden
 from django.core.files.base import ContentFile
+
+from django.template.loader import render_to_string
+from weasyprint import HTML, CSS
+from django.http import HttpResponse
+from django.conf import settings
 
 from .utils import *
 import datetime
@@ -111,6 +116,30 @@ def profile(request, id):
     profile = Profile.objects.get(user=user)
     return render(request, 'membership/profile.html', {'user': user, 'profile': profile})
 
+def view_waiver(request, id):
+    user = get_object_or_404(User, id=request.user.id)
+    membership = get_object_or_404(Membership, id=id)
+    waiver = Waiver.objects.get(membership=membership)
+
+    exec = Exec.objects.get(user=user)
+
+    # custom access control - Execs can see all waivers but non-Execs can only see their own
+    if not exec and waiver.user != user:
+        return render(request, 'access_denied.html', status=403)
+    else:
+        if not waiver:
+            return "<p>No waiver found for this membership</p>"
+        else:
+            form = WaiverForm(user=user, instance=waiver, readonly=True)
+            html_content = render_to_string('membership/waiver_readonly.html', {'form': form, 'waiver': waiver, 'readonly': True})
+            base_url = request.build_absolute_uri('/')
+            pdf = HTML(string=html_content, base_url=base_url)
+
+            response = HttpResponse(pdf, content_type='application/pdf')
+            response['Content-Disposition'] = 'inline; filename="waiver.pdf"'
+            response.write(pdf.write_pdf())
+            return response
+
 @Execs
 def manage_memberships(request):
     profiles = Profile.objects.filter(user__in=Membership.objects.all().values('user'))
@@ -119,7 +148,7 @@ def manage_memberships(request):
     memberships_by_user = {}
     for m in memberships:
         memberships_by_user.setdefault(m.user.id, []).append(m)
-        
+
     return render(request, 'membership/manage_memberships.html', {'profiles': profiles, 'memberships_by_user': memberships_by_user})
 
 @Admin

@@ -99,6 +99,7 @@ class WaiverForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
+        readonly = kwargs.pop('readonly', False)
         super().__init__(*args, **kwargs)
 
         user_is_minor = is_minor(datetime.datetime.today(), user.profile.birthdate)
@@ -106,6 +107,13 @@ class WaiverForm(forms.ModelForm):
             self.fields['guardian_name'].required = True
         else:
             self.fields.pop('guardian_name')
+
+        if readonly:
+            for field_name, field in self.fields.items():
+                field.disabled = True
+            for checkbox in ['checkbox1', 'checkbox2', 'checkbox3', 'checkbox4', 'checkbox5', 'checkbox6', 'checkbox7']:
+                self.fields[checkbox].initial = True
+            self.fields["i_agree_text"].initial = "I AGREE"
 
     def clean_signature(self):
         signature = self.cleaned_data.get('signature')
