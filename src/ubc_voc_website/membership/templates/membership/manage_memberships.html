@@ -8,7 +8,17 @@
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.toggle-arrow').forEach(function (arrow) {
                 const collapseTarget = document.querySelector(arrow.getAttribute('data-target'));
-                const bsCollapse = new bootstrap.Collapse(collapseTarget, { toggle: true });
+                const bsCollapse = new bootstrap.Collapse(collapseTarget, { toggle: false });
+
+                // set initial chevron state
+                if (collapseTarget.classList.contains('show')) {
+                    arrow.classList.remove('fa-chevron-right');
+                    arrow.classList.add('fa-chevron-down');
+                }
+                else {
+                    arrow.classList.remove('fa-chevron-down');
+                    arrow.classList.add('fa-chevron-right');
+                }
 
                 collapseTarget.addEventListener('show.bs.collapse', function () {
                     arrow.classList.remove('fa-chevron-right');
