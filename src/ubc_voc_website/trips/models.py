@@ -1,3 +1,70 @@
 from django.db import models
+from django.conf import settings
 
-# Create your models here.
+class Trip(models.Model):
+    class TripStatus(models.TextChoices):
+        DEFAULT = "D",
+        TENTATIVE = "T",
+        CANCELLED = "C"
+
+    name = models.CharField(max_length=256, blank=False)
+    organizer = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        primary_key=False
+    )
+    published = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=1,
+        choices=TripStatus,
+        default=TripStatus.DEFAULT
+    )
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    description = models.TextField(null=True)
+    use_signup = models.BooleanField(default=False)
+    signup_question = models.CharField(max_length=256, null=True)
+    max_participants = models.IntegerField(null=True)
+    interested_start = models.DateTimeField(null=True)
+    interested_end = models.DateTimeField(null=True)
+    committed_start = models.DateTimeField(null=True)
+    committed_end = models.DateTimeField(null=True)
+    use_pretrip = models.BooleanFIeld(default=False)
+    pretrip_time = models.DateTimeField()
+    pretrip_location = models.CharField(max_length=128)
+    drivers_required = models.BooleanField(default=False)
+
+class TripSignup(models.Model):
+    class TripSignupTypes(models.TextChoices):
+        INTERESTED = "I",
+        COMMITTED = "C",
+        GOING = "G"
+
+    trip = models.OneToOneField(
+        Trip,
+        on_delete=models.CASCADE,
+        primary_key=False
+    )
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        primary_key=False
+    )
+    type = models.CharField(
+        max_length=1,
+        choices = TripSignupTypes,
+        default=TripSignupTypes.INTERESTED
+    )
+    can_drive = models.BooleanField(default=False)
+    signup_answer = models.TextField(max_length=256, null=True)
+
+class Car(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )
+    seats = models.IntegerField(null=False)
+
+
+
