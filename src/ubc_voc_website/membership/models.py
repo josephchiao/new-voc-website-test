@@ -61,7 +61,7 @@ class Membership(models.Model):
     def mapped_status(self):
         if not self.active:
             return "Inactive"
-        elif self.enddate >= datetime.datetime.today():
+        elif self.end_date >= datetime.date.today():
             return "Active"
         else:
             return "Expired"

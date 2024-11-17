@@ -83,6 +83,7 @@
                                         <th>End Date</th>
                                         <th>Waiver</th>
                                         <th>Status</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 {% for key, memberships in memberships_by_user.items %}
@@ -107,6 +108,13 @@
                                                     <span class="badge bg-secondary">
                                                         {{ membership.mapped_status }}
                                                     </span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if membership.mapped_status == "Active" %}
+                                                    <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Deactivate</button>
+                                                {% elif membership.mapped_status == "Inactive" %}
+                                                    <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Activate</button>
                                                 {% endif %}
                                             </td>
                                         </tr>

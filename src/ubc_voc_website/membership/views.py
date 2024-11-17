@@ -116,6 +116,7 @@ def profile(request, id):
     profile = Profile.objects.get(user=user)
     return render(request, 'membership/profile.html', {'user': user, 'profile': profile})
 
+@Members
 def view_waiver(request, id):
     user = get_object_or_404(User, id=request.user.id)
     membership = get_object_or_404(Membership, id=id)
@@ -150,6 +151,15 @@ def manage_memberships(request):
         memberships_by_user.setdefault(m.user.id, []).append(m)
 
     return render(request, 'membership/manage_memberships.html', {'profiles': profiles, 'memberships_by_user': memberships_by_user})
+
+@Execs
+def toggle_membership(request, membership_id):
+    membership = get_object_or_404(Membership, id=membership_id)
+
+    membership.active = not membership.active
+    membership.save()
+
+    return redirect('manage_memberships')
 
 @Admin
 def manage_roles(request): # for managing who has the exec role
