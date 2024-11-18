@@ -8,10 +8,10 @@ class Trip(models.Model):
         CANCELLED = "C"
 
     name = models.CharField(max_length=256, blank=False)
-    organizer = models.OneToOneField(
+    organizers = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        primary_key=False
+        related_name="organized_trips",
+        blank=False
     )
     published = models.BooleanField(default=False)
     status = models.CharField(
@@ -29,7 +29,7 @@ class Trip(models.Model):
     interested_end = models.DateTimeField(null=True)
     committed_start = models.DateTimeField(null=True)
     committed_end = models.DateTimeField(null=True)
-    use_pretrip = models.BooleanFIeld(default=False)
+    use_pretrip = models.BooleanField(default=False)
     pretrip_time = models.DateTimeField()
     pretrip_location = models.CharField(max_length=128)
     drivers_required = models.BooleanField(default=False)
