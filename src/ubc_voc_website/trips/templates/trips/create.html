@@ -7,6 +7,9 @@
 {% block head_content %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
         
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -14,7 +17,7 @@
             const organizer_checkbox = document.getElementById('toggle-organizers');
             const organizer_div = document.getElementById('organizer_div');
 
-            organizer_div.style.display = 'none';
+            organizer_div.style.display = organizer_checkbox.checked ? 'block' : 'none';
 
             organizer_checkbox.addEventListener('change', function () {
                 organizer_div.style.display = this.checked ? 'block' : 'none';
@@ -30,8 +33,45 @@
                     searchPlaceholderValue: 'Search users...',
                 });
             });
+            
+            // Setup rich text editor for description
+            const quill = new Quill('textarea[name="description"]', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        ['link'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'align': [] }],
+                        ['blockquote', 'code-block'],
+                        ['image']
+                    ]
+                }
+            });
+
+            // Setup signup tools checkbox
+            const signup_tool_checkbox = document.querySelector('#id_use_signup');
+            const signup_tool_div = document.getElementById('signup-tool-div');
+            signup_tool_div.style.display = signup_tool_checkbox.checked ? 'block' : 'none';
+            signup_tool_checkbox.addEventListener('change', function () {
+                signup_tool_div.style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Setup pretrip checkbox
+            const pretrip_checkbox = document.querySelector('#id_use_pretrip');
+            const pretrip_div = document.getElementById('pretrip-div');
+            pretrip_div.style.display = pretrip_checkbox.checked ? 'block' : 'none';
+            pretrip_checkbox.addEventListener('change', function () {
+                pretrip_div.style.display = this.checked ? 'block' : 'none';
+            });
         });
     </script>
+
+    <style>
+        textarea {
+            width: 100%;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -47,7 +87,7 @@
 
             <div class="mb-4">
                 <label>
-                    <input type="checkbox" id="toggle-organizers">Include additional organizers
+                    Include additional organizers: <input type="checkbox" id="toggle-organizers">
                 </label>
             </div>
             <div id="organizer_div" class="mb-4">
@@ -55,10 +95,10 @@
             </div>
 
             <div class="mb-4" style="display: flex; padding: 10px; width: 50%">
-                <div>
+                <div class="mx-4">
                     {{ form.start_time.label_tag }} {{ form.start_time }}
                 </div>
-                <div>
+                <div class="mx-4">
                     {{ form.end_time.label_tag }} {{ form.end_time }}
                 </div>
             </div>
@@ -79,23 +119,31 @@
                 {{ form.use_signup.label_tag }} {{ form.use_signup }}
             </div>
 
-            <div class="mb-4">
-                <div>
+            <div class="mb-4" id="signup-tool-div">
+                <div class="mb-4">
                     {{ form.signup_question.label_tag }} {{ form.signup_question }}
                 </div>
     
-                <div>
+                <div class="mb-4">
                     {{ form.max_participants.label_tag }} {{ form.max_participants }}
                 </div>
     
-                <div style="display: flex;">
-                    {{ form.interested_start.label_tag }} {{ form.interested_start }}
-                    {{ form.interested_end.label_tag }} {{ form.interested_end }}
+                <div class="mb-4" style="display: flex;">
+                    <div class="mx-4">
+                        {{ form.interested_start.label_tag }} {{ form.interested_start }}
+                    </div>
+                    <div class="mx-4">
+                        {{ form.interested_end.label_tag }} {{ form.interested_end }}
+                    </div>
                 </div>
     
-                <div style="display: flex;">
-                    {{ form.committed_start.label_tag }} {{ form.committed_start }}
-                    {{ form.committed_end.label_tag }} {{ form.committed_end }}
+                <div class="mb-4" style="display: flex;">
+                    <div class="mx-4">
+                        {{ form.committed_start.label_tag }} {{ form.committed_start }}
+                    </div>
+                    <div class="mx-4">
+                        {{ form.committed_end.label_tag }} {{ form.committed_end }}
+                    </div>
                 </div>
             </div>
 
@@ -103,12 +151,14 @@
                 {{ form.use_pretrip.label_tag }} {{ form.use_pretrip }}
             </div>
 
-            <div class="mb-4">
-                {{ form.pretrip_location.label_tag }} {{ form.pretrip_location }}
-            </div>
-
-            <div class="mb-4">
-                {{ form.drivers_required.label_tag }} {{ form.drivers_required }}
+            <div id="pretrip-div">
+                <div class="mb-4">
+                    {{ form.pretrip_location.label_tag }} {{ form.pretrip_location }}
+                </div>
+    
+                <div class="mb-4">
+                    {{ form.drivers_required.label_tag }} {{ form.drivers_required }}
+                </div>
             </div>
 
             <button type="submit">Submit</button>
