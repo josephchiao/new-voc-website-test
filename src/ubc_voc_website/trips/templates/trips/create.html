@@ -10,6 +10,9 @@
 
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -63,6 +66,12 @@
             pretrip_div.style.display = pretrip_checkbox.checked ? 'block' : 'none';
             pretrip_checkbox.addEventListener('change', function () {
                 pretrip_div.style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Setup datetime pickers
+            flatpickr('.flatpickr', {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
             });
         });
     </script>

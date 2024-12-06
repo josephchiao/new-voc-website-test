@@ -58,17 +58,11 @@ class TripForm(forms.ModelForm):
     )
     start_time = forms.DateTimeField(
         required=True,
-        widget=forms.DateTimeInput(attrs={
-            'type': 'datetime-local',
-            'class': 'form-control'
-        })
+        widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     end_time = forms.DateTimeField(
         required=True,
-        widget=forms.DateTimeInput(attrs={
-            'type': 'datetime-local',
-            'class': 'form-control'
-        })
+        widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     published = forms.BooleanField(
         initial=False,
@@ -101,41 +95,26 @@ class TripForm(forms.ModelForm):
     )
     interested_start = forms.DateTimeField(
         required=True,
-        widget=forms.DateTimeInput(attrs={
-            'type': 'datetime-local',
-            'class': 'form-control'
-        })
+        widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     interested_end = forms.DateTimeField(
         required=True,
-        widget=forms.DateTimeInput(attrs={
-            'type': 'datetime-local',
-            'class': 'form-control'
-        })
+        widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     committed_start = forms.DateTimeField(
         required=True,
-        widget=forms.DateTimeInput(attrs={
-            'type': 'datetime-local',
-            'class': 'form-control'
-        })
+        widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     committed_end = forms.DateTimeField(
         required=True,
-        widget=forms.DateTimeInput(attrs={
-            'type': 'datetime-local',
-            'class': 'form-control'
-        })
+        widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     use_pretrip = forms.BooleanField(
         initial=False
     )
     pretrip_time = forms.DateTimeField(
         required=True,
-        widget=forms.DateTimeInput(attrs={
-            'type': 'datetime-local',
-            'class': 'form-control'
-        })
+        widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     pretrip_location = forms.CharField(
         max_length=128, 
