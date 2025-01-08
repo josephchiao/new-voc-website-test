@@ -3,11 +3,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from ubc_voc_website.decorators import Admin, Members, Execs
 
+from .models import Trip
 from .forms import TripForm, TripSignupForm
 
+import datetime
+
 def trip_agenda(request):
-    # calendar and list view of all published trips
-    pass
+    upcoming_trips = Trip.objects.filter(start_time__gte=datetime.datetime.now()).order_by('start_time')
+    return render(request, 'trips/trip_agenda.html', {'trips': upcoming_trips})
 
 @Members
 def my_trips(request):
@@ -19,7 +22,7 @@ def create_trip(request):
     if request.method == "POST":
         form = TripForm(request.POST)
         if form.is_valid():
-            trip = form.save()
+            form.save(user=request.user)
             return redirect('trips')
     else:
         form = TripForm()

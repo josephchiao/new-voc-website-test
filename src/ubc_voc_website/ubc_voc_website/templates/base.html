@@ -34,8 +34,11 @@
                             Trips
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="trip-agenda">Trip Agenda</a></li>
-                            <li><a class="dropdown-item" href="trip-reports">Trip Reports</a></li>
+                            <li><a class="dropdown-item" href="trips">Trip Agenda</a></li>
+                            <li><a class="dropdown-item" href="trips/trip-reports">Trip Reports</a></li>
+                            {% if request.user|is_member %}
+                                <li><a class="dropdown-item" href="trips/create">Organize a Trip</a></li>
+                            {% endif %}
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -52,8 +55,6 @@
                             <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Edit My Profile</a></li>
                             {% if request.user|is_member %}
                                 <li><a class="dropdown-item" href="{% url 'members' %}">Member List</a></li>
-                            {% else %}
-
                             {% endif %}
                         </ul>
                     </li>

@@ -30,7 +30,7 @@ class Trip(models.Model):
     committed_start = models.DateTimeField(null=True)
     committed_end = models.DateTimeField(null=True)
     use_pretrip = models.BooleanField(default=False)
-    pretrip_time = models.DateTimeField()
+    pretrip_time = models.DateTimeField(null=True)
     pretrip_location = models.CharField(max_length=128)
     drivers_required = models.BooleanField(default=False)
 

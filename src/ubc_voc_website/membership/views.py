@@ -8,9 +8,8 @@ from django.http import HttpResponseForbidden
 from django.core.files.base import ContentFile
 
 from django.template.loader import render_to_string
-from weasyprint import HTML, CSS
+from weasyprint import HTML
 from django.http import HttpResponse
-from django.conf import settings
 
 from .utils import *
 import datetime
@@ -66,8 +65,6 @@ def waiver(request, membership_id):
 
             waiver.save()
             return redirect('home')
-        else:
-            print("form not valid")
         
     else:
         form = WaiverForm(user=request.user)

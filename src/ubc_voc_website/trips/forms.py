@@ -35,6 +35,46 @@ class TripForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['organizers'].label_from_instance = self.get_profile_label
 
+    def clean(self):
+        """
+        Conditional required fields for signup/pretrip details
+        ie. signup related fields are required if and only if use_signup == True
+        """
+        cleaned_data = super().clean()
+        use_signup, use_pretrip = cleaned_data.get('use_signup'), cleaned_data.get('use_pretrip')
+
+        if use_signup:
+            required_fields = [
+                'signup_question',
+                'max_participants',
+                'interested_start',
+                'interested_end',
+                'committed_start',
+                'committed_end'
+            ]
+            for field in required_fields:
+                if not cleaned_data.get(field):
+                    self.add_error(field, "This field is required when 'Use signup' is selected")
+
+        if use_pretrip:
+            required_fields = [
+                'pretrip_time',
+                'pretrip_location'
+            ]
+            for field in required_fields:
+                if not cleaned_data.get(field):
+                    self.add_error(field, "This field is required when 'Use pretrip' is selected")
+
+    def save(self, commit=True, user=None):
+        trip = super().save(commit=False)
+
+        if commit:
+            trip.save()
+            if user and not trip.organizers.filter(pk=user.pk).exists():
+                trip.organizers.add(user)
+
+        return trip
+
     @staticmethod
     def get_profile_label(user):
         try:
@@ -53,6 +93,7 @@ class TripForm(forms.ModelForm):
             active=True,
             end_date__gte=datetime.date.today()
         )),
+        required=False,
         label="Additional Organizers",
         widget=forms.SelectMultiple(attrs={'class': 'choices'})
     )
@@ -61,7 +102,7 @@ class TripForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     end_time = forms.DateTimeField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     published = forms.BooleanField(
@@ -93,22 +134,22 @@ class TripForm(forms.ModelForm):
         required=False
     )
     max_participants = forms.IntegerField(
-        required=True
+        required=False
     )
     interested_start = forms.DateTimeField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     interested_end = forms.DateTimeField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     committed_start = forms.DateTimeField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     committed_end = forms.DateTimeField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     use_pretrip = forms.BooleanField(
@@ -116,15 +157,16 @@ class TripForm(forms.ModelForm):
         required=False
     )
     pretrip_time = forms.DateTimeField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     pretrip_location = forms.CharField(
         max_length=128, 
-        required=True
+        required=False
     )
     drivers_required = forms.BooleanField(
-        initial=False
+        initial=False,
+        required=False
     )
 
 class TripSignupForm(forms.ModelForm):
