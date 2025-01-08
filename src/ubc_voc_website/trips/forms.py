@@ -66,7 +66,8 @@ class TripForm(forms.ModelForm):
     )
     published = forms.BooleanField(
         initial=False,
-        label="Publish this trip on the trip agenda? (leave blank if you would like to edit this trip later before posting it)"
+        required=False,
+        label="Publish this trip on the trip agenda? (leave unchecked if you would like to edit this trip later before posting it)"
     )
     status = forms.ChoiceField(
         choices=Trip.TripStatus.choices,
@@ -84,6 +85,7 @@ class TripForm(forms.ModelForm):
     )
     use_signup = forms.BooleanField(
         initial=False,
+        required=False,
         label="Use the trip signup tools"
     )
     signup_question = forms.CharField(
@@ -110,7 +112,8 @@ class TripForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     use_pretrip = forms.BooleanField(
-        initial=False
+        initial=False,
+        required=False
     )
     pretrip_time = forms.DateTimeField(
         required=True,
