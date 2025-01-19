@@ -3,6 +3,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from ubc_voc_website.decorators import Admin, Members, Execs
 
+import ubc_voc_website.utils as utils
+
 from .models import Trip
 from .forms import TripForm, TripSignupForm
 
@@ -57,8 +59,7 @@ def trip_edit(request, id):
         return render(request, 'access_denied.html', status=403)
     else:
         if request.method == "POST":
-            print(request.POST)
-            form = TripForm(request.POST)
+            form = TripForm(request.POST, instance=trip)
             if form.is_valid():
                 form.save(user=request.user)
                 return redirect('trips')
@@ -67,6 +68,16 @@ def trip_edit(request, id):
         else:
             form = TripForm(instance=trip)
         return render(request, 'trips/trip_form.html', {'form': form})
+    
+@Members
+def trip_delete(request, id):
+    trip = get_object_or_404(Trip, id=id)
+
+    if not trip.organizers.filter(pk=request.user.pk).exists() and not utils.is_exec(request.user):
+        return render(request, 'access_denied.html', status=403)
+    else:
+        Trip.objects.filter(id=trip.id).delete()
+        return redirect('trips')
 
 @login_required
 def trip_details(request, id):

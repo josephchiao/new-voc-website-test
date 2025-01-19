@@ -5,6 +5,8 @@ from membership.models import Membership, Profile
 from django.contrib.auth import get_user_model
 import datetime
 
+from django_quill.forms import QuillFormField
+
 User = get_user_model()
 
 class TripForm(forms.ModelForm):
@@ -41,6 +43,7 @@ class TripForm(forms.ModelForm):
         ie. signup related fields are required if and only if use_signup == True
         """
         cleaned_data = super().clean()
+        print(cleaned_data)
         use_signup, use_pretrip = cleaned_data.get('use_signup'), cleaned_data.get('use_pretrip')
 
         if use_signup:
@@ -115,15 +118,12 @@ class TripForm(forms.ModelForm):
         required=True,
         label="Is this trip tentative/cancelled?"
     )
-    description = forms.CharField(
-        required=True,
-        widget=forms.Textarea(attrs={
-            'class': 'rich-textbox',
-            'rows': 10,
-            'cols': 80
-        }),
-        label="Trip Description"
-    )
+    # description = forms.CharField(
+    #     required=True,
+    #     widget=forms.HiddenInput(),
+    #     label="Trip Description"
+    # )
+    description = QuillFormField()
     use_signup = forms.BooleanField(
         initial=False,
         required=False,

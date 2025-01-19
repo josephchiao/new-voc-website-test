@@ -14,7 +14,7 @@ def get_end_date(today):
     
     else:
         return datetime.datetime(current_year + 1, 9, 30)
-    
+
 def is_minor(today, birthdate):
     """
     Determine whether a user is a minor based on their birthdate. This is required to determine 

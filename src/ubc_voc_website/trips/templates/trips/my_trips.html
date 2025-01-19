@@ -30,8 +30,9 @@
                 <tr>
                     <th>Date</th>
                     <th>Trip</th>
-                    <th>Details</th>
-                    <th>Edit</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -45,6 +46,15 @@
                             <td>{{ trip.name }}</td>
                             <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
                             <td><a href="{% url 'trip_edit' trip.id %}">Edit</a></td>
+                            <td>
+                                <a 
+                                    class="btn btn-danger" 
+                                    href="{% url 'trip_delete' trip.id%}" 
+                                    onclick="return confirm('Are you sure you want to delete this trip?')"
+                                >
+                                    Delete
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                 {% endfor %}
@@ -59,7 +69,7 @@
                 <tr>
                     <th>Date</th>
                     <th>Trip</th>
-                    <th>Details</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>

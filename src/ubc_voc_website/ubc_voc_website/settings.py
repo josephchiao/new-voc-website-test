@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ubc_voc_website',
     'membership',
-    'trips'
+    'trips',
+    'django_quill'
 ]
 
 MIDDLEWARE = [
