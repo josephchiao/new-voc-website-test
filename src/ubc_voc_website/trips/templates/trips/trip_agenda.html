@@ -15,26 +15,28 @@
             // Set initial view to listView
             listDiv.style.display = 'block';
             calendarDiv.style.display = 'none';
-            toggleButton.textContent = 'Calendar View';
+            toggleButton.textContent = 'Switch to calendar view';
 
             // Initialize calendar view toggle logic
             toggleButton.addEventListener('click', function () {
                 if (listDiv.style.display === 'none') {
                     listDiv.style.display = 'block';
                     calendarDiv.style.display = 'none';
-                    toggleButton.textContent = 'Calendar View'
+                    toggleButton.textContent = 'Switch to calendar view'
                 }
                 else {
                     listDiv.style.display = 'none';
                     calendarDiv.style.display = 'block';
-                    toggleButton.textContent = 'List View'
+                    toggleButton.textContent = 'Switch to list view'
                 }
             });
 
             // Initialize FullCalendar object
             var calendar = document.getElementById('calendar');
+            const events = JSON.parse('{{ trips_calendar|escapejs }}');
             calendar = new FullCalendar.Calendar(calendar, {
-                initialView: 'dayGridMonth'
+                initialView: 'dayGridMonth',
+                events: events
             });
             calendar.render();
         })
@@ -67,7 +69,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for month, trips in grouped_trips.items %}
+                    {% for month, trips in trips_list.items %}
                         <tr>
                             <td colspan="4"><strong>{{ month }}</strong></td>
                         </tr>

@@ -13,14 +13,27 @@ import json
 
 def trips(request):
     trips = Trip.objects.filter(start_time__gt=datetime.datetime.now(), published=True)
-    grouped_trips = {}
+    trips_list = {}
     for trip in trips:
         month = trip.start_time.strftime('%B %Y')
-        if month not in grouped_trips:
-            grouped_trips[month] = []
-        grouped_trips[month].append(trip)
-    grouped_trips = dict(sorted(grouped_trips.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y')))
-    return render(request, 'trips/trip_agenda.html', {'grouped_trips': grouped_trips})
+        if month not in trips_list:
+            trips_list[month] = []
+        trips_list[month].append(trip)
+    trips_list = dict(sorted(trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y')))
+
+    trips_calendar = []
+    for trip in trips:
+        if not trip.end_time:
+            end_time = trip.start_time.replace(hour=23, minute=59, second=59)
+        else:
+            end_time = trip.end_time
+        trips_calendar.append({
+            'title': trip.name,
+            'start': trip.start_time.isoformat(),
+            'end': end_time.isoformat()
+        })
+
+    return render(request, 'trips/trip_agenda.html', {'trips_list': trips_list, 'trips_calendar': json.dumps(trips_calendar)})
 
 @Members
 def my_trips(request):
