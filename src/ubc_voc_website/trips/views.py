@@ -18,6 +18,7 @@ def trips(request):
         if month not in grouped_trips:
             grouped_trips[month] = []
         grouped_trips[month].append(trip)
+    grouped_trips = dict(sorted(grouped_trips.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y')))
     return render(request, 'trips/trip_agenda.html', {'grouped_trips': grouped_trips})
 
 @Members
@@ -29,6 +30,8 @@ def my_trips(request):
         if month not in grouped_previous_trips:
             grouped_previous_trips[month] = []
         grouped_previous_trips[month].append(trip)
+    # Sort by month in ascending order
+    grouped_previous_trips = dict(sorted(grouped_previous_trips.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y')))
 
     upcoming_trips = Trip.objects.filter(start_time__gt=datetime.datetime.now(), organizers=request.user)
     grouped_upcoming_trips = {}
@@ -37,6 +40,8 @@ def my_trips(request):
         if month not in grouped_upcoming_trips:
             grouped_upcoming_trips[month] = []
         grouped_upcoming_trips[month].append(trip)
+    # Sort by month in ascending order
+    grouped_upcoming_trips = dict(sorted(grouped_upcoming_trips.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y')))
 
     return render(request, 'trips/my_trips.html', {'previous_trips': grouped_previous_trips, 'upcoming_trips': grouped_upcoming_trips})
 
