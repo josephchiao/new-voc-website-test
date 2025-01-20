@@ -18,11 +18,16 @@
             <a href="#signup">Jump to signup form</a>
         {% endif %}
 
-        <p>organizers</p>
+        <p>
+            <b>Organized by:</b> 
+            {% for organizer in organizers %}
+                <a href="{% url 'profile' organizer.user__id %}">{{ organizer.first_name }} {{ organizer.last_name }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
 
-        <p>dates</p>
-
-        <p>description</p>
+        <p>
+            {{ description|safe }}
+        </p>
 
         <div id="signup">
             <p>signup placeholder</p>

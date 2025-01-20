@@ -6,7 +6,10 @@ from ubc_voc_website.decorators import Admin, Members, Execs
 from .models import Trip
 from .forms import TripForm, TripSignupForm
 
+from membership.models import Profile
+
 import datetime
+import json
 
 def trips(request):
     trips = Trip.objects.filter(start_time__gt=datetime.datetime.now(), published=True)
@@ -85,6 +88,14 @@ def trip_delete(request, id):
 @login_required
 def trip_details(request, id):
     trip = get_object_or_404(Trip, id=id)
-    return render(request, 'trips/trip.html', {'trip': trip})
+    organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
+        'user__id', 'first_name', 'last_name'
+    )
+    try:
+        description = json.loads(trip.description).get('html', '')
+    except json.JSONDecodeError:
+        description = trip.description
+
+    return render(request, 'trips/trip.html', {'trip': trip, 'organizers': organizers, 'description': description})
 
 
