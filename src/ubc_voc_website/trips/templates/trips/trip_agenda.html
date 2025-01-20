@@ -5,25 +5,58 @@
 {% block title %}Trip Agenda{% endblock %}
 
 {% block head_content %}
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const calendarToggle = document.getElementById('toggle-calendar');
             const listDiv = document.getElementById('list_div');
             const calendarDiv = document.getElementById('calendar_div');
+            const toggleButton = document.getElementById('calendar-toggle');
 
-            calendarToggle.addEventListener('change', function () {
-                listDiv.style.display = this.checked ? 'none' : 'block';
-                calendarDiv.style.display = this.checked ? 'block' : 'none';
+            // Set initial view to listView
+            listDiv.style.display = 'block';
+            calendarDiv.style.display = 'none';
+            toggleButton.textContent = 'Calendar View';
+
+            // Initialize calendar view toggle logic
+            toggleButton.addEventListener('click', function () {
+                if (listDiv.style.display === 'none') {
+                    listDiv.style.display = 'block';
+                    calendarDiv.style.display = 'none';
+                    toggleButton.textContent = 'Calendar View'
+                }
+                else {
+                    listDiv.style.display = 'none';
+                    calendarDiv.style.display = 'block';
+                    toggleButton.textContent = 'List View'
+                }
             });
+
+            // Initialize FullCalendar object
+            var calendar = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendar, {
+                initialView: 'dayGridMonth'
+            });
+            calendar.render();
         })
     </script>
+    <style>
+        h2 {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px;
+        }
+    </style>
 
 {% endblock %}
 
 {% block content %}
     <div class="container">
+        <h2>
+            Upcoming Trips
+            <button id="calendar-toggle" class="btn btn-outline-secondary"></button>
+        </h2>
+
         <div id="list_div">
-            <h2>Upcoming Trips</h2>
             <table id="upcoming-table" class="table">
                 <thead>
                     <tr>
@@ -52,7 +85,7 @@
         </div>
     
         <div id="calendar_div">
-    
+            <div id="calendar"></div>
         </div>
     </div>
 {% endblock %}
