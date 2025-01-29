@@ -43,7 +43,6 @@ class TripForm(forms.ModelForm):
         ie. signup related fields are required if and only if use_signup == True
         """
         cleaned_data = super().clean()
-        print(cleaned_data)
         use_signup, use_pretrip = cleaned_data.get('use_signup'), cleaned_data.get('use_pretrip')
 
         if use_signup:
@@ -70,9 +69,11 @@ class TripForm(forms.ModelForm):
 
     def save(self, commit=True, user=None):
         trip = super().save(commit=False)
-
         if commit:
             trip.save()
+            if 'tags' in self.cleaned_data:
+                trip.tags.set(self.cleaned_data['tags'])
+
             if user and not trip.organizers.filter(pk=user.pk).exists():
                 trip.organizers.add(user)
 

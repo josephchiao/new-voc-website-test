@@ -11,6 +11,9 @@ class TripTag(models.Model):
     name = models.CharField(max_length=32, blank=False)
     colour = ColorField(default='#808080')
 
+    def __str__(self):
+        return self.name
+
 class Trip(models.Model):
     class TripStatus(models.TextChoices):
         NO = "N",
