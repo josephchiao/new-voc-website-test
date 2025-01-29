@@ -11,6 +11,7 @@
             const listDiv = document.getElementById('list_div');
             const calendarDiv = document.getElementById('calendar_div');
             const toggleButton = document.getElementById('calendar-toggle');
+            var calendar = document.getElementById('calendar');
 
             // Set initial view to listView
             listDiv.style.display = 'block';
@@ -28,11 +29,11 @@
                     listDiv.style.display = 'none';
                     calendarDiv.style.display = 'block';
                     toggleButton.textContent = 'Switch to list view'
+                    calendar.render();
                 }
             });
 
             // Initialize FullCalendar object
-            var calendar = document.getElementById('calendar');
             const events = JSON.parse('{{ trips_calendar|escapejs }}');
             calendar = new FullCalendar.Calendar(calendar, {
                 initialView: 'dayGridMonth',
@@ -42,7 +43,6 @@
                     window.location.href = '/trips/details/' + info.event._def.publicId;
                 }
             });
-            calendar.render();
         })
     </script>
     <style>
