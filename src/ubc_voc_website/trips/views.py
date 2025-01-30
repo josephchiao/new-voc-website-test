@@ -112,6 +112,7 @@ def trip_details(request, id):
     except json.JSONDecodeError:
         description = trip.description
 
+    # TODO also only render this if the user is a member (probably needing a helper util)
     if trip.use_signup and len(trip.valid_signup_types) > 0:
         form = TripSignupForm(trip=trip)
     else:

@@ -1,0 +1,21 @@
+from membership.models import Exec, Membership, PSG
+
+import datetime
+
+# TODO: consolidate logic by using these functions for the decorators and template tags that do the same thing
+
+def is_member(user):
+    active_memberships = Membership.objects.filter(
+            user=user,
+            end_date__gte=datetime.datetime.today(),
+            active=True
+        )
+    return active_memberships.count() == 1
+
+def is_exec(user):
+    exec_positions = Exec.objects.filter(user=user)
+    return exec_positions.count() >= 1
+
+def is_PSG(user):
+    psg_positions = PSG.objects.filter(user=user)
+    return psg_positions.count() >= 1
