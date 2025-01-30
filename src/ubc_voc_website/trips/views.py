@@ -112,6 +112,11 @@ def trip_details(request, id):
     except json.JSONDecodeError:
         description = trip.description
 
-    return render(request, 'trips/trip.html', {'trip': trip, 'organizers': organizers, 'description': description})
+    if trip.use_signup and len(trip.valid_signup_types) > 0:
+        form = TripSignupForm(trip=trip)
+    else:
+        form = None
+
+    return render(request, 'trips/trip.html', {'trip': trip, 'organizers': organizers, 'description': description, 'signup_form': form})
 
 

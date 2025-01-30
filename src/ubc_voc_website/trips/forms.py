@@ -176,8 +176,11 @@ class TripSignupForm(forms.ModelForm):
         model = TripSignup
         fields = ('type', 'can_drive', 'signup_answer')
 
+    def __init__(self, *args, trip, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['type'].choices = [choice for choice in trip.valid_signup_types]
+
     type = forms.ChoiceField(
-        choices=TripSignup.TripSignupTypes.choices,
         required=True
     )
     can_drive = forms.BooleanField(initial=False)

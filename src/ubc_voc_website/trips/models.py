@@ -1,7 +1,14 @@
 from django.db import models
 from django.conf import settings
 
+import datetime
 from colorfield.fields import ColorField
+
+# helper class, not a model
+class TripSignupTypes(models.TextChoices):
+    INTERESTED = "I",
+    COMMITTED = "C",
+    GOING = "G"
 
 """
 This is its own model rather than a subclass in the Trip model because it allows any Admin
@@ -13,7 +20,7 @@ class TripTag(models.Model):
 
     def __str__(self):
         return self.name
-
+    
 class Trip(models.Model):
     class TripStatus(models.TextChoices):
         NO = "N",
@@ -66,12 +73,22 @@ class Trip(models.Model):
         else:
             return self.start_time.strftime('%A, %B %d')
         
+    @property
+    def valid_signup_types(self):
+        """
+        A list of the valid signup types for this trip
+        based on whether signup is enabled, and signups for interested/committed are open
+        """
+        signup_types = []
+        if self.use_signup:
+            now = datetime.datetime.now()
+            if self.interested_start <= now and self.interested_end >= now:
+                signup_types.append(TripSignupTypes.INTERESTED)
+            if self.committed_start <= now and self.committed_end >= now:
+                signup_types.append(TripSignupTypes.COMMITTED)
+        return signup_types
+        
 class TripSignup(models.Model):
-    class TripSignupTypes(models.TextChoices):
-        INTERESTED = "I",
-        COMMITTED = "C",
-        GOING = "G"
-
     trip = models.OneToOneField(
         Trip,
         on_delete=models.CASCADE,
