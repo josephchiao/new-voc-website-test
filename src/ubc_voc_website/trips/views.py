@@ -89,7 +89,7 @@ def trip_edit(request, id):
             else:
                 print(form.errors)
         else:
-            form = TripForm(instance=trip)
+            form = TripForm(instance=trip, user=request.user)
         return render(request, 'trips/trip_form.html', {'form': form})
     
 @Members

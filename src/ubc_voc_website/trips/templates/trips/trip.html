@@ -39,7 +39,7 @@
             {{ description|safe }}
         </p>
 
-        {% if request.user|is_member %}
+        {% if request.user|is_member and trip.valid_signup_types %}
             <h5>Sign Up</h5>
             <div id="signup">
                 <div class="mb-4">
