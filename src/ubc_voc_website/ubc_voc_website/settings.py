@@ -134,6 +134,9 @@ AUTH_USER_MODEL = "ubc_voc_website.User"
 
 AUTHENTICATION_BACKENDS = ['ubc_voc_website.backends.EmailBackend']
 
+# Outputs all emails to the console, so we don't need a separate SMTP server in dev
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 
