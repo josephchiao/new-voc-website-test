@@ -47,7 +47,7 @@
                     <p><b>Going:</b></p>
                     <ul class="list-group">
                         {% for signup in signups.going %}
-                            <li class="list-group-item">{{ signup.name }}</li>
+                            <li class="list-group-item"><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -55,7 +55,7 @@
                     <p><b>Committed:</b></p>
                     <ul class="list-group">
                         {% for signup in signups.committed %}
-                            <li class="list-group-item">{{ signup.name }}</li>
+                            <li class="list-group-item"><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -63,7 +63,7 @@
                     <p><b>Interested:</b></p>
                     <ul class="list-group">
                         {% for signup in signups.interested %}
-                            <li class="list-group-item">{{ signup.name }}</li>
+                            <li class="list-group-item"><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></li>
                         {% endfor %}
                     </ul>
                 {% endif %}

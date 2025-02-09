@@ -129,7 +129,7 @@ def trip_details(request, id):
             for signup in interested_signups:
                 profile = Profile.objects.get(user=signup.user)
                 interested_list.append({
-                    'name': f"{ profile.first_name} {profile.last_name}",
+                    'name': profile.full_name_with_pronouns,
                     'id': signup.user.id,
                     'signup_answer': signup.signup_answer
                 })
@@ -137,7 +137,7 @@ def trip_details(request, id):
             for signup in committed_signups:
                 profile = Profile.objects.get(user=signup.user)
                 committed_list.append({
-                    'name': f"{ profile.first_name} {profile.last_name}",
+                    'name': profile.full_name_with_pronouns,
                     'id': signup.user.id,
                     'signup_answer': signup.signup_answer
                 })
@@ -145,7 +145,7 @@ def trip_details(request, id):
             for signup in going_signups:
                 profile = Profile.objects.get(user=signup.user)
                 going_list.append({
-                    'name': f"{ profile.first_name} {profile.last_name}",
+                    'name': profile.full_name_with_pronouns,
                     'id': signup.user.id,
                     'signup_answer': signup.signup_answer
                 })
