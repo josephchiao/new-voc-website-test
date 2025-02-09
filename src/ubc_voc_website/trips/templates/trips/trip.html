@@ -41,31 +41,64 @@
 
         <!------------------------------- Signups list ------------------------------->
         {% if request.user|is_member and signups.interested or signups.committed or signups.going %}
-            <h5>Signups</h5>
+            <h5>Signup Lists</h5>
             <div id="signup-list">
                 {% if signups.going %}
                     <p><b>Going:</b></p>
-                    <ul class="list-group">
-                        {% for signup in signups.going %}
-                            <li class="list-group-item"><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></li>
-                        {% endfor %}
-                    </ul>
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                            {% for signup in signups.going %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></td>
+                                    {% if signup.signup_answer %}
+                                        <td class="text-wrap text-break w-50">Says: {{ signup.signup_answer }}</td>
+                                    {% endif %}
+                                    {% if signup.car_spots > 0 %}
+                                        <td><b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span></td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
                 {% if signups.committed %}
                     <p><b>Committed:</b></p>
-                    <ul class="list-group">
-                        {% for signup in signups.committed %}
-                            <li class="list-group-item"><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></li>
-                        {% endfor %}
-                    </ul>
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                            {% for signup in signups.committed %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></td>
+                                    {% if signup.signup_answer %}
+                                        <td class="text-wrap text-break w-50">Says: {{ signup.signup_answer }}</td>
+                                    {% endif %}
+                                    {% if signup.car_spots > 0 %}
+                                        <td><b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span></td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
                 {% if signups.interested %}
                     <p><b>Interested:</b></p>
-                    <ul class="list-group">
-                        {% for signup in signups.interested %}
-                            <li class="list-group-item"><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></li>
-                        {% endfor %}
-                    </ul>
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                            {% for signup in signups.interested %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></td>
+                                    {% if signup.signup_answer %}
+                                        <td class="text-wrap text-break w-50"><b>Says:</b> <i>{{ signup.signup_answer }}</i></td>
+                                    {% endif %}
+                                    {% if signup.car_spots > 0 %}
+                                        <td><b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span></td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </div>
         {% endif %}

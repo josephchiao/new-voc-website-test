@@ -131,7 +131,8 @@ def trip_details(request, id):
                 interested_list.append({
                     'name': profile.full_name_with_pronouns,
                     'id': signup.user.id,
-                    'signup_answer': signup.signup_answer
+                    'signup_answer': signup.signup_answer,
+                    'car_spots': signup.car_spots if signup.can_drive else 0
                 })
             committed_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.COMMITTED)
             for signup in committed_signups:
@@ -139,7 +140,8 @@ def trip_details(request, id):
                 committed_list.append({
                     'name': profile.full_name_with_pronouns,
                     'id': signup.user.id,
-                    'signup_answer': signup.signup_answer
+                    'signup_answer': signup.signup_answer,
+                    'car_spots': signup.car_spots if signup.can_drive else 0
                 })
             going_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.GOING)
             for signup in going_signups:
@@ -147,7 +149,8 @@ def trip_details(request, id):
                 going_list.append({
                     'name': profile.full_name_with_pronouns,
                     'id': signup.user.id,
-                    'signup_answer': signup.signup_answer
+                    'signup_answer': signup.signup_answer,
+                    'car_spots': signup.car_spots if signup.can_drive else 0
                 })
 
             # get form for new signups
