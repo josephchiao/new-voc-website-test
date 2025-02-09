@@ -23,6 +23,17 @@ class Profile(models.Model):
     vocene = models.BooleanField(default=True)
     trip_org_email = models.BooleanField(default=True)
 
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+    
+    @property
+    def full_name_with_pronouns(self):
+        if self.pronouns:
+            return f"{self.full_name} ({self.pronouns})"
+        else:
+            return self.full_name
+
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
     
