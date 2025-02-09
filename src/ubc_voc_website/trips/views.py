@@ -153,6 +153,10 @@ def trip_details(request, id):
                     'car_spots': signup.car_spots if signup.can_drive else 0
                 })
 
+            interested_car_spots = sum(signup['car_spots'] for signup in interested_list)
+            committed_car_spots = sum(signup['car_spots'] for signup in committed_list)
+            going_car_spots = sum(signup['car_spots'] for signup in going_list)
+
             # get form for new signups
             if trip.valid_signup_types:
                 form = TripSignupForm(user=request.user, trip=trip)
@@ -162,6 +166,7 @@ def trip_details(request, id):
         'organizers': organizers, 
         'description': description, 
         'signups': {"interested": interested_list, "committed": committed_list, "going": going_list},
+        'car_spots': {"interested": interested_car_spots, "committed": committed_car_spots, "going": going_car_spots},
         'form': form
         })
 
