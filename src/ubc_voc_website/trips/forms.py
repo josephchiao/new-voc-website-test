@@ -182,19 +182,22 @@ class TripSignupForm(forms.ModelForm):
         model = TripSignup
         fields = ('type', 'can_drive', 'car_spots', 'signup_answer')
 
-    def __init__(self, *args, trip, **kwargs):
+    def __init__(self, *args, trip=None, **kwargs):
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        signup_choices = trip.valid_signup_types
+        self.trip = trip
+        
+        signup_choices = self.trip.valid_signup_types
         if not signup_choices:
             self.fields.pop('type')
         else:
             self.fields['type'].choices = [(choice.value, choice.label) for choice in signup_choices]
 
-        if not trip.signup_question:
+        if not self.trip.signup_question:
             self.fields.pop('signup_answer')
         else:
-            self.fields['signup_answer'].label_from_instance = trip.signup_question
+            self.fields['signup_answer'].label_from_instance = self.trip.signup_question
 
     def clean(self):
         cleaned_data = super().clean()
@@ -202,9 +205,18 @@ class TripSignupForm(forms.ModelForm):
         if can_drive and not cleaned_data.get('car_spots'):
             self.add_error('car_spots', "This field is required when 'Use signup' is selected")
 
+    def save(self, commit=True):
+        signup = super().save(commit=False)
+        signup.user = self.user
+        signup.trip = self.trip
+
+        if commit:
+            signup.save()
+        return signup
+
     type = forms.ChoiceField(
         required=True
     )
-    can_drive = forms.BooleanField(initial=False)
+    can_drive = forms.BooleanField(initial=False, required=False)
     car_spots = forms.IntegerField(required=False)
     signup_answer = forms.CharField(max_length=256, required=False)

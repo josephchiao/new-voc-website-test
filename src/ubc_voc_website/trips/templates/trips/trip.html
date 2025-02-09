@@ -40,38 +40,74 @@
         </p>
 
         <!------------------------------- Signups list ------------------------------->
-        {% if request.user|is_member and signups.interested or signnups.committed or signups.going %}
+        {% if request.user|is_member and signups.interested or signups.committed or signups.going %}
             <h5>Signups</h5>
             <div id="signup-list">
-                <p>Interested</p>
-                <p>Committed</p>
-                <p>Going</p>
+                {% if signups.going %}
+                    <p><b>Going:</b></p>
+                    <ul class="list-group">
+                        {% for signup in signups.going %}
+                            <li class="list-group-item">{{ signup.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if signups.committed %}
+                    <p><b>Committed:</b></p>
+                    <ul class="list-group">
+                        {% for signup in signups.committed %}
+                            <li class="list-group-item">{{ signup.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if signups.interested %}
+                    <p><b>Interested:</b></p>
+                    <ul class="list-group">
+                        {% for signup in signups.interested %}
+                            <li class="list-group-item">{{ signup.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </div>
         {% endif %}
+
+        <hr>
 
         <!------------------------------- Signup form ------------------------------->
         {% if request.user|is_member and trip.valid_signup_types %}
             <h5>Sign Up</h5>
-            <div id="signup-form">
+            <form id="signup-form" method="post">
+                {% csrf_token %}
                 <div class="mb-4">
                     {{ form.type.label_tag }} {{ form.type }}
+                    {% if form.type.errors %}
+                        <small>{{ form.type.errors|striptags }}</small>
+                    {% endif %}
                 </div>
 
                 <div class="mb-4">
                     {{ form.can_drive.label_tag }} {{ form.can_drive }}
+                    {% if form.can_drive.errors %}
+                        <small>{{ form.can_drive.errors|striptags }}</small>
+                    {% endif %}
                 </div>
 
                 <div class="mb-4" id="car-spots-div">
                     {{ form.car_spots.label_tag }} {{ form.car_spots }}
+                    {% if form.car_spots.errors %}
+                        <small>{{ form.car_spots.errors }}</small>
+                    {% endif %}
                 </div>
 
                 <div class="mb-4">
                     {{ form.signup_answer.label_tag }} <br />
                     {{ form.signup_answer }}
+                    {% if form.signup_answer.errors %}
+                        <small>{{ form.signup_answer.errors }}</small>
+                    {% endif %}
                 </div>
 
                 <button type="submit">Submit</button>
-            </div>
+            </form>
         {% endif %}
     </div>
     

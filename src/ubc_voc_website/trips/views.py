@@ -1,5 +1,4 @@
 from django.shortcuts import get_object_or_404, render, redirect
-
 from django.contrib.auth.decorators import login_required
 from ubc_voc_website.decorators import Admin, Members, Execs
 from ubc_voc_website.utils import is_member
@@ -104,39 +103,63 @@ def trip_delete(request, id):
 
 @login_required
 def trip_details(request, id):
+    trip = get_object_or_404(Trip, id=id)
     if request.POST:
-        form = TripSignupForm(request.POST)
+        form = TripSignupForm(request.POST, user=request.user, trip=trip)
         if form.is_valid():
             form.save()
-            return redirect('trips')
         else:
             print(form.errors)
-    else:
-        trip = get_object_or_404(Trip, id=id)
-        organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
-            'user__id', 'first_name', 'last_name'
-        )
-        try:
-            description = json.loads(trip.description).get('html', '')
-        except json.JSONDecodeError:
-            description = trip.description
 
+    organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
+        'user__id', 'first_name', 'last_name'
+    )
+    try:
+        description = json.loads(trip.description).get('html', '')
+    except json.JSONDecodeError:
+        description = trip.description
+
+    if is_member(request.user):
         interested_list, committed_list, going_list = [], [], []
         form = None
+
+        # get existing signups
         if trip.use_signup:
-            interested_list = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.INTERESTED)
-            committed_list = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.COMMITTED)
-            going_list = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.GOING)
+            interested_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.INTERESTED)
+            for signup in interested_signups:
+                profile = Profile.objects.get(user=signup.user)
+                interested_list.append({
+                    'name': f"{ profile.first_name} {profile.last_name}",
+                    'id': signup.user.id,
+                    'signup_answer': signup.signup_answer
+                })
+            committed_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.COMMITTED)
+            for signup in committed_signups:
+                profile = Profile.objects.get(user=signup.user)
+                committed_list.append({
+                    'name': f"{ profile.first_name} {profile.last_name}",
+                    'id': signup.user.id,
+                    'signup_answer': signup.signup_answer
+                })
+            going_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.GOING)
+            for signup in going_signups:
+                profile = Profile.objects.get(user=signup.user)
+                going_list.append({
+                    'name': f"{ profile.first_name} {profile.last_name}",
+                    'id': signup.user.id,
+                    'signup_answer': signup.signup_answer
+                })
 
-            if is_member(request.user) and trip.valid_signup_types:
-                form = TripSignupForm(trip=trip)
+            # get form for new signups
+            if trip.valid_signup_types:
+                form = TripSignupForm(user=request.user, trip=trip)
 
-        return render(request, 'trips/trip.html', {
-            'trip': trip, 
-            'organizers': organizers, 
-            'description': description, 
-            'signups': {"interested": interested_list, "committed": committed_list, "going": going_list},
-            'form': form
-            })
+    return render(request, 'trips/trip.html', {
+        'trip': trip, 
+        'organizers': organizers, 
+        'description': description, 
+        'signups': {"interested": interested_list, "committed": committed_list, "going": going_list},
+        'form': form
+        })
 
 
