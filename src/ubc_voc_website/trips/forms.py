@@ -3,6 +3,7 @@ from .models import Trip, TripSignup, TripTag
 from membership.models import Membership, Profile
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 import datetime
 
 from django_quill.forms import QuillFormField
@@ -206,9 +207,15 @@ class TripSignupForm(forms.ModelForm):
             self.add_error('car_spots', "This field is required when 'Use signup' is selected")
 
     def save(self, commit=True):
-        signup = super().save(commit=False)
-        signup.user = self.user
-        signup.trip = self.trip
+        try:
+            signup = TripSignup.objects.get(user=self.user, trip=self.trip)
+        except ObjectDoesNotExist:
+            signup = super().save(commit=False)
+            signup.user = self.user
+            signup.trip = self.trip
+
+        for field in self.cleaned_data:
+            setattr(signup, field, self.cleaned_data[field])
 
         if commit:
             signup.save()
