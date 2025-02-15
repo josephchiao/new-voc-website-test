@@ -47,6 +47,7 @@ class Trip(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(null=True)
     description = models.TextField(null=True)
+    in_clubroom = models.BooleanField(default=False)
     use_signup = models.BooleanField(default=False)
     signup_question = models.CharField(max_length=256, null=True)
     max_participants = models.IntegerField(null=True)
@@ -56,7 +57,7 @@ class Trip(models.Model):
     committed_end = models.DateTimeField(null=True)
     use_pretrip = models.BooleanField(default=False)
     pretrip_time = models.DateTimeField(null=True)
-    pretrip_location = models.CharField(max_length=128)
+    pretrip_location = models.CharField(max_length=128, blank=True, null=True)
     drivers_required = models.BooleanField(default=False)
 
     @property

@@ -59,6 +59,21 @@
                 pretrip_div.style.display = this.checked ? 'block' : 'none';
             });
 
+            // Setup pretrip location fields
+            const pretrip_use_clubroom = document.getElementById("pretrip_use_clubroom");
+            const pretrip_location_input = document.getElementById("id_pretrip_location");
+            const pretrip_location_input_label = document.getElementById("pretrip_location_input_label")
+            pretrip_location_input.style.display = this.checked ? 'none' : 'block';
+            pretrip_use_clubroom.addEventListener('change', function () {
+                pretrip_location_input_label.style.display = this.checked ? 'none' : 'block';
+                if (this.checked) {
+                    pretrip_location_input.value = "VOC Clubroom";
+                }
+                else {
+                    pretrip_location_input.value = "";
+                }
+            })
+
             // Setup datetime pickers
             flatpickr('.flatpickr', {
                 enableTime: true,
@@ -154,7 +169,13 @@
                     {{ form.pretrip_time.label_tag }} {{ form.pretrip_time }}
                 </div>
                 <div class="mb-4">
-                    {{ form.pretrip_location.label_tag }} {{ form.pretrip_location }}
+                    {{ form.pretrip_location.label_tag }}<br />
+                    <label>
+                        VOC Clubroom <input type="checkbox" name="use_clubroom" id="pretrip_use_clubroom">
+                    </label><br />
+                    <label id="pretrip_location_input_label">
+                        Other: <input type="text" name="pretrip_location" id="id_pretrip_location">
+                    </label>
                 </div>
             </div>
 

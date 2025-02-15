@@ -132,6 +132,11 @@ class TripForm(forms.ModelForm):
         widget=forms.SelectMultiple(attrs={'class': 'choices'})
     )
     description = QuillFormField()
+    in_clubroom = forms.BooleanField(
+        initial=False,
+        required=False,
+        label="Will this event happen in the clubroom?"
+    )
     use_signup = forms.BooleanField(
         initial=False,
         required=False,
