@@ -170,4 +170,39 @@ def trip_details(request, id):
         'form': form
         })
 
+@Members
+def clubroom_calendar(request):
+    upcoming_clubroom_events = Trip.objects.filter(in_clubroom=True).values(
+        'id', 'name', 'start_time', 'end_time'
+    )
+    upcoming_clubroom_pretrips = Trip.objects.filter(pretrip_location="VOC Clubroom").values(
+        'id', 'name', 'pretrip_time'
+    )
+
+    # TODO add gear hours and exec meetings in here too
+
+    trips_calendar = []
+    for event in upcoming_clubroom_events:
+        trips_calendar.append({
+            'id': event.id,
+            'title': event.name,
+            'start': event.start_time.isoformat(),
+            'end': event.end_time.isoformat(),
+            'color': '#0000FF'
+        })
+    for pretrip in upcoming_clubroom_pretrips:
+        end_time = pretrip.pretrip_time + datetime.timedelta(hours=1)
+
+        trips_calendar.append({
+            'id': pretrip.id, # passing in the trip ID, so clicking the pretrip calendar event will link to trip details page
+            'title': f"Pretrip Meeting - {event.name}",
+            'start': pretrip.pretrip_time,
+            'end': end_time,
+            'color': "#00FF00"
+        })
+
+    return render(request, 'trips/clubroom_calendar.html', {
+        'trips_calendar': json.dumps(trips_calendar)
+    })
+
 

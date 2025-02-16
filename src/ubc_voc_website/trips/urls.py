@@ -7,5 +7,6 @@ urlpatterns = [
     path('edit/<int:id>', trip_edit, name="trip_edit"),
     path('delete/<int:id>', trip_delete, name="trip_delete"),
     path('details/<int:id>', trip_details, name="trip_details"),
-    path('my-trips', my_trips, name="my_trips")
+    path('my-trips', my_trips, name="my_trips"),
+    path('clubroom-calendar', clubroom_calendar, name="clubroom_calendar")
 ]

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Clubroom Calendar{% endblock %}
+
+{% block head_content %}
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendar = document.getElementById('calendar');
+            const events = JSON.parse('{{ trips_calendar|escapejs }}');
+            calendar = new FullCalendar.Calendar(calendar, {
+                initialView: 'dayGridMonth',
+                events: events,
+                eventClick: function(info) {
+                    window.location.href = '/trips/details/' + info.event._def.publicId;
+                },
+                firstDay: 1
+            });
+            calendar.render();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Clubroom Calendar</h2>
+
+        <div id="calendar_div">
+            <div id="calendar"></div>
+        </div>
+    </div>
+{% endblock %}
+
