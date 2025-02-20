@@ -122,6 +122,7 @@ def trip_details(request, id):
 
     if is_member(request.user):
         interested_list, committed_list, going_list = [], [], []
+        interested_car_spots, committed_car_spots, going_car_spots = 0, 0, 0
         form = None
 
         # get existing signups
@@ -191,12 +192,12 @@ def clubroom_calendar(request):
         'id', 'name', 'pretrip_time'
     )
     for pretrip in upcoming_clubroom_pretrips:
-        end_time = pretrip.pretrip_time + datetime.timedelta(hours=1)
+        end_time = pretrip['pretrip_time'] + datetime.timedelta(hours=1)
 
         trips_calendar.append({
-            'id': pretrip.id, # passing in the trip ID, so clicking the pretrip calendar event will link to trip details page
-            'title': f"Pretrip Meeting - {event.name}",
-            'start': pretrip.pretrip_time.isoformat(),
+            'id': pretrip['id'], # passing in the trip ID, so clicking the pretrip calendar event will link to trip details page
+            'title': f"Pretrip Meeting - {pretrip['name']}",
+            'start': pretrip['pretrip_time'].isoformat(),
             'end': end_time.isoformat(),
             'color': "#00FF00"
         })

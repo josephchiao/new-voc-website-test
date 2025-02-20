@@ -53,7 +53,7 @@ class TripForm(forms.ModelForm):
 
         if use_clubroom:
             if not cleaned_data.get('end_time'):
-                self.add_error(field, """End time is required for clubroom events to keep our clubroom calendar up to date.
+                self.add_error('end_time', """End time is required for clubroom events to keep our clubroom calendar up to date.
                                This is not a booking, it just gives us an idea of when the clubroom is being used - 
                                so if you don't know the exact end time, just give your best guess""")
         
