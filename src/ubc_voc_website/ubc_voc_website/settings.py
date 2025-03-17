@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'membership',
     'trips',
     'django_quill',
-    'colorfield'
+    'colorfield',
+    'comment'
 ]
 
 MIDDLEWARE = [

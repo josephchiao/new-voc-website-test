@@ -15,7 +15,7 @@ This is its own model rather than a subclass in the Trip model because it allows
 to add a new tag via the admin centre, rather than required a hardcoded change
 """
 class TripTag(models.Model):
-    name = models.CharField(max_length=32, blank=False)
+    name = models.CharField(max_length=128, blank=False)
     colour = ColorField(default='#808080')
 
     def __str__(self):

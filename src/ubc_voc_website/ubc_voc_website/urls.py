@@ -33,6 +33,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/join/', join, name='join_account'),
     path('accounts/', include("django.contrib.auth.urls")),
+    path('comment/', include('comment.urls')),
     path("membership/", include("membership.urls")),
     path("trips/", include("trips.urls")),
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
