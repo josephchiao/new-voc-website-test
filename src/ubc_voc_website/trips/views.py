@@ -100,7 +100,7 @@ def trip_delete(request, id):
     if not trip.organizers.filter(pk=request.user.pk).exists():
         return render(request, 'access_denied.html', status=403)
     else:
-        Trip.objects.filter(id=trip.id).delete()
+        trip.delete()
         return redirect('trips')
 
 @login_required

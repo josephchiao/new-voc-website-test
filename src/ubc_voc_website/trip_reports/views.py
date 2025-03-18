@@ -1,3 +1,41 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render, redirect
+from ubc_voc_website.decorators import Admin, Members, Execs
+from ubc_voc_website.utils import is_member
 
-# Create your views here.
+from .models import TripReport, TripReportPrivacyStatus, TripReportStatus
+
+def trip_reports(request):
+    if is_member(request.user):
+        trip_reports = TripReport.objects.filter(status=TripReportStatus.PUBLISHED)
+    else:
+        trip_reports = TripReport.objects.filter(status=TripReportStatus.PUBLISHED, privacy=TripReportPrivacyStatus.PUBLIC)
+
+    return render(request, 'trip_reports/trip_reports.html', {'trip_reports': trip_reports})
+
+@Members
+def my_trip_reports(request):
+    trip_reports = TripReport.objetcs.filter(author=request.user)
+
+    return render(request, 'trip_reports/my_trip_reports.html', {'trip_reports': trip_reports})
+
+@Members
+def create_trip_report(request):
+    pass
+
+@Members
+def edit_trip_report(request, id):
+    pass
+
+@Members
+def delete_trip_report(request, id):
+    trip_report = get_object_or_404(TripReport, id=id)
+    if not trip_report.authors.filter(pk=request.user.pk).exists():
+        return render(request, 'access_dennied.html', status=403)
+    else:
+        trip_report.delete()
+        return redirect('trip_reports')
+
+def view_trip_report(request, id):
+    pass
+
+
