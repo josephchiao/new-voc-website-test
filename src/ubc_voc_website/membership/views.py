@@ -1,20 +1,20 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from .models import Exec, Membership, Profile, PSG, Waiver
-from ubc_voc_website.decorators import Admin, Members, Execs
-from .forms import ExecForm, MembershipForm, ProfileForm, PSGForm, WaiverForm
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden
 from django.core.files.base import ContentFile
-
 from django.template.loader import render_to_string
-from weasyprint import HTML
-from django.http import HttpResponse
+
+from .models import Exec, Membership, Profile, PSG, Waiver
+from trips.models import Trip, TripSignup, TripSignupTypes
+from .forms import ExecForm, MembershipForm, ProfileForm, PSGForm, WaiverForm
+from ubc_voc_website.decorators import Admin, Members, Execs
 
 from .utils import *
-import datetime
 
 import base64
+import datetime
+from weasyprint import HTML
 
 User = get_user_model()
 
@@ -112,7 +112,19 @@ def member_list(request):
 def profile(request, id):
     user = get_object_or_404(User, id=id)
     profile = Profile.objects.get(user=user)
-    return render(request, 'membership/profile.html', {'user': user, 'profile': profile})
+
+    organized_trips = Trip.objects.filter(organizers=request.user)
+    going_signups = TripSignup.objects.filter(user=request.user, type=TripSignupTypes.GOING)
+    attended_trips = [signup.trip for signup in going_signups]
+
+    return render(request, 'membership/profile.html', {
+        'user': user, 
+        'profile': profile, 
+        'trips': {
+            'organized': organized_trips,
+            'attended': attended_trips
+            }
+        })
 
 @Members
 def view_waiver(request, id):

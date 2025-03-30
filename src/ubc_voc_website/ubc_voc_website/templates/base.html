@@ -33,7 +33,6 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'trips' %}">Trip Agenda</a></li>
-                            <li><a class="dropdown-item" href="{% url 'trip_reports' %}">Trip Reports</a></li>
                             {% if request.user|is_member %}
                                 <li><a class="dropdown-item" href="{% url 'clubroom_calendar' %}">Clubroom Calendar</a></li>
                                 <li><a class="dropdown-item" href="{% url 'my_trips' %}">Organize a Trip</a></li>
@@ -63,7 +62,7 @@
                                 Exec Section
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'manage_memberships' %}">Manage Memberships</a></li>
+                                <li><a class="dropdown-item" href="{% url 'manage_memberships' %}">Memberships</a></li>
                                 <li><a class="dropdown-item" href="{% url 'membership_stats' %}">Membership Stats</a></li>
                                 {% if request.user.is_superuser %}
                                 <li><a class="dropdown-item" href="{% url 'manage_roles' %}">Manage Roles</a></li>
