@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
 from .models import GearHour, CancelledGearHour
+from .forms import GearHourForm
 from membership.models import Profile
 from ubc_voc_website.decorators import Admin, Members, Execs
 
@@ -13,6 +14,13 @@ User = get_user_model()
 
 @Members
 def gear_hours(request):
+    if request.POST:
+        form = GearHourForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+        
     gear_hours = GearHour.objects.filter(start_date__lte=datetime.date.today(), end_date__gte=datetime.date.today())
     cancelled_gear_hours = CancelledGearHour.objects.filter(gear_hour__in=gear_hours)
 
@@ -31,8 +39,13 @@ def gear_hours(request):
                     'start': start_time,
                     'end': end_time
                 })
+    
+    form = GearHourForm(user=request.user)
 
-    return render(request, 'gear/gear_hours.html', {'gear_hours': json.dumps(calendar_events)})
+    return render(request, 'gear/gear_hours.html', {
+        'gear_hours': json.dumps(calendar_events),
+        'form': form,
+    })
 
 @Execs
 def create_gear_hour(request):

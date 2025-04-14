@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load role_tags %}
+
 {% block title %}Gear Hours{% endblock %}
 
 {% block head_content %}
@@ -23,5 +25,15 @@
         <h2>Gear Hours</h2>
 
         <div id="calendar"></div>
+
+        {% if request.user|is_exec %}
+            <hr>
+            <h2>Add a Gear Hour</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+            </form>
+        {% endif %}
+
     </div>
 {% endblock %}

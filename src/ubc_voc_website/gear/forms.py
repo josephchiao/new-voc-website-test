@@ -16,6 +16,11 @@ class GearHourForm(forms.ModelForm):
             'duration'
         )
 
+    def __init__(self, *args, gear_hour=None, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        self.gear_hour = gear_hour
+
     start_date = forms.DateTimeField(
         required=True,
         initial=datetime.datetime.now(),
