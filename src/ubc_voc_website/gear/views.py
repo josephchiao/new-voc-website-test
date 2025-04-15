@@ -16,6 +16,7 @@ User = get_user_model()
 def gear_hours(request):
     if request.POST:
         form = GearHourForm(request.POST, user=request.user)
+        print(form)
         if form.is_valid():
             form.save()
         else:
@@ -31,15 +32,16 @@ def gear_hours(request):
         date = gear_hour.start_date
         while date <= gear_hour.end_date:
             if not cancelled_gear_hours.filter(gear_hour=gear_hour, date=date).exists():
-                start_time = datetime.datetime.combine(date, gear_hour.start_date.time())
-                end_time = start_time + datetime.timedelta(minutes=gear_hour.duration)
+                start_datetime = datetime.datetime.combine(date, gear_hour.start_time)
+                end_datetime = start_datetime + datetime.timedelta(minutes=gear_hour.duration)
                 calendar_events.append({
                     'id': f"{gear_hour.id}: {date}",
                     'title': f"Gear Hours - {qm_name}",
-                    'start': start_time,
-                    'end': end_time
+                    'start': start_datetime.isoformat(),
+                    'end': end_datetime.isoformat()
                 })
-    
+            date = date + datetime.timedelta(days=7)
+
     form = GearHourForm(user=request.user)
 
     return render(request, 'gear/gear_hours.html', {

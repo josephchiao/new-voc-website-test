@@ -22,6 +22,16 @@ class GearHourForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.gear_hour = gear_hour
 
+    def save(self, commit=True):
+        gear_hour = super().save(commit=False)
+        if self.user:
+            gear_hour.qm = self.user
+
+        if commit:
+            gear_hour.save()
+
+        return gear_hour
+
     start_date = forms.DateField(
         required=True,
         initial=datetime.datetime.today(),
@@ -33,7 +43,8 @@ class GearHourForm(forms.ModelForm):
     )
     start_time = forms.TimeField(
         required=True,
-        initial=datetime.datetime.now().strftime('%H:%M'),
+        initial=datetime.datetime.now().strftime('%I:%M %p'),
+        input_formats=['%I:%M %p'],
         widget=forms.TextInput(attrs={'class': 'flatpickr-timeonly'})
     )
     duration = forms.IntegerField(
