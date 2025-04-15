@@ -25,15 +25,16 @@ class GearHourForm(forms.ModelForm):
     start_date = forms.DateField(
         required=True,
         initial=datetime.datetime.today(),
-        widget=forms.TextInput(attrs={'class': 'flatpickr'})
+        widget=forms.TextInput(attrs={'class': 'flatpickr-date'})
     )
     end_date = forms.DateField(
         required=True,
-        widget=forms.TextInput(attrs={'class': 'flatpickr'})
+        widget=forms.TextInput(attrs={'class': 'flatpickr-date'})
     )
     start_time = forms.TimeField(
         required=True,
-        initial=datetime.datetime.now().time()
+        initial=datetime.datetime.now().strftime('%H:%M'),
+        widget=forms.TextInput(attrs={'class': 'flatpickr-timeonly'})
     )
     duration = forms.IntegerField(
         required=True,

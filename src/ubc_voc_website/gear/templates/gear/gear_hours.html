@@ -21,8 +21,13 @@
             calendar.render();
 
             // Setup date/time pickers
-            flatpickr('.flatpickr', {
+            flatpickr('.flatpickr-date', {
                 dateFormat: "Y-m-d"
+            });
+            flatpickr('.flatpickr-timeonly', {
+                noCalendar: true,
+                enableTime: true,
+                dateFormat: 'h:i K'
             });
         });
     </script>
