@@ -17,6 +17,13 @@
             const calendar = new FullCalendar.Calendar(calendarDiv, {
                 initialView: 'dayGridMonth',
                 events: events,
+                eventClick: function(info) {
+                    document.getElementById('modal-title').textContent = "test title";
+                    document.getElementById('modal-body').innerHTML = `<p>test body</p>`;
+
+                    const modal = new bootstrap.Modal(document.getElementById('modal'));
+                    modal.show();
+                },
                 firstDay: 1
             });
             calendar.render();
@@ -51,5 +58,19 @@
             <hr>
         {% endif %}
 
+    </div>
+
+    <div class="modal" id="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">Modal title</h5>
+                    <div class="modal-body" id="modal-body"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
