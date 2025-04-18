@@ -11,6 +11,11 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const deleteButton = document.getElementById('delete-button');
+            const confirmDeleteMessage = document.getElementById('confirm-delete');
+            const confirmDeleteButton = document.getElementById('confirm-delete-button');
+            const deleteAllCheckbox = document.getElementById('delete-all-checkbox');
+        
             const calendarDiv = document.getElementById('calendar');
             const events = JSON.parse('{{ gear_hours|escapejs }}');
 
@@ -21,8 +26,9 @@
                     document.getElementById('modal-title').textContent = info.event.title;
                     document.getElementById('modal-body').innerHTML = `${info.event.start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - ${info.event.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
 
-                    const deleteButton = document.getElementById('delete-button');
                     deleteButton.setAttribute('gear-hour-id', info.event._def.publicId.split(':')[0]);
+                    deleteButton.setAttribute('date', info.event.start.toISOString().split('T')[0]);
+                    deleteAllCheckbox.checked = false;
 
                     const modal = new bootstrap.Modal(document.getElementById('modal'));
                     modal.show();
@@ -43,26 +49,24 @@
             });
 
             // Handle gear hour deletion
-            const deleteButton = document.getElementById('delete-button');
-            const confirmDeleteMessage = document.getElementById('confirm-delete');
-            const confirmDeleteButton = document.getElementById('confirm-delete-button');
-            const deleteAllCheckbox = document.getElementById('delete-all-checkbox');
-        
-            deleteButton.addEventListener('click', function() {
+                deleteButton.addEventListener('click', function() {
                 confirmDeleteMessage.style.display = 'block';
             });
 
             confirmDeleteButton.addEventListener('click', function() {
                 const gearHourId = deleteButton.getAttribute('gear-hour-id');
+                const date = deleteButton.getAttribute('date');
                 const deleteAll = deleteAllCheckbox.checked;
 
-                fetch(`gear/gear_hours/delete/${gearHourId}`, {
+                fetch(`delete/${gearHourId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
                     },
                     body: JSON.stringify({
-                        delete_all: deleteAll
+                        delete_all: deleteAll,
+                        date: date
                     })
                 })
                 .then(response => {

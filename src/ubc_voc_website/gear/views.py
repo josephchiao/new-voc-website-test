@@ -54,18 +54,21 @@ def gear_hours(request):
     })
 
 @Execs
-def delete_gear_hour(request):
-    if request.POST:
-        gear_hour_id = request.POST.get('gear_hour_id')
-        gear_hour = get_object_or_404(GearHour, id=gear_hour_id)
-        delete_all = request.POST.get('delete_all')
+def delete_gear_hour(request, id):
+    if request.method == "POST":
+        gear_hour = get_object_or_404(GearHour, id=id)
+
+        body = json.loads(request.body)
+        delete_all = body.get('delete_all')
+        date = body.get('date')
+        date = datetime.datetime.fromisoformat(date).date()
 
         if delete_all: # delete the entire gear hour instance
             gear_hour.delete()
         else: # add a CancelledGearHour instance for this date
             CancelledGearHour.objects.create(
-                gear_hour = GearHour,
-                date = request.POST.get('date')
+                gear_hour = gear_hour,
+                date = date
             )
 
     return redirect('gear_hours')
