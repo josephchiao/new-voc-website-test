@@ -7,6 +7,7 @@ from .models import Meeting, Trip, TripSignup, TripSignupTypes
 from .forms import TripForm, TripSignupForm
 
 from membership.models import Profile
+from gear.models import CancelledGearHour, GearHour
 
 import datetime
 import pytz
@@ -216,6 +217,27 @@ def clubroom_calendar(request):
             start_time += datetime.timedelta(days=7)
 
     # TODO add gear hours in here too
+    gear_hours = GearHour.objects.filter(start_date__lte=datetime.date.today(), end_date__gte=datetime.date.today())
+    cancelled_gear_hours = CancelledGearHour.objects.filter(gear_hour__in=gear_hours)
+
+    for gear_hour in gear_hours:
+        qm_name = Profile.objects.get(user=gear_hour.qm).first_name
+
+        date = gear_hour.start_date
+        while date <= gear_hour.end_date:
+            if not cancelled_gear_hours.filter(gear_hour=gear_hour, date=date).exists():
+                start_datetime = datetime.datetime.combine(date, gear_hour.start_time)
+                start_datetime = pacific_timezone.localize(start_datetime)
+                end_datetime = start_datetime + datetime.timedelta(minutes=gear_hour.duration)
+
+                trips_calendar.append({
+                    'title': f"Gear Hours - {qm_name}",
+                    'start': start_datetime.isoformat(),
+                    'end': end_datetime.isoformat()
+                })
+            date = date + datetime.timedelta(days=7)
+
+
 
     return render(request, 'trips/clubroom_calendar.html', {
         'trips_calendar': json.dumps(trips_calendar)
