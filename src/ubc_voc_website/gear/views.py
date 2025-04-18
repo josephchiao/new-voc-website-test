@@ -19,7 +19,6 @@ User = get_user_model()
 def gear_hours(request):
     if request.POST:
         form = GearHourForm(request.POST, user=request.user)
-        print(form)
         if form.is_valid():
             form.save()
         else:
@@ -37,7 +36,6 @@ def gear_hours(request):
             if not cancelled_gear_hours.filter(gear_hour=gear_hour, date=date).exists():
                 start_datetime = datetime.datetime.combine(date, gear_hour.start_time)
                 start_datetime = pacific.localize(start_datetime)
-                print(start_datetime)
                 end_datetime = start_datetime + datetime.timedelta(minutes=gear_hour.duration)
 
                 calendar_events.append({
@@ -56,9 +54,18 @@ def gear_hours(request):
     })
 
 @Execs
-def create_gear_hour(request):
-    pass
+def delete_gear_hour(request):
+    if request.POST:
+        gear_hour_id = request.POST.get('gear_hour_id')
+        gear_hour = get_object_or_404(GearHour, id=gear_hour_id)
+        delete_all = request.POST.get('delete_all')
 
-@Execs
-def edit_gear_hour(request):
-    pass
+        if delete_all: # delete the entire gear hour instance
+            gear_hour.delete()
+        else: # add a CancelledGearHour instance for this date
+            CancelledGearHour.objects.create(
+                gear_hour = GearHour,
+                date = request.POST.get('date')
+            )
+
+    return redirect('gear_hours')
