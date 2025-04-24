@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ubc_voc_website',
@@ -44,7 +45,8 @@ INSTALLED_APPS = [
     'trips',
     'django_quill',
     'colorfield',
-    'comment'
+    'photologue',
+    'sortedm2m'
 ]
 
 MIDDLEWARE = [
@@ -144,3 +146,5 @@ LOGOUT_REDIRECT_URL = "home"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+SITE_ID = 1
