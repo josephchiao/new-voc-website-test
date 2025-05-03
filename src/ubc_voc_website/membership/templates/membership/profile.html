@@ -10,10 +10,10 @@
 
     <hr>
 
-    <h4>Trip History</h4>
-    <h5>Organized Trips</h5>
+    <h4 class="mb-3">Trip History</h4>
+    <h5 class="mb-3">Organized Trips</h5>
     {% if trips.organized %}
-        <table class="table">
+        <table class="table mb-3">
             <thead>
                 <th>Date</th>
                 <th>Trip</th>
@@ -46,9 +46,9 @@
     {% else %}
         <p>This member has not organized any trips yet.</p>
     {% endif %}
-    <h5>Attended Trips</h5>
+    <h5 class="mb-3">Attended Trips</h5>
     {% if trips.attended %}
-        <table class="table">
+        <table class="table mb-3">
             <thead>
                 <th>Date</th>
                 <th>Trip</th>
