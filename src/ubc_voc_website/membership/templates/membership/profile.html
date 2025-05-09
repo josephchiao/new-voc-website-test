@@ -85,25 +85,13 @@
     <hr>
 
     <h4>Photo Gallery</h4>
+    {% if request.user == user %}
+    <p>
+        <a href="{% url 'manage_user_gallery' %}">Click here</a> to manage your gallery
+    </p>
+    {% endif %}
     {% if gallery %}
-        {% if request.user == user %}
-            <p>
-                <a href="{% url 'manage_user_gallery' %}">Click here</a> to manage your gallery
-            </p>
-        {% endif %}
-    {% elif request.user == user %}
-        <p>You have not created a photo gallery yet</p>
-        <p>
-            <form action="{% url 'create_user_gallery' %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-link">
-                    Click here
-                </button>
-            </form>
-            to create a gallery and start uploading photos
-        </p>
-    {% else %}
-        <p>This user does not have a photo gallery</p>
+
     {% endif %}
 </div>
 {% endblock %}

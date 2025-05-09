@@ -1,15 +1,15 @@
-from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpResponseRedirect
+import os
+
+from django.shortcuts import render
 from django.utils.text import slugify
 
-from django.views.decorators.http import require_POST
-
+from .forms import UserPhotoUploadForm
 from .models import UserGallery
-from .forms import PhotoUploadForm
+
 from ubc_voc_website.decorators import Admin, Members, Execs
 
 @Members
-def create_user_gallery(request):
+def manage_user_gallery(request):
     gallery, created = UserGallery.objects.get_or_create(
         user=request.user,
         defaults={
@@ -17,18 +17,18 @@ def create_user_gallery(request):
             'is_public': True
         }
     )
-    return HttpResponseRedirect(request.path_info)
-
-@Members
-def manage_user_gallery(request):
-    gallery = get_object_or_404(UserGallery, user=request.user)
 
     if request.method == 'POST':
-        form = PhotoUploadForm(request.POST, request.FILES)
+        form = UserPhotoUploadForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             photo = form.save(commit=False)
 
-            photo.title = form.cleaned_data['title']
+            # Update file path to save in a folder for this user
+            _, ext = os.path.splitext(form.cleaned_data['image'].name)
+            new_path = f"user/{request.user.id}/{slugify(form.cleaned_data['title'].split(':', 1))}{ext}"
+            photo.image.name = new_path
+
+            # Update Photo fields
             photo.caption = f"Photo: {request.user.get_full_name()}"
             photo.slug = slugify(photo.title)
             photo.is_public = True
@@ -37,7 +37,7 @@ def manage_user_gallery(request):
             gallery.photos.add(photo)
 
     else:
-        form = PhotoUploadForm()
+        form = UserPhotoUploadForm(user=request.user)
 
     return render(request, 'gallery/user_gallery.html', {
         'gallery': gallery,

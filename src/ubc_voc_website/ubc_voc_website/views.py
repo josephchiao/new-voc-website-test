@@ -11,7 +11,6 @@ def home(request):
     try:
         photo_contest_gallery = Gallery.objects.get(slug=PHOTO_CONTEST_ALBUM)
         photos = list(photo_contest_gallery.photos.all())
-        print(photos)
         photo = random.choice(photos) if photos else None
     except Gallery.DoesNotExist:
         photo = None

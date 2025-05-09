@@ -4,8 +4,46 @@
 
 {% block content %}
     <div class="container">
+        <h2>Manage User Gallery</h2>
+
+        {% if gallery.photos.all %}
+            <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for photo in gallery.photos.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="d-inline-block text-center card mb-3">
+                                <img src="{{ photo.get_large_url }}" class="card-img-top" alt="{{ photo.title }}">
+                                <div class="card-body">
+                                    {% if photo.title %}
+                                        <h5 class="card-title">{{ photo.title }}</h5>
+                                    {% endif %}
+                                    {% if photo.caption %}
+                                        <p class="card-text"><small class="text-muted">{{ photo.caption }}</small></p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        {% else %}
+            <p>This gallery does not have any photos yet</p>
+        {% endif %}
+
         <hr>
+
         <h4>Add Photos</h4>
-        {{ form.as_p }}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Upload Image</button>
+        </form>
+
     </div>
 {% endblock %}
