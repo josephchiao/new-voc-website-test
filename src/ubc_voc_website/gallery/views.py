@@ -2,10 +2,10 @@ import os
 
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
-from django.http import HttpResponseForbidden
 
 from .forms import UserPhotoUploadForm
-from .models import UserGallery
+from .models import TripGallery, UserGallery
+from trips.models import Trip, TripSignup, TripSignupTypes
 from photologue.models import Photo
 from ubc_voc_website.decorators import Members
 
@@ -50,15 +50,23 @@ def manage_user_gallery(request):
 def delete_user_photo(request, photo_id):
     photo = get_object_or_404(Photo, id=photo_id)
     if not photo.public_galleries().filter(id=request.user.gallery.id).exists():
-        return HttpResponseForbidden("You don't have permission to delete this photo")
+        return render(request, 'access_denied.html', status=403)
     
     photo.delete()
     return redirect('manage_user_gallery')
 
 @Members
-def create_trip_gallery(request):
-    pass
+def manage_trip_gallery(request, trip_id):
+    trip = get_object_or_404(Trip, id=trip_id)
+    going_list = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.GOING)
+    if not going_list.filter(user=request.user).exists():
+        return render(request, 'access_denied.html', status=403)
 
-@Members
-def add_trip_gallery_photo(request):
-    pass
+
+    gallery, created = TripGallery.objects.get_or_create(
+        trip=trip,
+        defaults={
+            'title': f"Trip Gallery: {trip.name}",
+            'is_public': True
+        }
+    )
