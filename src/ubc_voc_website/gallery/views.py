@@ -1,12 +1,13 @@
 import os
 
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
+from django.http import HttpResponseForbidden
 
 from .forms import UserPhotoUploadForm
 from .models import UserGallery
-
-from ubc_voc_website.decorators import Admin, Members, Execs
+from photologue.models import Photo
+from ubc_voc_website.decorators import Members
 
 @Members
 def manage_user_gallery(request):
@@ -36,6 +37,8 @@ def manage_user_gallery(request):
 
             gallery.photos.add(photo)
 
+            return redirect('manage_user_gallery')
+
     else:
         form = UserPhotoUploadForm(user=request.user)
 
@@ -43,6 +46,15 @@ def manage_user_gallery(request):
         'gallery': gallery,
         'form': form
     })
+
+@Members
+def delete_user_photo(request, photo_id):
+    photo = get_object_or_404(Photo, id=photo_id)
+    if not photo.public_galleries().filter(id=request.user.gallery.id).exists():
+        return HttpResponseForbidden("You don't have permission to delete this photo")
+    
+    photo.delete()
+    return redirect('manage_user_gallery')
 
 @Members
 def create_trip_gallery(request):
