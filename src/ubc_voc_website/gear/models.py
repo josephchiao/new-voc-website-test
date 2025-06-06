@@ -28,3 +28,44 @@ class CancelledGearHour(models.Model):
         related_name="cancelled_dates"
     )
     date = models.DateField()
+
+class Gear(models.Model):
+    item = models.CharField(max_length=64, blank=False)
+    deposit = models.IntegerField()
+
+class Book(models.Model):
+    title = models.CharField(max_length=256, blank=False)
+    deposit = models.IntegerField(default=20)
+
+class Rental(models.Model):
+    class Meta:
+        abstract = True
+
+    qm = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete = models.PROTECT,
+        related_name="+"
+    )
+    member = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="+"
+    )
+    deposit = models.IntegerField()
+    start_date = models.DateField()
+    return_date = models.DateField()
+    extensions = models.IntegerField()
+    notes = models.TextField(null=True)
+    lost = models.BooleanField(default=False)
+
+class GearRental(Rental):
+    gear = models.ManyToManyField(
+        Gear,
+        blank=False
+    )
+
+class BookRental(Rental):
+    books = models.ManyToManyField(
+        Book,
+        blank=False
+    )
