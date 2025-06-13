@@ -95,8 +95,7 @@ class TripForm(forms.ModelForm):
     @staticmethod
     def get_profile_label(user):
         try:
-            profile = Profile.objects.get(user=user)
-            return f"{profile.first_name} {profile.last_name}"
+            return user.profile.full_name
         except Profile.DoesNotExist:
             return user.email
 

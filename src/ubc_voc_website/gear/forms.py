@@ -1,4 +1,5 @@
 from django import forms
+from membership.models import Profile
 from .models import Book, BookRental, CancelledGearHour, Gear, GearHour, GearRental
 
 from django.contrib.auth import get_user_model
@@ -81,6 +82,17 @@ class GearRentalForm(forms.ModelForm):
             'due_date',
             'notes',
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['member'].label_from_instance = self.get_profile_label
+
+    @staticmethod
+    def get_profile_label(user):
+        try:
+            return user.profile.full_name
+        except Profile.DoesNotExist:
+            return user.email
 
     member = forms.ModelChoiceField(
         queryset=User.objects.filter(membership__active=True).distinct(),
