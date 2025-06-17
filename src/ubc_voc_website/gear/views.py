@@ -115,7 +115,10 @@ def create_rental(request, type):
     else:
         form = form_type()
 
-    return render(request, 'gear/create_gear_rental.html', {'form': form})
+    return render(request, 'gear/create_rental.html', {
+        'form': form,
+        'type': type
+    })
 
 @Execs
 def edit_rental(request, pk):
