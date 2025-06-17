@@ -76,7 +76,7 @@ class GearRentalForm(forms.ModelForm):
         model = GearRental
         fields = (
             'member',
-            'gear',
+            # 'gear',
             'deposit',
             'start_date',
             'due_date',
@@ -100,20 +100,23 @@ class GearRentalForm(forms.ModelForm):
         widget=forms.Select,
         required=True
     )
-    gear = forms.ModelMultipleChoiceField(
-        queryset=Gear.objects.all(),
-        required=True,
-        label="Item(s) being rented",
-        widget=forms.SelectMultiple(attrs={'class': 'choices'})
-    )
+    # TODO make this field required when Gear objects have been added to the database
+    # gear = forms.ModelMultipleChoiceField(
+    #     queryset=Gear.objects.all(),
+    #     label="Item(s) being rented",
+    #     widget=forms.SelectMultiple(attrs={'class': 'choices'})
+    # )
+    # TODO once gear items are added, make the deposit calculation automatic
     deposit = forms.IntegerField()
     start_date = forms.DateField(
         required=True,
-        widget=forms.DateInput(attrs={'type': 'date'})
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        initial=datetime.date.today
     )
     due_date = forms.DateField(
         required=True,
-        widget=forms.DateInput(attrs={'type': 'date'})
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        initial=datetime.date.today() + datetime.timedelta(days=7)
     )
     notes = forms.TextInput()
 
@@ -122,7 +125,7 @@ class BookRentalForm(forms.ModelForm):
         model = BookRental
         fields = (
             'member',
-            'books',
+            # 'books',
             'deposit',
             'start_date',
             'due_date',
@@ -146,20 +149,23 @@ class BookRentalForm(forms.ModelForm):
         widget=forms.Select,
         required=True
     )
-    books = forms.ModelMultipleChoiceField(
-        queryset=Book.objects.all(),
-        required=True,
-        label="Item(s) being rented",
-        widget=forms.SelectMultiple(attrs={'class': 'choices'})
-    )
+    # TODO make this field required when books have been added to the database (large project)
+    # books = forms.ModelMultipleChoiceField(
+    #     queryset=Book.objects.all(),
+    #     label="Item(s) being rented",
+    #     widget=forms.SelectMultiple(attrs={'class': 'choices'})
+    # )
+    # TODO once gear items are added, make the deposit calculation automatic
     deposit = forms.IntegerField()
     start_date = forms.DateField(
         required=True,
-        widget=forms.DateInput(attrs={'type': 'date'})
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        initial=datetime.date.today
     )
     due_date = forms.DateField(
         required=True,
-        widget=forms.DateInput(attrs={'type': 'date'})
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        initial=datetime.date.today() + datetime.timedelta(days=7)
     )
     notes = forms.TextInput()
 

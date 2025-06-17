@@ -46,7 +46,6 @@
                             <th>Category</th>
                             <th>What</th>
                             <th>QM Name</th>
-                            <th>Notes</th>
                             <th>Edit</th>
                             <th>Renew</th>
                             <th>Return</th>
@@ -55,7 +54,12 @@
                     </thead>
                     <tbody>
                         {% for rental in rentals.current %}
-
+                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
+                            <td>{{ rental.start_date }}</td>
+                            <td>{{ rental.due_date }}</td>
+                            <td>{% if rental.is_gear %}Gear{% else %}Library{% endif %}</td>
+                            <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
+                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -70,7 +74,6 @@
                             <th>Category</th>
                             <th>What</th>
                             <th>QM Name</th>
-                            <th>Notes</th>
                             <th>Edit</th>
                             <th>Renew</th>
                             <th>Return</th>
@@ -79,7 +82,12 @@
                     </thead>
                     <tbody>
                         {% for rental in rentals.overdue %}
-
+                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
+                            <td>{{ rental.start_date }}</td>
+                            <td>{{ rental.due_date }}</td>
+                            <td>{% if rental.is_gear %}Gear{% else %}Library{% endif %}</td>
+                            <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
+                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -94,7 +102,6 @@
                             <th>Category</th>
                             <th>What</th>
                             <th>QM Name</th>
-                            <th>Notes</th>
                             <th>Edit</th>
                             <th>Renew</th>
                             <th>Return</th>
@@ -103,7 +110,12 @@
                     </thead>
                     <tbody>
                         {% for rental in rentals.long %}
-
+                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
+                            <td>{{ rental.start_date }}</td>
+                            <td>{{ rental.due_date }}</td>
+                            <td>{% if rental.is_gear %}Gear{% else %}Library{% endif %}</td>
+                            <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
+                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
                         {% endfor %}
                     </tbody>
                 </table>

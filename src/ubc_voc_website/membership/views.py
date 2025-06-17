@@ -127,7 +127,7 @@ def profile(request, id):
     for trip in attended_trips:
         month = trip.start_time.strftime('%B %Y')
         if month not in attended_trips_list:
-            attended_trips[month] = []
+            attended_trips_list[month] = []
         attended_trips_list[month].append(trip)
     attended_trips_list = dict(sorted(attended_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
 

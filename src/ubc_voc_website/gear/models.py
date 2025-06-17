@@ -54,20 +54,25 @@ class Rental(models.Model):
     deposit = models.IntegerField()
     start_date = models.DateField()
     due_date = models.DateField()
-    return_date = models.DateField()
-    extensions = models.IntegerField()
+    return_date = models.DateField(null=True)
+    extensions = models.IntegerField(default=0)
     notes = models.TextField(null=True)
-    returned = models.BooleanField()
+    returned = models.BooleanField(default=False)
     lost = models.BooleanField(default=False)
 
 class GearRental(Rental):
+    """
+        gear field is allowed to be null for now so the website can be deployed without having to create a list of existing gear
+        in the future, it should be easy to add Gear objects and make this a required field
+    """
     gear = models.ManyToManyField(
-        Gear,
-        blank=False
+        Gear
     )
 
 class BookRental(Rental):
+    """
+        see note on GearRental model
+    """
     books = models.ManyToManyField(
-        Book,
-        blank=False
+        Book
     )

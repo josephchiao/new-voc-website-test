@@ -76,17 +76,17 @@ def delete_gear_hour(request, id):
 
 @Execs
 def rentals(request):
-    today = datetime.datetime.today()
+    today = datetime.date.today()
     
     current_gear_rentals = list(GearRental.objects.filter(returned=False))
     for rental in current_gear_rentals:
-        rental.gear = True
+        rental.is_gear = True
     overdue_gear_rentals = [rental for rental in current_gear_rentals if rental.due_date < today]
-    long_gear_rentals = [rental for rental in overdue_gear_rentals if r.due_date < (today - datetime.timedelta(weeks=3))]
+    long_gear_rentals = [rental for rental in overdue_gear_rentals if rental.due_date < (today - datetime.timedelta(weeks=3))]
 
     current_book_rentals = list(BookRental.objects.filter(returned=False))
     for rental in current_book_rentals:
-        rental.gear = False
+        rental.is_gear = False
     overdue_book_rentals = [rental for rental in current_book_rentals if rental.due_date < today]
     long_book_rentals = [rental for rental in overdue_book_rentals if rental.due_date < (today - datetime.timedelta(weeks=3))]
 
@@ -110,6 +110,8 @@ def create_rental(request, type):
     if request.method == "POST":
         form = form_type(request.POST)
         if form.is_valid():
+            rental = form.save(commit=False)
+            rental.qm = request.user
             form.save()
             return redirect("rentals")
     else:
