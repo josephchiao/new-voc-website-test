@@ -9,44 +9,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let currentRentalsTable = document.getElementById("current-rentals-table");
-            let renderedCurrentRentalsTable = new DataTable(currentRentalsTable, {
-                paging: true,
-                perPage: 25,
-                ordering: true,
-                searching: true,
-                labels: {
-                    "perPage": "{select} rentals per page",
-                    "noRows": "No rentals found",
-                    "info": "Showing {start} to {end} of {rows} rentals"
+            function initTable(table) {
+                if (table && !table.dataset.dtInit) {
+                    new DataTable(table, {
+                        paging: true,
+                        perPage: 25,
+                        ordering: true,
+                        searching: true,
+                        labels: {
+                            "perPage": "{select} rentals per page",
+                            "noRows": "No rentals found",
+                            "info": "Showing {start} to {end} of {rows} rentals"
+                        }
+                    });
+                    table.dataset.dtInit = true;
                 }
-            });
+            }
 
-            let overdueRentalsTable = document.getElementById("overdue-rentals-table");
-            let renderedOverdueRentalsTable = new DataTable(overdueRentalsTable, {
-                paging: true,
-                perPage: 25,
-                ordering: true,
-                searching: true,
-                labels: {
-                    "perPage": "{select} rentals per page",
-                    "noRows": "No rentals found",
-                    "info": "Showing {start} to {end} of {rows} rentals"
-                }
-            });
-
-            let longRentalsTable = document.getElementById("long-rentals-table");
-            let renderedLongRentalsTable = new DataTable(longRentalsTable, {
-                paging: true,
-                perPage: 25,
-                ordering: true,
-                searching: true,
-                labels: {
-                    "perPage": "{select} rentals per page",
-                    "noRows": "No rentals found",
-                    "info": "Showing {start} to {end} of {rows} rentals"
-                }
-            })
+            const tables = [
+                document.getElementById("current-rentals-table"),
+                document.getElementById("overdue-rentals-table"),
+                document.getElementById("long-rentals-table"),
+                document.getElementById("all-rentals-table")
+            ]
+            for (const table of tables) {
+                initTable(table);
+            }
         });
     </script>
 {% endblock %}
@@ -72,6 +60,11 @@
                         Rentals out for 3+ weeks
                     </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="all" data-bs-toggle="tab" data-bs-target="#all-rentals">
+                        All Rentals
+                    </button>
+                </li>
             </ul>
 
             <a href="{% url 'create_rental' 'gear' %}" class="btn btn-primary">
@@ -81,13 +74,14 @@
 
         <!-- Tab content -->
          <div class="tab-content mt-3">
-            <div class="tab-pane fade show active" id="current-rentals" role="tabpanel" aria-labelled="current-rentals">
+            <div class="tab-pane fade show active" id="current-rentals" role="tabpanel" aria-labelledby="current-rentals">
                 <table id="current-rentals-table" class="table">
                     <thead>
                         <tr>
                             <th>Member</th>
                             <th>Date Out</th>
                             <th>Date Due</th>
+                            <th>Date Returned</th>
                             <th>Category</th>
                             <th>What</th>
                             <th>QM Name</th>
@@ -99,36 +93,39 @@
                     </thead>
                     <tbody>
                         {% for rental in rentals.current %}
-                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
-                            <td>{{ rental.start_date }}</td>
-                            <td>{{ rental.due_date }}</td>
-                            <td>{% if rental.type == "gear" %}Gear{% else %}Library{% endif %}</td>
-                            <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
-                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
-                            <td>
-                                <form action="{% url 'edit_rental' rental.type rental.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></button>
-                                </form>
-                            </td>
-                            <td>
-                                <form action="{% url 'renew_rental' rental.type rental.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-clockwise"></i></button>
-                                </form>
-                            </td>
-                            <td>
-                                <form action="{% url 'return_rental' rental.type rental.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i></button>
-                                </form>
-                            </td>
-                            <td>
-                                <form action="{% url 'lost_rental' rental.type rental.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary"><i class="bi bi-x"></i></button>
-                                </form>
-                            </td>
+                            <tr>
+                                <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
+                                <td>{{ rental.start_date }}</td>
+                                <td>{{ rental.due_date }}</td>
+                                <td>{{ rental.return_date }}</td>
+                                <td>{% if rental.type == "gear" %}Gear{% else %}Library{% endif %}</td>
+                                <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
+                                <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
+                                <td>
+                                    <form action="{% url 'edit_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'renew_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-clockwise"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'return_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'lost_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-x"></i></button>
+                                    </form>
+                                </td>  
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -140,6 +137,7 @@
                             <th>Member</th>
                             <th>Date Out</th>
                             <th>Date Due</th>
+                            <th>Date Returned</th>
                             <th>Category</th>
                             <th>What</th>
                             <th>QM Name</th>
@@ -151,12 +149,39 @@
                     </thead>
                     <tbody>
                         {% for rental in rentals.overdue %}
-                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
-                            <td>{{ rental.start_date }}</td>
-                            <td>{{ rental.due_date }}</td>
-                            <td>{% if rental.is_gear %}Gear{% else %}Library{% endif %}</td>
-                            <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
-                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
+                            <tr>
+                                <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
+                                <td>{{ rental.start_date }}</td>
+                                <td>{{ rental.due_date }}</td>
+                                <td>{{ rental.return_date }}</td>
+                                <td>{% if rental.is_gear %}Gear{% else %}Library{% endif %}</td>
+                                <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
+                                <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
+                                <td>
+                                    <form action="{% url 'edit_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'renew_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-clockwise"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'return_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'lost_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-x"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -168,6 +193,7 @@
                             <th>Member</th>
                             <th>Date Out</th>
                             <th>Date Due</th>
+                            <th>Date Returned</th>
                             <th>Category</th>
                             <th>What</th>
                             <th>QM Name</th>
@@ -179,12 +205,95 @@
                     </thead>
                     <tbody>
                         {% for rental in rentals.long %}
-                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
-                            <td>{{ rental.start_date }}</td>
-                            <td>{{ rental.due_date }}</td>
-                            <td>{% if rental.is_gear %}Gear{% else %}Library{% endif %}</td>
-                            <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
-                            <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
+                            <tr>
+                                <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
+                                <td>{{ rental.start_date }}</td>
+                                <td>{{ rental.due_date }}</td>
+                                <td>{{ rental.return_date }}</td>
+                                <td>{% if rental.is_gear %}Gear{% else %}Library{% endif %}</td>
+                                <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
+                                <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
+                                <td>
+                                    <form action="{% url 'edit_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'renew_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-clockwise"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'return_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'lost_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-x"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="all-rentals" role="tabpanel" aria-labelledby="all-rentals">
+                <table id="all-rentals-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Date Out</th>
+                            <th>Date Due</th>
+                            <th>Date Returned</th>
+                            <th>Category</th>
+                            <th>What</th>
+                            <th>QM Name</th>
+                            <th>Edit</th>
+                            <th>Renew</th>
+                            <th>Return</th>
+                            <th>Mark as Lost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rental in rentals.all %}
+                            <tr>
+                                <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
+                                <td>{{ rental.start_date }}</td>
+                                <td>{{ rental.due_date }}</td>
+                                <td>{{ rental.return_date }}</td>
+                                <td>{% if rental.type == "gear" %}Gear{% else %}Library{% endif %}</td>
+                                <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
+                                <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
+                                <td>
+                                    <form action="{% url 'edit_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'renew_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-clockwise"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'return_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="{% url 'lost_rental' rental.type rental.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-x"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>

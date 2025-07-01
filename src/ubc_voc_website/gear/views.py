@@ -77,16 +77,18 @@ def delete_gear_hour(request, id):
 @Execs
 def rentals(request):
     today = datetime.date.today()
-    
-    current_gear_rentals = list(GearRental.objects.filter(return_date__isnull=True, lost=False))
-    for rental in current_gear_rentals:
+
+    all_gear_rentals = list(GearRental.objects.all())
+    for rental in all_gear_rentals:
         rental.type = "gear"
+    current_gear_rentals = [rental for rental in all_gear_rentals if not rental.return_date and not rental.lost]
     overdue_gear_rentals = [rental for rental in current_gear_rentals if rental.due_date < today]
     long_gear_rentals = [rental for rental in overdue_gear_rentals if rental.due_date < (today - datetime.timedelta(weeks=3))]
 
-    current_book_rentals = list(BookRental.objects.filter(return_date__isnull=True, lost=False))
-    for rental in current_book_rentals:
+    all_book_rentals = list(BookRental.objects.all())
+    for rental in all_book_rentals:
         rental.type = "book"
+    current_book_rentals = [rental for rental in all_book_rentals if not rental.return_date and not rental.lost]
     overdue_book_rentals = [rental for rental in current_book_rentals if rental.due_date < today]
     long_book_rentals = [rental for rental in overdue_book_rentals if rental.due_date < (today - datetime.timedelta(weeks=3))]
 
@@ -94,7 +96,8 @@ def rentals(request):
         'rentals': {
             'current': current_gear_rentals + current_book_rentals,
             'overdue': overdue_gear_rentals + overdue_book_rentals,
-            'long': long_gear_rentals + long_book_rentals
+            'long': long_gear_rentals + long_book_rentals,
+            'all': all_gear_rentals + all_book_rentals
         }
     })
 
