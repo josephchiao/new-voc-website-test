@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+from puput import PUPUT_APPS
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,12 +45,14 @@ INSTALLED_APPS = [
     'gallery',
     'gear',
     'membership',
+    'tripreports',
     'trips',
     'django_quill',
     'colorfield',
     'photologue',
     'sortedm2m'
 ]
+INSTALLED_APPS += PUPUT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -149,3 +153,6 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 SITE_ID = 1
+
+WAGTAILADMIN_BASE_URL = "http://localhost:8000"
+# PUPUT_ENTRY_MODEL = 'tripreports.TripReport'
