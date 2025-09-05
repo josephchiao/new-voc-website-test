@@ -7,6 +7,15 @@
     <div class="container">
         <article>
             <h2>{{ page.title }}</h2>
+            <div>
+                <small class="text-muted">by {{ page.owner.profile.full_name }}</small>
+            </div>
+            <div>
+                <small class="text-muted">posted {{ page.first_published_at|date:"M d, Y H:i" }}</small>
+            </div>
+            {% if page.trip %}
+                <p>put link to trip posting here</p>
+            {% endif %}
             {{ page.body|richtext }}
         </article>
 

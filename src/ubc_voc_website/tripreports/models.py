@@ -8,9 +8,17 @@ from wagtail.admin.panels import FieldPanel
 
 class TripReport(Page):
     body = RichTextField(features=["bold", "italic", "link", "image"])
+    trip = models.ForeignKey(
+        "trips.Trip",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="trip_report"
+    )
 
     content_panels = Page.content_panels + [
-        FieldPanel('body')
+        FieldPanel('body'),
+        FieldPanel('trip')
     ]
 
     parent_page_types = ['tripreports.TripReportIndexPage']
