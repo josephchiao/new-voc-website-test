@@ -108,7 +108,6 @@ def trip_delete(request, id):
         trip.delete()
         return redirect('trips')
 
-@login_required
 def trip_details(request, id):
     trip = get_object_or_404(Trip, id=id)
     if request.POST:
@@ -126,8 +125,9 @@ def trip_details(request, id):
     except json.JSONDecodeError:
         description = trip.description
 
+    going_signups = TripSignup.objects.none()
+    interested_list, committed_list, going_list = [], [], []
     if is_member(request.user):
-        interested_list, committed_list, going_list = [], [], []
         interested_car_spots, committed_car_spots, going_car_spots = 0, 0, 0
         form = None
 
