@@ -30,8 +30,6 @@ def trip_report_create(request):
 
 @Members
 def trip_report_edit(request, id):
-    parent = TripReportIndexPage.objects.first()
-
     trip_report = get_object_or_404(TripReport, id=id)
     if trip_report.owner != request.user:
         return render(request, 'access_denied.html', status=403)
