@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load form_tags %}
+
 {% block title %}Organize a Trip{% endblock %}
 
 {% block head_content %}
@@ -94,9 +96,7 @@
             {% csrf_token %}
             {{ form.non_field_errors }}
 
-            <div class="mb-4">
-                {{ form.name.label_tag }} {{ form.name }}
-            </div>
+            {% render_form_field form.name %}
 
             <div class="mb-4">
                 <label>
@@ -104,78 +104,46 @@
                 </label>
             </div>
             <div id="organizer_div" class="mb-4">
-                {{ form.organizers.label_tag }} {{ form.organizers }}
+                {% render_form_field form.organizers %}
             </div>
 
             <div class="mb-4" style="display: flex; padding: 10px; width: 50%">
-                <div class="mx-4">
-                    {{ form.start_time.label_tag }} {{ form.start_time }}
-                </div>
-                <div class="mx-4">
-                    {{ form.end_time.label_tag }} {{ form.end_time }}
-                </div>
+                <div class="mx-2">{% render_form_field form.start_time %}</div>
+                <div class="mx-2">{% render_form_field form.end_time %}</div>
             </div>
 
-            <div class="mb-4">
-                {{ form.in_clubroom.label_tag }} {{ form.in_clubroom }}
-            </div>
+            {% render_form_field form.in_clubroom %}
 
-            <div class="mb-4">
-                {{ form.published.label_tag }} {{ form.published }}
-            </div>
+            {% render_form_field form.published %}
 
-            <div class="mb-4">
-                {{ form.status.label_tag }} {{ form.status }}
-            </div>
+            {% render_form_field form.status %}
 
-            <div class="mb-4">
-                {{ form.tags.label_tag }} {{ form.tags }}
-            </div>
+            {% render_form_field form.tags %}
 
-            <div class="mb-4">
-                {{ form.description.label_tag }} {{ form.description }}
-            </div>
+            {% render_form_field form.description %}
 
-            <div class="mb-4">
-                {{ form.use_signup.label_tag }} {{ form.use_signup }}
-            </div>
+            {% render_form_field form.use_signup %}
 
             <div class="mb-4" id="signup-tool-div">
-                <div class="mb-4">
-                    {{ form.signup_question.label_tag }} {{ form.signup_question }}
-                </div>
+                {% render_form_field form.signup_question %}
+
+                {% render_form_field form.max_participants %}
     
-                <div class="mb-4">
-                    {{ form.max_participants.label_tag }} {{ form.max_participants }}
+                <div class="mb-4" style="display: flex;">
+                    <div class="mx-2">{% render_form_field form.interested_start %}</div>
+                    <div class="mx-2">{% render_form_field form.interested_end %}</div>
                 </div>
     
                 <div class="mb-4" style="display: flex;">
-                    <div class="mx-4">
-                        {{ form.interested_start.label_tag }} {{ form.interested_start }}
-                    </div>
-                    <div class="mx-4">
-                        {{ form.interested_end.label_tag }} {{ form.interested_end }}
-                    </div>
-                </div>
-    
-                <div class="mb-4" style="display: flex;">
-                    <div class="mx-4">
-                        {{ form.committed_start.label_tag }} {{ form.committed_start }}
-                    </div>
-                    <div class="mx-4">
-                        {{ form.committed_end.label_tag }} {{ form.committed_end }}
-                    </div>
+                    <div class="mx-2">{% render_form_field form.committed_start %}</div>
+                    <div class="mx-2">{% render_form_field form.committed_end %}</div>
                 </div>
             </div>
 
-            <div class="mb-4">
-                {{ form.use_pretrip.label_tag }} {{ form.use_pretrip }}
-            </div>
+            {% render_form_field form.use_pretrip %}
 
             <div id="pretrip-div">
-                <div class="mb-4">
-                    {{ form.pretrip_time.label_tag }} {{ form.pretrip_time }}
-                </div>
+                {% render_form_field form.pretrip_time %}
                 <div class="mb-4">
                     {{ form.pretrip_location.label_tag }}<br />
                     <label>
@@ -187,9 +155,7 @@
                 </div>
             </div>
 
-            <div class="mb-4">
-                {{ form.drivers_required.label_tag }} {{ form.drivers_required }}
-            </div>
+            {% render_form_field form.drivers_required %}
 
             <button type="submit">Submit</button>
         </form>
