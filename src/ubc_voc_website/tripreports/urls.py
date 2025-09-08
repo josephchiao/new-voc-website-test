@@ -11,7 +11,8 @@ urlpatterns = [
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("images", include(wagtailimages_urls)),
-    path("create/", views.create_trip_report, name="create_trip_report"),
-    path("my-tripreports/", views.my_tripreports, name="my_tripreports"),
+    path("create/", views.trip_report_create, name="trip_report_create"),
+    path("edit/<int:id>", views.trip_report_edit, name="trip_report_edit"),
+    path("my-trip-reports/", views.my_trip_reports, name="my_trip_reports"),
     path("", include(wagtail_urls))
 ]

@@ -2,31 +2,31 @@
 
 {% block content %}
     <div class="container">
-        <h2>My Trip Reports</h2>
-
-        {% if tripreports %}
+        <div class="d-flex justify-content-between align-items-center my-4">
+            <h2>My Trip Reports</h2>
+            <a href="{% url 'trip_report_create' %}" class="btn btn-primary">+ Write a trip report</a>
+        </div>
+        {% if trip_reports %}
             <div class="list-group">
-                {% for tripreport in tripreports %}
+                {% for trip_report in trip_reports %}
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">{{ tripreport.title }}</h4>
+                            <h4 class="card-title">{{ trip_report.title }}</h4>
                             <div>
                                 <span class="badge bg-secondary">Put publish status here</span>
                             </div>
                         </div>
                         <div class="card-body">
-                            {{ tripreport.body|striptags|truncatewords:20 }}
+                            {{ trip_report.body|striptags|truncatewords:20 }}
                         </div>
                         <div class="card-footer text-end">
-                            <!-- TODO: link to edit page instead of view page -->
-                            <a href="{{ trip_report.url }}">Edit &rarr;</a>
+                            <a href="{% url 'trip_report_edit' trip_report.id %}">Edit &rarr;</a>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
             <p>You haven't written any trip reports yet.</p>
-            <p><a href="{% url 'create_trip_report' %}">Click here</a> to write your first trip report</p>
         {% endif %}
     </div>
 {% endblock %}
