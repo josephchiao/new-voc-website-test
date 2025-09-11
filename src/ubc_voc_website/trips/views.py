@@ -21,11 +21,14 @@ pacific_timezone = pytz.timezone('America/Vancouver')
 def trips(request):
     trips = Trip.objects.filter(start_time__gt=datetime.datetime.now(), published=True)
     trips_list = {}
+    all_trip_tags = set()
     for trip in trips:
         month = trip.start_time.strftime('%B %Y')
         if month not in trips_list:
             trips_list[month] = []
         trips_list[month].append(trip)
+        for tag in trip.tags.all():
+            all_trip_tags.add(tag)
     trips_list = dict(sorted(trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y')))
 
     trips_calendar = []
@@ -43,7 +46,11 @@ def trips(request):
             'color': trip.tags.all()[0].colour if trip.tags.exists() else '#808080'
         })
 
-    return render(request, 'trips/trip_agenda.html', {'trips_list': trips_list, 'trips_calendar': json.dumps(trips_calendar)})
+    return render(request, 'trips/trip_agenda.html', {
+        'all_trip_tags': list(all_trip_tags),
+        'trips_list': trips_list, 
+        'trips_calendar': json.dumps(trips_calendar)
+    })
 
 @Members
 def my_trips(request):

@@ -6,6 +6,9 @@
 {% block title %}Trip Agenda{% endblock %}
 
 {% block head_content %}
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" />
+
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -44,6 +47,13 @@
                 },
                 firstDay: 1
             });
+
+            // Initialize Choices dropdown for trip tag filters
+            const trip_tag_filter = document.getElementById('trip-tag-filter');
+            new Choices(trip_tag_filter, {
+                placeholder: true,
+                placeholderValue: "Filter by trip tags"
+            });
         })
     </script>
     <style>
@@ -62,8 +72,14 @@
             Upcoming Trips
             <button id="calendar-toggle" class="btn btn-outline-secondary"></button>
         </h2>
-
         <div id="list_div">
+            <div class="mb-3">
+                <select id="trip-tag-filter" multiple>
+                    {% for tag in all_trip_tags %}
+                        <option value="{{ tag.name }}">{{ tag.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <table id="upcoming-table" class="table">
                 <thead>
                     <tr>
