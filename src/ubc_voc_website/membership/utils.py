@@ -1,5 +1,7 @@
 import datetime
 
+from .models import Membership
+
 def get_end_date(today):
     """
     Evaluates the custom VOC membership end date logic
@@ -26,3 +28,22 @@ def is_minor(today, birthdate):
     """
     age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
     return age < 19
+
+def get_membership_type(user):
+    """
+    Given a user, return the Membership.MembershipType of their current, active membership
+    If the user does not exist, or exists but is not a member return None
+    """
+    if not user:
+        return None
+    else:
+        memberships = Membership.objects.filter(
+            user=user,
+            end_date__gte=datetime.date.today(),
+            active=True
+        )
+
+        if not memberships.exists():
+            return None
+        else:
+            return memberships.first().type

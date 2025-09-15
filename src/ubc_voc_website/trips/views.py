@@ -7,8 +7,10 @@ from ubc_voc_website.utils import is_member
 from .models import Meeting, Trip, TripSignup, TripSignupTypes
 from .forms import TripForm, TripSignupForm
 
-from membership.models import Profile
+from membership.models import Membership, Profile
 from gear.models import CancelledGearHour, GearHour
+
+from membership.utils import get_membership_type
 
 import datetime
 import pytz
@@ -118,7 +120,8 @@ def trip_delete(request, id):
 
 def trip_details(request, id):
     trip = get_object_or_404(Trip, id=id)
-    if request.POST:
+    user_can_signup = get_membership_type(request.user) != Membership.MembershipType.INACTIVE_HONOURARY
+    if request.POST and user_can_signup:
         form = TripSignupForm(request.POST, user=request.user, trip=trip)
         if form.is_valid():
             form.save()
@@ -175,7 +178,7 @@ def trip_details(request, id):
             going_car_spots = sum(signup['car_spots'] for signup in going_list)
 
             # get form for new signups
-            if trip.valid_signup_types:
+            if trip.valid_signup_types and user_can_signup:
                 form = TripSignupForm(user=request.user, trip=trip)
 
         # get photo gallery
@@ -189,6 +192,7 @@ def trip_details(request, id):
             'is_going': going_signups.filter(user=request.user).exists(),
             'car_spots': {"interested": interested_car_spots, "committed": committed_car_spots, "going": going_car_spots},
             'form': form,
+            'user_can_signup': user_can_signup,
             'gallery': gallery
         })
     

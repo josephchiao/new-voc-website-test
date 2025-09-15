@@ -24,7 +24,7 @@
         <h2>{{ trip.name }}</h2>
         <h5>{{ trip.trip_date_as_str_long }}</h5>
 
-        {% if request.user|is_member %}
+        {% if request.user|is_member and trip.use_signup %}
             <a href="#signup-form">Jump to signup form</a>
         {% endif %}
 
@@ -39,8 +39,10 @@
             {{ description|safe }}
         </p>
 
+
         <!------------------------------- Signups list ------------------------------->
         {% if request.user|is_member and signups.interested or signups.committed or signups.going %}
+            <hr>
             <h5>Signup Lists</h5>
             <div id="signup-list">
                 {% if signups.going %}
@@ -150,7 +152,7 @@
         <hr>
 
         <!------------------------------- Signup form ------------------------------->
-        {% if request.user|is_member and trip.valid_signup_types %}
+        {% if user_can_signup and trip.valid_signup_types %}
             <h5>Sign Up</h5>
             <form id="signup-form" method="post">
                 {% csrf_token %}
@@ -186,6 +188,8 @@
                 <button type="submit">Submit</button>
             </form>
         {% endif %}
+
+        <hr>
 
         <!------------------------------- Gallery ------------------------------->
         {% if request.user|is_member %}
