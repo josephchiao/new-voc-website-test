@@ -97,7 +97,7 @@ class GearRentalForm(forms.ModelForm):
     member = forms.ModelChoiceField(
         queryset=User.objects.filter(membership__active=True).distinct().exclude(membership__type__in=["H", "I"]), # Exclude both types of honorary members
         label="Member Name",
-        widget=forms.Select,
+        widget=forms.Select(attrs={"id": "member-select"}),
         required=True
     )
     # TODO make this field required when Gear objects have been added to the database
