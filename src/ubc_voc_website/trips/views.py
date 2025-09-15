@@ -133,11 +133,12 @@ def trip_details(request, id):
     except json.JSONDecodeError:
         description = trip.description
 
-    going_signups = TripSignup.objects.none()
-    interested_list, committed_list, going_list = [], [], []
-    if is_member(request.user):
-        interested_car_spots, committed_car_spots, going_car_spots = 0, 0, 0
+    if request.user.is_authenticated and is_member(request.user):
         form = None
+
+        going_signups = TripSignup.objects.none()
+        interested_list, committed_list, going_list = [], [], []
+        interested_car_spots, committed_car_spots, going_car_spots = 0, 0, 0
 
         # get existing signups
         if trip.use_signup:
@@ -179,20 +180,24 @@ def trip_details(request, id):
 
         # get photo gallery
         gallery = getattr(trip, 'gallery', None)
+
+        return render(request, 'trips/trip.html', {
+            'trip': trip, 
+            'organizers': organizers,
+            'description': description, 
+            'signups': {"interested": interested_list, "committed": committed_list, "going": going_list},
+            'is_going': going_signups.filter(user=request.user).exists(),
+            'car_spots': {"interested": interested_car_spots, "committed": committed_car_spots, "going": going_car_spots},
+            'form': form,
+            'gallery': gallery
+        })
     
     else:
-        gallery = None
-
-    return render(request, 'trips/trip.html', {
-        'trip': trip, 
-        'organizers': organizers,
-        'description': description, 
-        'signups': {"interested": interested_list, "committed": committed_list, "going": going_list},
-        'is_going': going_signups.filter(user=request.user).exists(),
-        'car_spots': {"interested": interested_car_spots, "committed": committed_car_spots, "going": going_car_spots},
-        'form': form,
-        'gallery': gallery
-    })
+        return render(request, 'trips/trip.html', {
+            'trip': trip,
+            'organizers': organizers,
+            'description': description
+        })
 
 @Members
 def mark_as_going(request, trip_id, user_id):
