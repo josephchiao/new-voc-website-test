@@ -15,6 +15,7 @@ from .utils import *
 import base64
 import datetime
 from weasyprint import HTML
+from openpyxl import Workbook
 
 User = get_user_model()
 
@@ -258,30 +259,81 @@ def manage_roles(request): # for managing who has the exec role
 
 @Execs
 def membership_stats(request):
-    num_inactive_accounts = Profile.objects.all().filter(user__is_active=False).count()
-    num_regular_members = Membership.objects.all().filter(type=Membership.MembershipType.REGULAR).count()
-    num_associate_members = Membership.objects.all().filter(type=Membership.MembershipType.ASSOCIATE).count()
-    num_honourary_members = Membership.objects.all().filter(type=Membership.MembershipType.HONORARY).count()
+    active_memberships = Membership.objects.filter(
+        end_date__gte=datetime.date.today(),
+        active=True
+    )
+    regular_memberships = active_memberships.filter(type=Membership.MembershipType.REGULAR)
+    associate_memberships = active_memberships.filter(type=Membership.MembershipType.ASSOCIATE)
+    active_honorary_memberships = active_memberships.filter(type=Membership.MembershipType.ACTIVE_HONORARY)
+    inactive_honorary_memberships = active_memberships.filter(type=Membership.MembershipType.INACTIVE_HONOURARY)
+
+    inactive_memberships = Membership.objects.filter(
+        end_date__gte=datetime.date.today(),
+        active=False
+    )
+
     return render(request, 'membership/membership_stats.html', {
-         'num_inactive_accounts': num_inactive_accounts, 
-         'num_regular_members': num_regular_members, 
-         'num_associate_members': num_associate_members, 
-         'num_honourary_members': num_honourary_members
+            'num_members': active_memberships.count(),
+            'num_inactive_memberships': inactive_memberships.count(),
+            'num_regular_members': regular_memberships.count(), 
+            'num_associate_members': associate_memberships.count(), 
+            'num_active_honorary_members': active_honorary_memberships.count(),
+            'num_inactive_honorary_members': inactive_honorary_memberships.count()
         })
     
     # TODO add more stats that would be useful/interesting (trip signups, etc.)
 
 @Execs
-def membership_export(request, type):
+def download_member_table(request, type):
     if type == "acc":
-        memberships = Membership.objects.filter(mapped_status="Active", type=Membership.MembershipType.REGULAR)
-        members = Profile.objects.filter(user__in=memberships.values('user', flat=True), acc=True)
+        memberships = Membership.objects.filter(
+            end_date__gte=datetime.date.today(),
+            active=True,
+            type=Membership.MembershipType.REGULAR
+        )
+        profiles = Profile.objects.filter(
+            user__in=memberships.values_list('user', flat=True), 
+            acc=True
+        )
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "ACC Membership Candidates"
+
+        fields = ['First Name', 'Last Name', 'Email', 'Phone', 'Birthdate']
+        ws.append(fields)
+
+        for profile in profiles:
+            row = [
+                profile.first_name,
+                profile.last_name,
+                profile.user.email,
+                profile.phone,
+                profile.birthdate
+            ]
+            ws.append(row)
+
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        response['Content-Disposition'] = 'attachment; filename="voc_acc_members.xlsx"'
+
+        wb.save(response)
+        return response
     else:
-        memberships = Membership.objects.filter(mapped_status="Active")
-        members = Profile.objects.filter(user__in=memberships.values('user', flat=True))
+        """
+            This result is sent to the FMCBC for insurance, so we exclude inactive honorary members
+        """
+    #     memberships = Membership.objects.filter(
+    #         end_date__gte=datetime.date.today(),
+    #         active=True,
+    #         type__ne=Membership.MembershipType.INACTIVE_HONOURARY
+    #     )
+    #     profiles = Profile.objects.filter(user__in=memberships.values('user', flat=True))
 
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="voc_members.csv"'
+    # response = HttpResponse(content_type='text/csv')
+    # response['Content-Disposition'] = 'attachment; filename="voc_members.csv"'
 
-    fields = ['first_name', 'last_name', ]
+    # fields = ['first_name', 'last_name', ]
 

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('acc-download-button').addEventListener('click', function () {
+                const downloadWindow = window.open("{% url 'download_member_table' 'acc' %}", "_blank");
+
+                setTimeout(() => {
+                    downloadWindow.close();
+                }, 1000);
+            });
+
+            document.getElementById('fmcbc-download-button').addEventListener('click', function () {
+                const downloadWindow = window.open("{% url 'download_member_table' 'fmcbc' %}", "_blank");
+
+                setTimeout(() => {
+                    downloadWindow.close();
+                }, 1000);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Membership Stats</h2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th scope="row">Regular Members</th>
+                    <td>{{ num_regular_members }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Associate Members</th>
+                    <td>{{ num_associate_members }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Active Honorary Members</th>
+                    <td>{{ num_active_honorary_members }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Inactive Honorary Members</th>
+                    <td>{{ num_inactive_honorary_members }}</td>
+                </tr>
+                <tr class="table-success">
+                    <th scope="row">Total Activated Memberships</th>
+                    <td>{{ num_members }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>
+            Members who have signed the waiver but not activated their membership: {{ num_inactive_memberships }}
+        </p>
+
+        <button id="acc-download-button" class="btn btn-link">Download ACC member list</button>
+        <br>
+        <button id="fmcbc-download-button" class="btn btn-link">Download FMCBC (insurance) member list</button>
+    </div>
+{% endblock %}
