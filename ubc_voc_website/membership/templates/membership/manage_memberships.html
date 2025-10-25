@@ -76,7 +76,7 @@
                                             <td>{{ membership.start_date }}</td>
                                             <td>{{ membership.end_date }}</td>
                                             <td>
-                                                <a href='view-waiver/{{ membership.id }}' target='_blank'>View Waiver</a>
+                                                <a href='{% url "view_waiver" membership.id %}' target='_blank'>View Waiver</a>
                                             </td>
                                             <td>
                                                 {% if membership.mapped_status == 'Active' %}
