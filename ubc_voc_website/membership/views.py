@@ -214,7 +214,7 @@ def manage_roles(request): # for managing who has the exec role
             if form.is_valid():
                 exec = form.save()
 
-            return redirect('/membership/manage_roles')
+            return redirect('manage_roles')
         
         elif 'psg-user' in request.POST: # add/modify existing PSG member
             user = get_object_or_404(User, id=request.POST['psg-user'])
@@ -223,9 +223,9 @@ def manage_roles(request): # for managing who has the exec role
             if form.is_valid():
                 psg = form.save()
 
-            return redirect('/membership/manage_roles')
+            return redirect('manage_roles')
         
-        return redirect('/membership/manage_roles')
+        return redirect('manage_roles')
 
     else:
         exec_form = ExecForm(prefix="exec")
