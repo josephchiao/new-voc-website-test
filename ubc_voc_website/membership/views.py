@@ -26,7 +26,7 @@ def join(request):
         if form.is_valid():
             membership = form.save()
             if membership.type != Membership.MembershipType.INACTIVE_HONOURARY:
-                return redirect(f'waiver/{membership.id}')
+                return redirect('waiver', membership.id)
             else :
                 return redirect('home')
     else:
