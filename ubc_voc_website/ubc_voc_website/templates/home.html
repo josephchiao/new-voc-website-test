@@ -13,7 +13,7 @@
         {% if photo %}
             <div class="text-center">
                 <div class="d-inline-block text-center card mb-3">
-                    <img src="{{ photo.get_large_url }}" class="card-img-top" alt="{{ photo.title }}">
+                    <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.title }}">
                     <div class="card-body">
                         {% if photo.title %}
                             <h5 class="card-title">{{ photo.title }}</h5>
