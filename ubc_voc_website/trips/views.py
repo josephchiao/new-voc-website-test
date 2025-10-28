@@ -234,7 +234,8 @@ def clubroom_calendar(request):
             'title': event['name'],
             'start': event['start_time'].isoformat(),
             'end': event['end_time'].isoformat(),
-            'color': '#0000FF'
+            'color': '#0000FF',
+            'type': "trip"
         })
 
     upcoming_clubroom_pretrips = Trip.objects.filter(pretrip_location="VOC Clubroom").values(
@@ -248,7 +249,8 @@ def clubroom_calendar(request):
             'title': f"Pretrip Meeting - {pretrip['name']}",
             'start': pretrip['pretrip_time'].isoformat(),
             'end': end_time.isoformat(),
-            'color': "#00FF00"
+            'color': "#00FF00",
+            'type': "pretrip"
         })
 
     meeting_sets = Meeting.objects.all()
@@ -259,7 +261,8 @@ def clubroom_calendar(request):
                 'title': set.name,
                 'start': start_time.isoformat(),
                 'end': (start_time + datetime.timedelta(minutes=set.duration)).isoformat(),
-                'color': "#FF0000"
+                'color': "#FF0000",
+                'type': "meeting"
             })
             start_time += datetime.timedelta(days=7)
 

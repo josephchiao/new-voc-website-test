@@ -14,7 +14,9 @@
                 initialView: 'dayGridMonth',
                 events: events,
                 eventClick: function(info) {
-                    window.location.href = '/trips/details/' + info.event._def.publicId;
+                    if (info.event._def.extendedProps.type != "meeting") {
+                        window.location.href = '/trips/details/' + info.event._def.publicId;
+                    }
                 },
                 firstDay: 1
             });
