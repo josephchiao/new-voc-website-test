@@ -152,43 +152,46 @@
         <hr>
 
         <!------------------------------- Signup form ------------------------------->
-        {% if user_can_signup and trip.valid_signup_types %}
-            <h5>Sign Up</h5>
-            <form id="signup-form" method="post">
-                {% csrf_token %}
-                <div class="mb-4">
-                    {{ form.type.label_tag }} {{ form.type }}
-                    {% if form.type.errors %}
-                        <small>{{ form.type.errors|striptags }}</small>
-                    {% endif %}
-                </div>
+        {% if user_can_signup %}
+            {% if trip.valid_signup_types %}
+                <h5>Sign Up</h5>
+                <form id="signup-form" method="post">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        {{ form.type.label_tag }} {{ form.type }}
+                        {% if form.type.errors %}
+                            <small>{{ form.type.errors|striptags }}</small>
+                        {% endif %}
+                    </div>
 
-                <div class="mb-4">
-                    {{ form.can_drive.label_tag }} {{ form.can_drive }}
-                    {% if form.can_drive.errors %}
-                        <small>{{ form.can_drive.errors|striptags }}</small>
-                    {% endif %}
-                </div>
+                    <div class="mb-4">
+                        {{ form.can_drive.label_tag }} {{ form.can_drive }}
+                        {% if form.can_drive.errors %}
+                            <small>{{ form.can_drive.errors|striptags }}</small>
+                        {% endif %}
+                    </div>
 
-                <div class="mb-4" id="car-spots-div">
-                    {{ form.car_spots.label_tag }} {{ form.car_spots }}
-                    {% if form.car_spots.errors %}
-                        <small>{{ form.car_spots.errors }}</small>
-                    {% endif %}
-                </div>
+                    <div class="mb-4" id="car-spots-div">
+                        {{ form.car_spots.label_tag }} {{ form.car_spots }}
+                        {% if form.car_spots.errors %}
+                            <small>{{ form.car_spots.errors }}</small>
+                        {% endif %}
+                    </div>
 
-                <div class="mb-4">
-                    {{ form.signup_answer.label_tag }} <br />
-                    {{ form.signup_answer }}
-                    {% if form.signup_answer.errors %}
-                        <small>{{ form.signup_answer.errors }}</small>
-                    {% endif %}
-                </div>
+                    <div class="mb-4">
+                        {{ form.signup_answer.label_tag }} <br />
+                        {{ form.signup_answer }}
+                        {% if form.signup_answer.errors %}
+                            <small>{{ form.signup_answer.errors }}</small>
+                        {% endif %}
+                    </div>
 
-                <button type="submit">Submit</button>
-            </form>
-        {% endif %}
-
+                    <button type="submit">Submit</button>
+                </form>
+            {% else %}
+                <p>Signup for this trip is not available</p>
+            {% endif %}
+        {% endif $}
         <hr>
 
         <!------------------------------- Gallery ------------------------------->
