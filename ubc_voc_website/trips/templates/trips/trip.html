@@ -153,8 +153,8 @@
 
         <!------------------------------- Signup form ------------------------------->
         {% if user_can_signup %}
+            <h5>Sign Up</h5>
             {% if trip.valid_signup_types %}
-                <h5>Sign Up</h5>
                 <form id="signup-form" method="post">
                     {% csrf_token %}
                     <div class="mb-4">
