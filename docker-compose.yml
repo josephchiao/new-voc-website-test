@@ -19,6 +19,7 @@ services:
       - DJANGO_SETTINGS_MODULE=ubc_voc_website.settings.production
     depends_on:
       - db
+    restart: unless-stopped
 
   nginx:
     image: nginx:alpine
