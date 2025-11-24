@@ -101,7 +101,7 @@ class TripForm(forms.ModelForm):
     name = forms.CharField(
         max_length=256, 
         required=True,
-        label="Trip Name"    
+        label="Trip/Event Name"    
     )
     organizers = forms.ModelMultipleChoiceField(
         queryset=User.objects.filter(id__in=Membership.objects.filter(
@@ -136,7 +136,9 @@ class TripForm(forms.ModelForm):
         label="Tags",
         widget=forms.SelectMultiple(attrs={'class': 'choices'})
     )
-    description = QuillFormField()
+    description = QuillFormField(
+        label="Trip Description"
+    )
     use_signup = forms.BooleanField(
         initial=False,
         required=False,
@@ -166,8 +168,9 @@ class TripForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     use_pretrip = forms.BooleanField(
-        initial=False,
-        required=False
+        initial=True,
+        required=False,
+        label="Are you holding a pretrip meeting?"
     )
     pretrip_time = forms.DateTimeField(
         required=False,

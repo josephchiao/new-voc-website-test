@@ -78,12 +78,18 @@
                 else {
                     pretrip_location_input.value = "";
                 }
-            })
+            });
 
             // Setup datetime pickers
             flatpickr('.flatpickr', {
                 enableTime: true,
                 dateFormat: "Y-m-d H:i",
+            });
+
+            // Initialize bootstrap tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.map(function (element) {
+                return new bootstrap.Tooltip(element);
             });
         });
     </script>
@@ -97,7 +103,7 @@
 
 {% block content %}
     <div class="container">
-        <h2>Organize a Trip</h2>
+        <h2>Post a New Trip/Event</h2>
         <form method="post">
             {% csrf_token %}
             {{ form.non_field_errors }}
@@ -126,9 +132,24 @@
 
             {% render_form_field form.description %}
 
+            {% render_form_field form.use_pretrip %}
+
+            <div id="pretrip-div" class="bg-secondary bg-opacity-50 p-3 rounded">
+                {% render_form_field form.pretrip_time %}
+                <div class="mb-4">
+                    {{ form.pretrip_location.label_tag }}<br />
+                    <label>
+                        VOC Clubroom <input type="checkbox" id="pretrip_use_clubroom">
+                    </label><br />
+                    <label id="pretrip_location_input_label">
+                        Other: <input type="text" name="pretrip_location" id="id_pretrip_location" value="{{ form.pretrip_location.value }}">
+                    </label>
+                </div>
+            </div>
+
             {% render_form_field form.use_signup %}
 
-            <div class="mb-4" id="signup-tool-div">
+            <div id="signup-tool-div" class="bg-secondary bg-opacity-50 p-3 rounded">
                 {% render_form_field form.signup_question %}
 
                 {% render_form_field form.max_participants %}
@@ -141,21 +162,6 @@
                 <div class="mb-4" style="display: flex;">
                     <div class="mx-2">{% render_form_field form.committed_start %}</div>
                     <div class="mx-2">{% render_form_field form.committed_end %}</div>
-                </div>
-            </div>
-
-            {% render_form_field form.use_pretrip %}
-
-            <div id="pretrip-div">
-                {% render_form_field form.pretrip_time %}
-                <div class="mb-4">
-                    {{ form.pretrip_location.label_tag }}<br />
-                    <label>
-                        VOC Clubroom <input type="checkbox" id="pretrip_use_clubroom">
-                    </label><br />
-                    <label id="pretrip_location_input_label">
-                        Other: <input type="text" name="pretrip_location" id="id_pretrip_location" value="{{ form.pretrip_location.value }}">
-                    </label>
                 </div>
             </div>
 

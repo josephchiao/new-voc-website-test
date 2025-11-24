@@ -16,7 +16,6 @@ pacific = pytz.timezone('America/Vancouver')
 
 User = get_user_model()
 
-@Members
 def gear_hours(request):
     if request.POST:
         form = GearHourForm(request.POST, user=request.user)
