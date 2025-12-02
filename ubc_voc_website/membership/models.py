@@ -9,17 +9,16 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         primary_key=True
     )
-    first_name = models.CharField(max_length=64, blank=False)
-    last_name = models.CharField(max_length=64, blank=False)
-    pronouns = models.CharField(max_length=32, blank=True)
-    phone = models.CharField(max_length=32, blank=False)
-    student_number = models.CharField(max_length=8, blank=True)
+    first_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=64)
+    pronouns = models.CharField(max_length=32, blank=True, null=True)
+    phone = models.CharField(max_length=32)
+    student_number = models.CharField(max_length=8, blank=True, null=True)
     birthdate = models.DateField(
-        null=False,
         default=datetime.date.today
     )
-    bio = models.TextField(blank=True)
-    emergency_info = models.TextField(max_length=512, blank=True)
+    bio = models.TextField(blank=True, null=True)
+    emergency_info = models.TextField(max_length=512, blank=True, null=True)
     acc = models.BooleanField(default=True)
     vocene = models.BooleanField(default=True)
     trip_org_email = models.BooleanField(default=True)
@@ -109,8 +108,7 @@ class Waiver(models.Model):
         primary_key=True
     )
     full_name = models.TextField(
-        max_length=256,
-        blank=False
+        max_length=256
     )
     student_number = models.TextField(
         max_length=8
@@ -119,8 +117,7 @@ class Waiver(models.Model):
         max_length=256
     )
     signature = models.ImageField(
-        upload_to="signatures/",
-        blank=False
+        upload_to="signatures/"
     )
     paper_waiver = models.BooleanField(
         default=False,

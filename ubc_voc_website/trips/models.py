@@ -48,21 +48,22 @@ class Trip(models.Model):
     tags = models.ManyToManyField(
         TripTag,
         related_name="tagged_trips",
-        blank=True
+        blank=True,
+        null=True
     )
     start_time = models.DateTimeField()
-    end_time = models.DateTimeField(null=True)
+    end_time = models.DateTimeField(blank=True, null=True)
     in_clubroom = models.BooleanField(default=False)
-    description = models.TextField(null=True)
+    description = models.TextField(blank=True)
     use_signup = models.BooleanField(default=False)
-    signup_question = models.CharField(max_length=256, null=True)
-    max_participants = models.IntegerField(null=True)
-    interested_start = models.DateTimeField(null=True)
-    interested_end = models.DateTimeField(null=True)
-    committed_start = models.DateTimeField(null=True)
-    committed_end = models.DateTimeField(null=True)
+    signup_question = models.CharField(max_length=256, blank=True)
+    max_participants = models.IntegerField(blank=True, null=True)
+    interested_start = models.DateTimeField(blank=True, null=True)
+    interested_end = models.DateTimeField(blank=True, null=True)
+    committed_start = models.DateTimeField(blank=True, null=True)
+    committed_end = models.DateTimeField(blank=True, null=True)
     use_pretrip = models.BooleanField(default=True)
-    pretrip_time = models.DateTimeField(null=True)
+    pretrip_time = models.DateTimeField(blank=True, null=True)
     pretrip_location = models.CharField(max_length=128, blank=True, null=True)
     drivers_required = models.BooleanField(default=False)
 
@@ -154,11 +155,11 @@ class TripSignup(models.Model):
         default=TripSignupTypes.INTERESTED
     )
     can_drive = models.BooleanField(default=False)
-    car_spots = models.IntegerField(null=True)
-    signup_answer = models.TextField(max_length=256, null=True)
+    car_spots = models.IntegerField(blank=True, null=True)
+    signup_answer = models.TextField(max_length=256, blank=True, null=True)
 
 class Meeting(models.Model):
-    name = models.CharField(max_length=256, blank=False)
+    name = models.CharField(max_length=256)
     start_date = models.DateTimeField()
     end_date = models.DateField()
     duration = models.IntegerField(default=60)

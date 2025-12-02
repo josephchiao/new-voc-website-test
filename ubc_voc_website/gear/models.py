@@ -61,9 +61,9 @@ class Rental(models.Model):
     deposit = models.IntegerField()
     start_date = models.DateField()
     due_date = models.DateField()
-    return_date = models.DateField(null=True)
+    return_date = models.DateField(blank=True, null=True)
     extensions = models.IntegerField(default=0)
-    notes = models.TextField(null=True)
+    notes = models.TextField(blank=True, null=True)
     lost = models.BooleanField(default=False)
 
     def status(self):
