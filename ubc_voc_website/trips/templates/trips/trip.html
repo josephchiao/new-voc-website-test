@@ -201,7 +201,7 @@
 
                 {% if trip.signup_info.committed.0 == 'not_yet_open' %}
                     <p>The committed list will open on <b>{{ trip.signup_info.committed.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.committed.1|time:"g:i A" }}</b></p>
-                {% elif trip.signup_info.committed.0 == closed %}
+                {% elif trip.signup_info.committed.0 == 'closed' %}
                     <p>The committed list has already closed</p>
                 {% endif %}
             {% endif %}
