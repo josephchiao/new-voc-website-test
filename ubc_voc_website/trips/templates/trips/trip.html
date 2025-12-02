@@ -16,6 +16,14 @@
                 carSpotsDiv.style.display = this.checked ? 'block' : 'none';
             });
         });
+
+        function copyEmails(button) {
+            const emails = button.dataset.emails;
+            if (emails) {
+                navigator.clipboard.writeText(emails)
+                    .then(() => alert("Emails copied!"))
+            }
+        }
     </script>
 {% endblock %}
 
@@ -71,7 +79,11 @@
                             </tr>
                         </tfoot>
                     </table>
-                    <button class="btn btn-sm btn-primary mb-2" onclick="copyEmails('going')">Copy Going List Emails</button>
+                    <button 
+                        class="btn btn-sm btn-primary mb-2" 
+                        onclick="copyEmails(this)" 
+                        data-emails="{{ signup_emails.interested|join:',' }}"
+                    >Copy Going List Emails</button>
                 {% endif %}
                 {% if signups.committed %}
                     <p><b>Committed:</b></p>
@@ -108,7 +120,11 @@
                             </tr>
                         </tfoot>
                     </table>
-                    <button class="btn btn-sm btn-primary mb-2" onclick="copyEmails('committed')">Copy Committed List Emails</button>
+                    <button 
+                        class="btn btn-sm btn-primary mb-2" 
+                        onclick="copyEmails(this)"
+                        data-emails="{{ signup_emails.committed|join:',' }}"
+                    >Copy Committed List Emails</button>
                 {% endif %}
                 {% if signups.interested %}
                     <p><b>Interested:</b></p>
@@ -147,12 +163,19 @@
                             </tr>
                         </tfoot>
                     </table>
-                    <button class="btn btn-sm btn-primary mb-2" onclick="copyEmails('interested')">Copy Interested List Emails</button>
+                    <button 
+                        class="btn btn-sm btn-primary mb-2" 
+                        onclick="copyEmails(this)"
+                        data-emails="{{ signup_emails.interested|join:',' }}"
+                    >Copy Interested List Emails</button>
                 {% endif %}
             </div>
-            <button class="btn btn-sm btn-primary mb-2" onclick="copyEmails('')">Copy All Emails</button>
+            <button 
+                class="btn btn-sm btn-primary mb-2" 
+                onclick="copyEmails(this)"
+                data-emails="{{ signup_emails.going|join:',' }},{{ signup_emails.committed|join:',' }},{{ signup_emails.interested|join:',' }}"
+            >Copy All Emails</button>
         {% endif %}
-
         <hr>
 
         <!------------------------------- Signup form ------------------------------->

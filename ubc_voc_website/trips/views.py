@@ -153,6 +153,7 @@ def trip_details(request, id):
         # get existing signups
         if trip.use_signup:
             interested_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.INTERESTED)
+            interested_emails = [signup.user.email for signup in interested_signups]
             for signup in interested_signups:
                 profile = Profile.objects.get(user=signup.user)
                 interested_list.append({
@@ -163,6 +164,7 @@ def trip_details(request, id):
                     'car_spots': signup.car_spots if signup.can_drive else 0
                 })
             committed_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.COMMITTED)
+            committed_emails = [signup.user.email for signup in committed_signups]
             for signup in committed_signups:
                 profile = Profile.objects.get(user=signup.user)
                 committed_list.append({
@@ -173,6 +175,7 @@ def trip_details(request, id):
                     'car_spots': signup.car_spots if signup.can_drive else 0
                 })
             going_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.GOING)
+            going_emails = [signup.user.email for signup in going_signups]
             for signup in going_signups:
                 profile = Profile.objects.get(user=signup.user)
                 going_list.append({
@@ -201,6 +204,7 @@ def trip_details(request, id):
             'organizers': organizers,
             'description': description, 
             'signups': {"interested": interested_list, "committed": committed_list, "going": going_list},
+            'signup_emails': {"interested": interested_emails, "committed": committed_emails, "going": going_emails},
             'is_going': going_signups.filter(user=request.user).exists(),
             'car_spots': {"interested": interested_car_spots, "committed": committed_car_spots, "going": going_car_spots},
             'form': form,
