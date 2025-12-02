@@ -48,15 +48,14 @@ class Trip(models.Model):
     tags = models.ManyToManyField(
         TripTag,
         related_name="tagged_trips",
-        blank=True,
-        null=True
+        blank=True
     )
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(blank=True, null=True)
     in_clubroom = models.BooleanField(default=False)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, null=True)
     use_signup = models.BooleanField(default=False)
-    signup_question = models.CharField(max_length=256, blank=True)
+    signup_question = models.CharField(max_length=256, blank=True, null=True)
     max_participants = models.IntegerField(blank=True, null=True)
     interested_start = models.DateTimeField(blank=True, null=True)
     interested_end = models.DateTimeField(blank=True, null=True)
