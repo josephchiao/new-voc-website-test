@@ -4,18 +4,27 @@
 
 {% block content %}
 <div class="container">
-    <h3>{{ profile.first_name }} {{ profile.last_name }} {% if profile.pronouns %}({{profile.pronouns}}){% endif %}</h3>
-    <p><b>Email:</b> <a href="mailto:{{user.email}}">{{ user.email }}</a></p>
-    <p><b>Phone:</b> {{ profile.phone }}</p>
-    {% if profile.emergency_info %}
-        <p><b>Emergency Info:</b> {{ profile.emergency_info }}</p>
-    {% endif %}
-    {% if profile.inreach_address %}
-        <p><b>inReach Info:</b> {{ profile.inreach_address }}</p>
-    {% endif %}
-    {% if profile.bio %}
-        <p><b>Bio:</b> {{ profile.bio }}</p>
-    {% endif %}
+    <div class="row align-items-start">
+        <div class="col-md-8">
+            <h3>{{ profile.first_name }} {{ profile.last_name }} {% if profile.pronouns %}({{profile.pronouns}}){% endif %}</h3>
+            <p><b>Email:</b> <a href="mailto:{{user.email}}">{{ user.email }}</a></p>
+            <p><b>Phone:</b> {{ profile.phone }}</p>
+            {% if profile.emergency_info %}
+                <p><b>Emergency Info:</b> {{ profile.emergency_info }}</p>
+            {% endif %}
+            {% if profile.inreach_address %}
+                <p><b>inReach Info:</b> {{ profile.inreach_address }}</p>
+            {% endif %}
+            {% if profile.bio %}
+                <p><b>Bio:</b> {{ profile.bio }}</p>
+            {% endif %}
+        </div>
+        <div class="col-md-4 text-end">
+            {% if profile.photo %}
+                <img src="{{ user.profile.photo.url }}" class="img-thumbnail" style="max-width:350px;">
+            {% endif %}
+        </div>
+    </div>
 
     <hr>
 
@@ -90,7 +99,5 @@
     {% else %}
         <p>This member has not gone on any trips yet.</p>
     {% endif %}
-
-    <hr>
 </div>
 {% endblock %}

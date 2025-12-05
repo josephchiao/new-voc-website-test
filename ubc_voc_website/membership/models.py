@@ -22,6 +22,7 @@ class Profile(models.Model):
     acc = models.BooleanField(default=True)
     vocene = models.BooleanField(default=True)
     trip_org_email = models.BooleanField(default=True)
+    photo = models.ImageField(upload_to="profile_photos/", blank=True, null=True)
 
     @property
     def full_name(self):

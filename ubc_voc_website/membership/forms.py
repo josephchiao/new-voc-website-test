@@ -4,14 +4,16 @@ from django.utils import timezone
 from .models import Exec, Membership, Profile, PSG, Waiver
 
 from .utils import *
-import datetime
 
 User = get_user_model()
 
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('first_name', 'last_name', 'pronouns', 'phone', 'student_number', 'birthdate', 'bio', 'emergency_info', 'inreach_address', 'acc', 'vocene', 'trip_org_email')
+        fields = ('first_name', 'last_name', 'pronouns', 'phone', 'student_number', 'birthdate', 'bio', 'emergency_info', 'inreach_address', 'acc', 'vocene', 'trip_org_email', 'photo')
+        labels = {
+            "photo": "Profile Photo"
+        }
 
     first_name = forms.CharField(max_length=64, required=True)
     last_name = forms.CharField(max_length=64, required=True)
@@ -50,7 +52,6 @@ class ProfileForm(forms.ModelForm):
         label="Would you like to receive the trip organizer info email after posting a trip?",
         widget=forms.RadioSelect(choices=[(True, 'Yes'), (False, 'No')])
     )
-
 
 class MembershipForm(forms.ModelForm):
     class Meta:
