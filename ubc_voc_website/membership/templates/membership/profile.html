@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% load photo_utils %}
-
 {% block title %}Profile ({{ profile.first_name }} {{ profile.last_name }}){% endblock %}
 
 {% block content %}
@@ -11,6 +9,9 @@
     <p><b>Phone:</b> {{ profile.phone }}</p>
     {% if profile.emergency_info %}
         <p><b>Emergency Info:</b> {{ profile.emergency_info }}</p>
+    {% endif %}
+    {% if profile.inreach_address %}
+        <p><b>inReach Address:</b> {{ profile.inreach_address }}</p>
     {% endif %}
     {% if profile.bio %}
         <p><b>Bio:</b> {{ profile.bio }}</p>

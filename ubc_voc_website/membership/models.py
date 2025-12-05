@@ -2,8 +2,6 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
-import datetime
-
 class Profile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -20,6 +18,7 @@ class Profile(models.Model):
     )
     bio = models.TextField(blank=True, null=True)
     emergency_info = models.TextField(max_length=512, blank=True, null=True)
+    inreach_address = models.TextField(max_length=64, blank=True, null=True)
     acc = models.BooleanField(default=True)
     vocene = models.BooleanField(default=True)
     trip_org_email = models.BooleanField(default=True)

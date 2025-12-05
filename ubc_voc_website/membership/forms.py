@@ -11,7 +11,7 @@ User = get_user_model()
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('first_name', 'last_name', 'pronouns', 'phone', 'student_number', 'birthdate', 'bio', 'emergency_info', 'acc', 'vocene', 'trip_org_email')
+        fields = ('first_name', 'last_name', 'pronouns', 'phone', 'student_number', 'birthdate', 'bio', 'emergency_info', 'inreach_address', 'acc', 'vocene', 'trip_org_email')
 
     first_name = forms.CharField(max_length=64, required=True)
     last_name = forms.CharField(max_length=64, required=True)
@@ -30,6 +30,10 @@ class ProfileForm(forms.ModelForm):
         required=False,
         label="Example: Parents: Alice/Bob@604-123-4567; Wife: Carol@778-123-4567; Allergies: Bees (deadly, I carry an EpiPen)",
         widget=forms.Textarea(attrs={'rows': 2, 'cols': 50})
+    )
+    inreach_address = forms.CharField(
+        required=False,
+        label="inReach address"
     )
     acc = forms.BooleanField(
         required=True,
