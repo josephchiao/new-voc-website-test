@@ -197,9 +197,6 @@ def trip_details(request, id):
 
                 form = TripSignupForm(user=request.user, trip=trip)
 
-        # get photo gallery
-        gallery = getattr(trip, 'gallery', None)
-
         return render(request, 'trips/trip.html', {
             'trip': trip, 
             'organizers': organizers,
@@ -209,8 +206,7 @@ def trip_details(request, id):
             'is_going': going_signups.filter(user=request.user).exists(),
             'car_spots': {"interested": interested_car_spots, "committed": committed_car_spots, "going": going_car_spots},
             'form': form,
-            'user_can_signup': user_can_signup,
-            'gallery': gallery
+            'user_can_signup': user_can_signup
         })
     
     else:

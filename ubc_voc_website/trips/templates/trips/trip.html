@@ -230,19 +230,6 @@
             {% endif %}
         {% endif %}
         <hr>
-
-        <!------------------------------- Gallery ------------------------------->
-        {% if request.user|is_member %}
-            <h5>Photo Gallery</h5>
-            {% if gallery %}
-                <p>photos here</p>
-            {% else %}
-                <p>This trip does not have an associated photo gallery</p>
-            {% endif %}
-            {% if is_going %}
-                <p><a href="{% url 'manage_trip_gallery' trip.id %}">Click here</a> to contribute to the gallery for this trip</p>
-            {% endif %}
-        {% endif %}
     </div>
     
 {% endblock %}

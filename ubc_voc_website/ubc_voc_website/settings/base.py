@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ubc_voc_website',
-    'gallery',
     'gear',
     'membership',
     'tripreports',

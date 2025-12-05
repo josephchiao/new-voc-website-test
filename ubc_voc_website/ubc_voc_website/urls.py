@@ -33,7 +33,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/join/', join, name='join_account'),
     path('accounts/', include("django.contrib.auth.urls")),
-    path("gallery/", include("gallery.urls")),
     path('gear/', include("gear.urls")),
     path("membership/", include("membership.urls")),
     path("password-reset/", PasswordResetView.as_view(template_name="registration/password_reset/password_reset.html"), name="password_reset"),
