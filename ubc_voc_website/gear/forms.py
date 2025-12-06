@@ -120,7 +120,7 @@ class GearRentalForm(forms.ModelForm):
         initial=timezone.localdate() + datetime.timedelta(days=7)
     )
     notes = forms.CharField(
-        label="Notes (including what is being rented)"
+        label="What is being rented"
     )
 
 class BookRentalForm(forms.ModelForm):
@@ -171,6 +171,6 @@ class BookRentalForm(forms.ModelForm):
         initial=timezone.localdate() + datetime.timedelta(days=7)
     )
     notes = forms.CharField(
-        label="Notes (including what is being rented)"
+        label="What is being rented"
     )
 
