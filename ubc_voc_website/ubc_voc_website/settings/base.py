@@ -39,20 +39,11 @@ INSTALLED_APPS = [
     'photologue',
     'sortedm2m',
 
-    'wagtail.contrib.forms',
-    'wagtail.contrib.redirects',
-    'wagtail.embeds',
-    'wagtail.sites',
-    'wagtail.users',
-    'wagtail.snippets',
-    'wagtail.documents',
-    'wagtail.images',
-    'wagtail.search',
-    'wagtail.admin',
-    'wagtail',
-
     'taggit',
     'modelcluster',
+
+    'allauth',
+    'allauth.account'
 ]
 
 MIDDLEWARE = [
@@ -63,8 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'wagtail.contrib.redirects.middleware.RedirectMiddleware'
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'ubc_voc_website.urls'
@@ -126,7 +116,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Use custom AUTH_USER_MODEL to use email instead of username for auth
 AUTH_USER_MODEL = "ubc_voc_website.User"
 
-AUTHENTICATION_BACKENDS = ['ubc_voc_website.backends.EmailBackend']
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend"
+]
+
+# allauth settings
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USERNAME_REQUIRED = False
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"

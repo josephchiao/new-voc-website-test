@@ -15,15 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.contrib.auth.views import (
-    PasswordResetView, 
-    PasswordResetDoneView, 
-    PasswordResetConfirmView,
-    PasswordResetCompleteView
-)
 
 from django.urls import path, include
-from .views import home, join, wordpress_sso
+from .views import home, wordpress_sso
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -31,16 +25,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("", home, name="home"),
     path('admin/', admin.site.urls),
-    path('accounts/join/', join, name='join_account'),
-    path('accounts/', include("django.contrib.auth.urls")),
+    path('accounts/', include("allauth.urls")),
     path('gear/', include("gear.urls")),
     path("membership/", include("membership.urls")),
-    path("password-reset/", PasswordResetView.as_view(template_name="registration/password_reset/password_reset.html"), name="password_reset"),
-    path("password-reset/done/", PasswordResetDoneView.as_view(template_name="registration/password_reset/password_reset_done.html"), name="password_reset_done"),
-    path("password-reset/confirm/<uid64>/<token>/", PasswordResetConfirmView.as_view(template_name="registration/password_reset/password_reset_confirm.html"), name="password_reset_confirm"),
-    path("password-reset/complete/", PasswordResetCompleteView.as_view(template_name="registration/password_reset/password_reset_complete.html"), name="password_reset_complete"),
     path("photologue/", include("photologue.urls", namespace="photologue")),
-    path("trip-reports/", include("tripreports.urls")),
     path("trips/", include("trips.urls")),
     path("wp/sso/", wordpress_sso, name="wordpress_sso")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

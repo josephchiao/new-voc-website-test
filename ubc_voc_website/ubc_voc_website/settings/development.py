@@ -17,6 +17,7 @@ DATABASES = {
 
 # Outputs all emails to the console, so we don't need a separate SMTP server in dev
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@localhost'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/

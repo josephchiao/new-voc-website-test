@@ -40,7 +40,7 @@ class MyUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True, null=True)
+    email = models.EmailField(unique=True)
     is_staff = models.BooleanField(
         ('staff status'),
         default=False,
