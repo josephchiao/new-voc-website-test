@@ -39,9 +39,6 @@ INSTALLED_APPS = [
     'photologue',
     'sortedm2m',
 
-    'taggit',
-    'modelcluster',
-
     'allauth',
     'allauth.account'
 ]
