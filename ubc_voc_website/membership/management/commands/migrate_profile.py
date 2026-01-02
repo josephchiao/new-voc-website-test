@@ -14,7 +14,7 @@ class Command(BaseCommand):
         path = "profile.csv"
 
         with open(path, newline="", encoding="utf-8") as f:
-            reader = csv.DictReader(f, fieldname=["id", "firstname", "lastname", "phone", "blurb", "birthdate", "acc", "studentnumber", "vocene", "emergency_info", "spot_url", "trip_email", "pronouns"])
+            reader = csv.DictReader(f, fieldnames=["id", "firstname", "lastname", "phone", "blurb", "birthdate", "acc", "studentnumber", "vocene", "emergency_info", "spot_url", "trip_email", "pronouns"])
 
             for row in reader:
                 user = User.objects.get(old_id=int(row['id']))
