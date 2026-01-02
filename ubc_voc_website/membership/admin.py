@@ -10,7 +10,7 @@ class MembershipAdmin(admin.ModelAdmin):
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'first_name', 'last_name', 'phone')
-    search_fields = ('user',)
+    search_fields = ('user__email', 'first_name', 'last_name')
     list_filter = ('first_name', 'last_name')
 
     formfield_overrides = {
