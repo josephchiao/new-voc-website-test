@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import BaseUserManager
+from django.utils.crypto import get_random_string
 import csv
 
 User = get_user_model()
@@ -23,7 +23,7 @@ class Command(BaseCommand):
                     }
                 )
                 if created:
-                    user.set_password(BaseUserManager.make_random_password())
+                    user.set_password(get_random_string(20))
                     user.save()
                     self.stdout.write(self.style.SUCCESS(f"Created user {user.email}"))
                 else:
