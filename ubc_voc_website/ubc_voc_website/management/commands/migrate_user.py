@@ -13,7 +13,7 @@ class Command(BaseCommand):
             host=os.getenv("OLD_DB_HOST"),
             user=os.getenv("OLD_DB_USER"),
             password=os.getenv("OLD_DB_PASSWORD"),
-            database=os.getenv("OLD_DB_DATABASE")
+            database=os.getenv("OLD_DB_DATABASE"),
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor
         )
