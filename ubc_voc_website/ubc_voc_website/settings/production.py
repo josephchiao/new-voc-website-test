@@ -19,9 +19,7 @@ DATABASES = {
 
 ROOT_URLCONF = 'ubc_voc_website.urls'
 
-# TODO replace this with SES once that's set up
-# Outputs all emails to the console, so we don't need a separate SMTP server in dev
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'email-smtp.us-west-2.amazonaws.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
