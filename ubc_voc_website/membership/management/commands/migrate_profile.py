@@ -22,13 +22,17 @@ class Command(BaseCommand):
                 if not user:
                     self.stdout.write(self.style.WARNING(f"User not found for old_id {int(row['id'])}"))
                 else:
+                    try:
+                        birthdate = datetime.strptime(row['birthdate'], "%Y-%m-%d").date()
+                    except ValueError:
+                        birthdate = date(1970, 1, 1)
                     profile, created = Profile.objects.get_or_create(
                         user=user,
                         defaults={
                             'first_name': row['firstname'],
                             'last_name': row['lastname'],
                             'phone': row['phone'],
-                            'birthdate': datetime.strptime(row['birthdate'], "%Y-%m-%d").date() if (row['birthdate'] and row['birthdate'] != "0000-00-00") else date(1970, 1, 1)
+                            'birthdate': birthdate
                         }
                     )
                     profile.pronouns = row['pronouns']
@@ -44,7 +48,7 @@ class Command(BaseCommand):
                         profile.first_name = row['firstname']
                         profile.last_name = row['lastname']
                         profile.phone = row['phone']
-                        profile.birthdate = row['birthdate']
+                        profile.birthdate = birthdate
 
                     profile.save()
 
