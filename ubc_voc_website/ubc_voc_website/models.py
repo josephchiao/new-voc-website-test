@@ -41,6 +41,10 @@ class MyUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
+    old_id = models.IntegerField(
+        blank=True,
+        null=True
+    )
     is_staff = models.BooleanField(
         ('staff status'),
         default=False,
