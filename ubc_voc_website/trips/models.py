@@ -33,6 +33,8 @@ class Trip(models.Model):
         OPEN = "open",
         CLOSED = "closed"
 
+    old_id = models.IntegerField(blank=True, null=True)
+    
     name = models.CharField(max_length=256, blank=False)
     organizers = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
