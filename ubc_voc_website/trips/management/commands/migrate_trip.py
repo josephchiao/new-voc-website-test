@@ -86,7 +86,7 @@ class Command(BaseCommand):
 
                 trip.use_pretrip = row['pretriptime'] != "0000-00-00 00:00:00"
                 if trip.use_pretrip:
-                    trip.pretrip_time = datetime.strptime(row['pretriptime'], "%Y-%m-%d %H-%M:%S")
+                    trip.pretrip_time = datetime.strptime(row['pretriptime'], "%Y-%m-%d %H:%M:%S")
                     trip.pretrip_location = row['pretriploc']
 
                 trip.drivers_required = row['needtodrive'] == "1"
