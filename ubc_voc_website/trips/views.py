@@ -156,6 +156,7 @@ def trip_details(request, id):
     if request.user.is_authenticated and is_member(request.user):
         going_signups = TripSignup.objects.none()
         interested_list, committed_list, going_list = [], [], []
+        interested_emails, committed_emails, going_emails = [], [], []
         interested_car_spots, committed_car_spots, going_car_spots = 0, 0, 0
 
         # get existing signups
