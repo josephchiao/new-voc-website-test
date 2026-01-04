@@ -4,6 +4,13 @@ import os
 DEBUG = False
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
+# Since traffic is reverse proxied via nginx to the django app, communications between nginx <-> django occur using http
+# These lines tell django that if the X-forwarded-proto header is set to https, then it can trust the commuinication to the server was secure
+# (otherwise it will not serve the request)
+# The `proxy_set_header X-Forwarded-Proto $scheme;` line in nginx config is also required
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 DATABASES = {
