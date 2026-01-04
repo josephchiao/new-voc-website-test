@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from trips.models import Trip
 
 import csv
-import datetime
+from datetime import datetime
 
 User = get_user_model()
 
