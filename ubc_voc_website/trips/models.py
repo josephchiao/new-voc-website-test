@@ -120,7 +120,7 @@ class Trip(models.Model):
                 else:
                     signup_info["committed"] = (self.SignupStatus.CLOSED.value, 0)
             
-            return signup_info
+        return signup_info
     
     @property
     def valid_signup_types(self):
