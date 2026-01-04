@@ -72,7 +72,7 @@ class Command(BaseCommand):
                 trip.status = status
                 trip.start_time = datetime.strptime(row['starttime'], "%Y-%m-%d %H:%M:%S")
                 trip.end_time = end_time
-                trip.in_clubroom = False,
+                trip.in_clubroom = False
                 trip.description = row['blurb']
                 trip.use_signup = row['usesignup'] == 1
 
