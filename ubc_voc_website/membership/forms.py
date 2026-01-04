@@ -188,7 +188,9 @@ class PSGForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['user'].label_from_instance = self.get_user_label
+        self.fields['user'].label_from_instance = lambda user: (
+            f"{getattr(user.profile, 'first_name', '')} {getattr(user.profile, 'last_name', '')}"
+        )
 
     def get_user_label(self, obj):
         profile = Profile.objects.get(user=obj)
