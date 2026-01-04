@@ -166,9 +166,10 @@ class ExecForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['user'].label_from_instance = lambda user: (
-            f"{getattr(user.profile, 'first_name', '')} {getattr(user.profile, 'last_name', '')}"
-        )
+        try:
+            self.fields['user'].label_from_instance = lambda user: f"{getattr(user.profile, 'first_name', '')} {getattr(user.profile, 'last_name', '')}"
+        except Profile.DoesNotExist:
+            self.fields['user'].label_from_instance = lambda user: user.email
 
     def get_user_label(self, obj):
         profile = Profile.objects.get(user=obj)
@@ -188,9 +189,10 @@ class PSGForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['user'].label_from_instance = lambda user: (
-            f"{getattr(user.profile, 'first_name', '')} {getattr(user.profile, 'last_name', '')}"
-        )
+        try:
+            self.fields['user'].label_from_instance = lambda user: f"{getattr(user.profile, 'first_name', '')} {getattr(user.profile, 'last_name', '')}"
+        except Profile.DoesNotExist:
+            self.fields['user'].label_from_instance = lambda user: user.email
 
     def get_user_label(self, obj):
         profile = Profile.objects.get(user=obj)
