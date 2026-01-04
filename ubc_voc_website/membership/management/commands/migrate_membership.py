@@ -36,9 +36,13 @@ class Command(BaseCommand):
                     start_date=datetime.strptime(row['startdate'], "%Y-%m-%d").date(),
                     defaults={
                         'end_date': datetime.strptime(row['enddate'], "%Y-%m-%d").date(),
-                        'type': MEMBERSHIP_TYPE_MAPPINGS[row['type_id']]
+                        'type': MEMBERSHIP_TYPE_MAPPINGS[row['type_id']],
+                        'active': row['active'] == "1"
                     }
                 )
+
+                # Update active flag if membership already exists because I messed up the first time
+                membership.active = row['active'] == "1"
 
                 membership.save()
 
