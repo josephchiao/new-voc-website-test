@@ -243,31 +243,25 @@ def manage_roles(request): # for managing who has the exec role
         exec_form = ExecForm(prefix="exec")
         psg_form = PSGForm(prefix='psg')
 
-        execs = Exec.objects.all().order_by('exec_role')
-
+        execs = Exec.objects.select_related('user', 'user__profile').order_by('exec_role')
+        print(execs.first())
         execs_extended_info = []
-
         for exec in execs:
-            profile = Profile.objects.get(user=exec.user)
             execs_extended_info.append({
                 'id': exec.user.id,
                 'role': exec.exec_role,
-                'first_name': profile.first_name,
-                'last_name': profile.last_name
+                'first_name': exec.user.profile.first_name,
+                'last_name': exec.user.profile.last_name
             })
 
-        psg = PSG.objects.all()
+        psg = PSG.objects.select_related('user', 'user__profile').all()
         psg_extended_info = []
-
         for member in psg:
-            profile = Profile.objects.get(user=member.user)
             psg_extended_info.append({
                 'id': member.user.id,
-                'first_name': profile.first_name,
-                'last_name': profile.last_name
+                'first_name': member.user.profile.first_name,
+                'last_name': member.user.profile.last_name
             })
-
-        print(exec_form)
 
         return render(request, 'membership/manage_roles.html', {
             'execs': execs_extended_info, 
