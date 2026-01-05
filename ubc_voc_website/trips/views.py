@@ -15,6 +15,7 @@ from membership.utils import get_membership_type
 import datetime
 import pytz
 import json
+from types import SimpleNamespace
 
 User = get_user_model()
 
@@ -202,11 +203,23 @@ def trip_details(request, id):
         return render(request, 'trips/trip.html', {
             'trip': trip, 
             'organizers': organizers,
-            'description': description, 
-            'signups': {"interested": interested_list, "committed": committed_list, "going": going_list},
-            'signup_emails': {"interested": interested_emails, "committed": committed_emails, "going": going_emails},
+            'description': description,
+            'signups': SimpleNamespace(
+                interested=interested_list,
+                committed=committed_list,
+                going=going_list
+            ),
+            'signup_emails': SimpleNamespace(
+                interested=interested_emails,
+                committed=committed_emails,
+                going=going_emails
+            ),
             'is_going': going_signups.filter(user=request.user).exists(),
-            'car_spots': {"interested": interested_car_spots, "committed": committed_car_spots, "going": going_car_spots},
+            'car_spots': SimpleNamespace(
+                interested=interested_car_spots,
+                committed=committed_car_spots,
+                going=going_car_spots
+            ),
             'form': form,
             'user_can_signup': user_can_signup
         })
