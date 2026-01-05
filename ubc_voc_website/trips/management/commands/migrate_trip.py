@@ -82,9 +82,11 @@ class Command(BaseCommand):
                     trip.max_participants = int(row['maxparticipants'])
                     if row['interestedstart'] != "0000-00-00 00:00:00":
                         trip.interested_start = timezone.make_aware(datetime.strptime(row['interestedstart'], "%Y-%m-%d %H:%M:%S"))
+                    if row['interestedend'] != "0000-00-00 00:00:00":
                         trip.interested_end = timezone.make_aware(datetime.strptime(row['interestedend'], "%Y-%m-%d %H:%M:%S"))
                     if row['committedstart'] != "0000-00-00 00:00:00":
                         trip.committed_start = timezone.make_aware(datetime.strptime(row['committedstart'], "%Y-%m-%d %H:%M:%S"))
+                    if row['committedend'] != "0000-00-00 00:00:00":
                         trip.committed_end = timezone.make_aware(datetime.strptime(row['committedend'], "%Y-%m-%d %H:%M:%S"))
 
                 trip.use_pretrip = row['pretriptime'] != "0000-00-00 00:00:00"
