@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
+from django.db.models import Prefetch
 from django.http import Http404, HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -188,10 +189,16 @@ def view_waiver(request, id):
 @Execs
 def manage_memberships(request):
     # all profiles that have at least 1 membership
-    profiles = Profile.objects.filter(user__in=Membership.objects.all().values('user'))
+    profiles = Profile.objects.filter(user__membership__isnull=False).prefetch_related(
+        Prefetch(
+            'user__membership_set',
+            queryset=Membership.objects.order_by('-end_date'),
+            to_attr='memberships'
+        )
+    )
 
     for profile in profiles:
-        profile.memberships = Membership.objects.filter(user=profile.user).order_by('-end_date')
+        profile.latest_membership = profile.memberships.first()
 
     return render(request, 'membership/manage_memberships.html', {'profiles': profiles})
 
