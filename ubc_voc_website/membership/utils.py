@@ -35,7 +35,7 @@ def get_membership_type(user):
     Given a user, return the Membership.MembershipType of their current, active membership
     If the user does not exist, or exists but is not a member return None
     """
-    if not user:
+    if not user or not user.is_authenticated:
         return None
     else:
         membership = Membership.objects.filter(
