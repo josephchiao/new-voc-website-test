@@ -19,9 +19,11 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Exec)
 class ExecAdmin(admin.ModelAdmin):
-    list_display = ('user', 'first_name', 'last_name', 'exec_role')
+    list_display = ('user', 'first_name', 'last_name', 'exec_role', 'priority')
+    list_editable = ('priority')
     autocomplete_fields = ('user',)
     search_fields = ('user__email', 'user__profile__first_name', 'user__profile__last_name', 'exec_role')
+    ordering = ('priority', 'user__profile__first_name')
 
     def first_name(self, obj):
         return obj.user.profile.first_name
