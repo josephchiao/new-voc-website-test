@@ -191,13 +191,17 @@ def view_waiver(request, id):
 def manage_memberships(request):
     today = timezone.now().date()
 
-    latest_membership_subquery = Membership.objects.filter(user=OuterRef('user_id'), end_date__gte=today).order_by('-end_date').values('id')[:1]
-    profile_queryset = Profile.objects.filter(user__membership__isnull=False).distinct().order_by('first_name', 'last_name')
-    profile_queryset = profile_queryset.annotate(latest_membership_id=Subquery(latest_membership_subquery)).select_related('user')
+    latest_membership_subquery = Membership.objects.filter(
+        user=OuterRef('user_id'), 
+        end_date__gte=today
+    ).order_by('-end_date').values('id')[:1]
+    profile_queryset = Profile.objects.annotate(
+        latest_membership_id=Subquery(latest_membership_subquery)
+    ).filter(latest_membership_id__isnull=False).select_related('user').order_by('first_name', 'last_name')
     profile_list = list(profile_queryset)
 
     latest_memberships = Membership.objects.filter(
-        id__in=[p.latest_membership_id for p in profile_list if p.latest_membership_id]
+        id__in=[p.latest_membership_id for p in profile_list]
     )
     membership_map = {m.user_id: m for m in latest_memberships}
 
