@@ -10,10 +10,16 @@
             <p><b>Email:</b> <a href="mailto:{{user.email}}">{{ user.email }}</a></p>
             <p><b>Phone:</b> {{ profile.phone }}</p>
             {% if profile.emergency_info %}
-                <p><b>Emergency Info:</b> {{ profile.emergency_info }}</p>
+                <div class="d-flex">
+                    <p class="me-2"><b>Emergency Info:</b></p>
+                    {{ profile.emergency_info }}
+                </div>
             {% endif %}
             {% if profile.inreach_address %}
-                <p><b>inReach Info:</b> {{ profile.inreach_address }}</p>
+                <div class="d-flex">
+                    <p class="me-2"><b>inReach Info:</b></p>
+                    {{ profile.inreach_address }}
+                </div>
             {% endif %}
             {% if profile.bio %}
                 <div class="d-flex">
