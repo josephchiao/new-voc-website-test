@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from .models import Exec, Membership, Profile, PSG, Waiver
+from .models import Membership, Profile, Waiver
+
+from django_quill.forms import QuillFormField
 
 from .utils import *
 
@@ -24,9 +26,8 @@ class ProfileForm(forms.ModelForm):
         required=True,
         widget=forms.DateInput(attrs={'type': 'date'})
     )
-    bio = forms.CharField(
+    bio = QuillFormField(
         required=False,
-        widget=forms.Textarea(attrs={'rows': 5,'cols': 50})
     )
     emergency_info = forms.CharField(
         required=False,

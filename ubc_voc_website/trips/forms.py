@@ -4,7 +4,6 @@ from django.utils import timezone
 from .models import Trip, TripSignup, TripTag
 from membership.models import Profile
 
-
 from django_quill.forms import QuillFormField
 
 User = get_user_model()
