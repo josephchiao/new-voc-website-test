@@ -22,7 +22,7 @@ User = get_user_model()
 pacific_timezone = pytz.timezone('America/Vancouver')
 
 def trips(request):
-    trips = Trip.objects.filter(start_time__gt=timezone.now(), published=True)
+    trips = Trip.objects.filter(start_time__gt=timezone.now(), published=True).order_by('start_time', 'end_time', 'name')
     trips_list = {}
     all_trip_tags = set()
     for trip in trips:
