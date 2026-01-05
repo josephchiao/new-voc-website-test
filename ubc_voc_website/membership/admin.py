@@ -3,8 +3,8 @@ from .models import Exec, Membership, Profile, PSG
 
 @admin.register(Membership)
 class MembershipAdmin(admin.ModelAdmin):
-    list_display = ('user', 'start_date', 'end_date', 'type')
-    search_fields = ('user',)
+    list_display = ('user__email', 'start_date', 'end_date', 'type', 'active')
+    search_fields = ('user__email',)
     list_filter = ('start_date', 'end_date')
 
 @admin.register(Profile)
