@@ -256,6 +256,7 @@ def mark_as_going(request, trip_id, user_id):
             user=user,
         )
         trip_signup.type = TripSignupTypes.GOING
+        trip_signup.signup_time = timezone.now()
         trip_signup.save()
 
         return redirect(f"/trips/details/{trip_id}")

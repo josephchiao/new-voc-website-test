@@ -29,10 +29,15 @@
 
 {% block content %}
     <div class="container">
+        <div class="alert alert-warning" role="alert">
+            VOC trips are organized by members like yourself, not professional guides. 
+            The trips go into wilderness areas where assistance is unavailable and unexpected events can occur. 
+            You could be seriously injured or die. You are responsible for your own actions. Please use caution.
+        </div>
         <h2>{{ trip.name }}</h2>
         <h5>{{ trip.trip_date_as_str_long }}</h5>
 
-        {% if request.user|is_member and trip.use_signup %}
+        {% if request.user|is_member and not user_is_signed_up and user_can_signup %}
             <a href="#signup-form">Jump to signup form</a>
         {% endif %}
 
@@ -250,12 +255,12 @@
                 >Copy All Emails</button>
             {% endif %}
         {% endif %}
-        <hr>
 
         <!------------------------------- Signup form ------------------------------->
         {% if trip.use_signup %}
             {% if user_can_signup and not user_is_signed_up %} <!-- Excludes inactive honorary members -->
-                <h5>Sign Up</h5>
+            <hr>
+            <h5>Sign Up</h5>
                 {% if trip.valid_signup_types %}
                     <form id="signup-form" method="post">
                         {% csrf_token %}
@@ -309,7 +314,5 @@
                 <p><a href="{% url 'join'}">Join</a> the VOC to sign up for this trip</p>
             {% endif %}
         {% endif %}
-        <hr>
     </div>
-    
 {% endblock %}

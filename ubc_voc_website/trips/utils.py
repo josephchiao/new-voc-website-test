@@ -56,16 +56,6 @@ def is_signup_type_change_valid(current_signup_type, new_signup_type, valid_sign
         else:
             return False
     elif current_signup_type == TripSignupTypes.GOING:
-        if new_signup_type == TripSignupTypes.NO_LONGER_GOING:
-            return True
-        else:
-            return False
+        return new_signup_type == TripSignupTypes.NO_LONGER_GOING
     else:
-        if new_signup_type == TripSignupTypes.INTERESTED:
-            return TripSignupTypes.INTERESTED in valid_signup_types
-        elif new_signup_type == TripSignupTypes.COMMITTED:
-            return TripSignupTypes.COMMITTED in valid_signup_types
-        elif new_signup_type == TripSignupTypes.GOING:
-            return TripSignupTypes.GOING in valid_signup_types
-        else:
-            return False
+        return new_signup_type in valid_signup_types
