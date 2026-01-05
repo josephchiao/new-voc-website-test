@@ -74,11 +74,11 @@ class Command(BaseCommand):
                 trip.start_time = timezone.make_aware(datetime.strptime(row['starttime'], "%Y-%m-%d %H:%M:%S"))
                 trip.end_time = end_time
                 trip.in_clubroom = False
-                trip.description = row['blurb']
-                trip.use_signup = row['usesignup'] == 1
+                trip.description = row['blurb'] if row["blurb"] != "NULL" else None
+                trip.use_signup = row['usesignup'] == "1"
 
                 if trip.use_signup:
-                    trip.signup_question = row['questions']
+                    trip.signup_question = row['questions'] if row["questions"] != "NULL" else None
                     trip.max_participants = int(row['maxparticipants'])
                     trip.interested_start = timezone.make_aware(datetime.strptime(row['interestedstart'], "%Y-%m-%d %H:%M:%S"))
                     trip.interested_end = timezone.make_aware(datetime.strptime(row['interestedend'], "%Y-%m-%d %H:%M:%S"))
