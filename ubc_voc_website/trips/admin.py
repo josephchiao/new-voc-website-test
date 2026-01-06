@@ -1,11 +1,16 @@
 from django.contrib import admin
-from .models import Meeting, Trip, TripTag
+from .models import Meeting, Trip, TripSignup, TripTag
 
 @admin.register(Trip)
 class TripAdmin(admin.ModelAdmin):
     list_display = ('name', 'start_time', 'end_time')
     search_fields = ('name',)
     list_filter = ('start_time', 'end_time')
+
+@admin.register(TripSignup)
+class TripSignupAdmin(admin.ModelAdmin):
+    list_display = ('trip__name', 'user__email', 'type')
+    search_fields = ('trip__name', "user__email")
 
 @admin.register(TripTag)
 class TripTagAdmin(admin.ModelAdmin):

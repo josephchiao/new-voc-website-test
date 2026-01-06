@@ -90,9 +90,9 @@ class Trip(models.Model):
     @property
     def trip_date_as_str_long(self):
         if self.end_time and self.end_time.date() > self.start_time.date():
-            return f"{self.start_time.strftime('%A, %B %d')} - {self.end_time.strftime('%A, %B %d')}"
+            return f"{self.start_time.strftime('%A, %B %d, %I:%M %p')} - {self.end_time.strftime('%A, %B %d, %I:%M %p')}"
         else:
-            return self.start_time.strftime('%A, %B %d')
+            return self.start_time.strftime('%A, %B %d, %I:%M %p')
         
     @property
     def signup_info(self):

@@ -34,10 +34,18 @@ class TripForm(forms.ModelForm):
             'use_signup',
             'signup_question',
             'max_participants',
+            'interested_start_choice',
             'interested_start',
+            'interested_end_choice',
             'interested_end',
+            'committed_start_choice',
             'committed_start',
+            'committed_end_choice',
             'committed_end',
+            'going_start_choice',
+            'going_start',
+            'going_end_choice',
+            'going_end',
             'use_pretrip',
             'pretrip_time',
             'pretrip_location',
@@ -89,20 +97,23 @@ class TripForm(forms.ModelForm):
                 else:
                     cleaned_data["interested_start"] = interested_start_custom
 
-            interested_end_choice = cleaned_data.get("interested_end_choice")
-            if interested_end_choice == "pretrip":
-                if not cleaned_data.get("use_pretrip"):
-                    self.add_error("interested_end_choice", "Trip does not have a pretrip meeting")
-                else:
-                    cleaned_data["interested_end"] = cleaned_data.get("pretrip_time")
-            elif interested_end_choice == "trip":
-                cleaned_data["interested_end"] = cleaned_data.get("start_time")
+            if not cleaned_data["interested_start"]:
+                cleaned_data["interested_end"] = None
             else:
-                interested_end_custom = cleaned_data.get("interested_end")
-                if not interested_end_custom:
-                    self.add_error("interested_end", "Please choose a date and time")
+                interested_end_choice = cleaned_data.get("interested_end_choice")
+                if interested_end_choice == "pretrip":
+                    if not cleaned_data.get("use_pretrip"):
+                        self.add_error("interested_end_choice", "Trip does not have a pretrip meeting")
+                    else:
+                        cleaned_data["interested_end"] = cleaned_data.get("pretrip_time")
+                elif interested_end_choice == "trip":
+                    cleaned_data["interested_end"] = cleaned_data.get("start_time")
                 else:
-                    cleaned_data["interested_end"] = interested_end_custom
+                    interested_end_custom = cleaned_data.get("interested_end")
+                    if not interested_end_custom:
+                        self.add_error("interested_end", "Please choose a date and time")
+                    else:
+                        cleaned_data["interested_end"] = interested_end_custom
 
             committed_start_choice = cleaned_data.get("committed_start_choice")
             if committed_start_choice == "never":
@@ -116,20 +127,53 @@ class TripForm(forms.ModelForm):
                 else:
                     cleaned_data["committed_start"] = committed_start_custom
 
-            committed_end_choice = cleaned_data.get("committed_end_choice")
-            if committed_end_choice == "pretrip":
-                if not cleaned_data.get("use_pretrip"):
-                    self.add_error("committed_end_choice", "Trip does not have a pretrip meeting")
-                else:
-                    cleaned_data["committed_end"] = cleaned_data.get("pretrip_time")
-            elif committed_end_choice == "trip":
-                cleaned_data["committed_end"] = cleaned_data.get("start_time")
+            if not cleaned_data["committed_start"]:
+                cleaned_data["committed_end"] = None
             else:
-                committed_end_custom = cleaned_data.get("committed_end")
-                if not committed_end_custom:
-                    self.add_error("committed_end", "Please choose a date and time")
+                committed_end_choice = cleaned_data.get("committed_end_choice")
+                if committed_end_choice == "pretrip":
+                    if not cleaned_data.get("use_pretrip"):
+                        self.add_error("committed_end_choice", "Trip does not have a pretrip meeting")
+                    else:
+                        cleaned_data["committed_end"] = cleaned_data.get("pretrip_time")
+                elif committed_end_choice == "trip":
+                    cleaned_data["committed_end"] = cleaned_data.get("start_time")
                 else:
-                    cleaned_data["committed_end"] = committed_end_custom
+                    committed_end_custom = cleaned_data.get("committed_end")
+                    if not committed_end_custom:
+                        self.add_error("committed_end", "Please choose a date and time")
+                    else:
+                        cleaned_data["committed_end"] = committed_end_custom
+
+            going_start_choice = cleaned_data.get("going_start_choice")
+            if going_start_choice == "never":
+                cleaned_data["going_start"] = None
+            elif going_start_choice == "now":
+                cleaned_data["going_start"] = timezone.now()
+            else:
+                going_start_custom = cleaned_data.get("going_start")
+                if not going_start_custom:
+                    self.add_error("going_start", "Please choose a date and time")
+                else:
+                    cleaned_data["going_start"] = going_start_custom
+
+            if not cleaned_data["going_start"]:
+                cleaned_data["going_end"] = None
+            else:
+                going_end_choice = cleaned_data.get("going_end_choice")
+                if going_end_choice == "pretrip":
+                    if not cleaned_data.get("use_pretrip"):
+                        self.add_error("going_end_choice", "Trip does not have a pretrip meeting")
+                    else:
+                        cleaned_data["going_end"] = cleaned_data.get("pretrip_time")
+                elif going_end_choice == "trip":
+                    cleaned_data["going_end"] = cleaned_data.get("start_time")
+                else:
+                    going_end_custom = cleaned_data.get("going_end")
+                    if not going_end_custom:
+                        self.add_error("going_end", "Please choose a date and time")
+                    else:
+                        cleaned_data["going_end"] = going_end_custom
 
         if use_pretrip:
             required_fields = [

@@ -112,7 +112,11 @@
         <h2>Post a New Trip/Event</h2>
         <form method="post">
             {% csrf_token %}
-            {{ form.non_field_errors }}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
 
             {% render_form_field form.name %}
 
@@ -163,6 +167,11 @@
                                 {% endif %}
                             </label><br>
                         {% endfor %}
+                        {% if form.interested_start_choice.errors %}
+                            {% for error in form.interested_start_choice.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="mx-2" id="interested-end-container">
                         <strong>To:</strong><br>
@@ -174,6 +183,11 @@
                                 {% endif %}
                             </label><br>
                         {% endfor %}
+                        {% if form.interested_end_choice.errors %}
+                            {% for error in form.interested_end_choice.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
 
@@ -189,6 +203,11 @@
                                 {% endif %}
                             </label><br>
                         {% endfor %}
+                        {% if form.committed_start_choice.errors %}
+                            {% for error in form.committed_start_choice.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="mx-2" id="committed-end-container">
                         <strong>To:</strong><br>
@@ -200,6 +219,11 @@
                                 {% endif %}
                             </label><br>
                         {% endfor %}
+                        {% if form.committed_end_choice.errors %}
+                            {% for error in form.committed_end_choice.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
 
@@ -219,6 +243,11 @@
                                 {% endif %}
                             </label><br>
                         {% endfor %}
+                        {% if form.going_start_choice.errors %}
+                            {% for error in form.going_start_choice.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="mx-2" id="going-end-container">
                         <strong>To:</strong><br>
@@ -230,6 +259,11 @@
                                 {% endif %}
                             </label><br>
                         {% endfor %}
+                        {% if form.going_end_choice.errors %}
+                            {% for error in form.going_end_choice.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
