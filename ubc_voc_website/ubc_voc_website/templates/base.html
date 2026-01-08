@@ -43,13 +43,20 @@
                         </ul>
                     </li>
                     <li class="nav-item me-2">
-                        <a class="nav-link active" aria-current="page" href="{% url 'gear_hours' %}">Gear Rental</a>
-                    </li>
-                    <li class="nav-item me-2">
                         <a class="nav-link active" aria-current="page" href="https://huts.ubc-voc.com">Huts</a>
                     </li>
                     <li class="nav-item me-2">
-                        <a class="nav-link active" aria-current="page" href="https://wiki.ubc-voc.com">Wiki</a>
+                        <a class="nav-link active" aria-current="page" href="{% url 'gear_hours' %}">Gear Rental</a>
+                    </li>
+                    <li class="nav-item dropdown me-2">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            About the VOC
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'about' %}">About the VOC</a></li>
+                            <li><a class="dropdown-item" href="{% url 'contact' %}">Contact Us</a></li>
+                            <li><a class="dropdown-item" href="https://wiki.ubc-voc.com">Wiki</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item dropdown me-2">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -74,7 +81,7 @@
                                 Exec Section
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'manage_memberships' %}">Memberships</a></li>
+                                <li><a class="dropdown-item" href="{% url 'manage_memberships' %}">Membership Admin</a></li>
                                 <li><a class="dropdown-item" href="{% url 'membership_stats' %}">Membership Stats</a></li>
                                 <li><a class="dropdown-item" href="{% url 'rentals' %}">Gearmaster</a></li>
                             </ul>

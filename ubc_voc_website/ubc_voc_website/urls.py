@@ -17,16 +17,18 @@ Including another URLconf
 from django.contrib import admin
 
 from django.urls import path, include
-from .views import home, wordpress_sso
+from .views import about, contact, home, wordpress_sso
 
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path("", home, name="home"),
-    path('admin/', admin.site.urls),
-    path('accounts/', include("allauth.urls")),
-    path('gear/', include("gear.urls")),
+    path("about/", about, name="about"),
+    path("contact", contact, name="contact"),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("allauth.urls")),
+    path("gear/", include("gear.urls")),
     path("membership/", include("membership.urls")),
     path("photologue/", include("photologue.urls", namespace="photologue")),
     path("trips/", include("trips.urls")),
