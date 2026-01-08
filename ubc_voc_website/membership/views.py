@@ -165,7 +165,7 @@ def profile(request, id):
             attended_trips_list[month].append(trip)
         attended_trips_list = dict(sorted(attended_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
 
-        exec = Exec.objects.get(user=user)
+        exec = Exec.objects.filter(user=user).first()
         exec_role = exec.exec_role if exec else None
 
         return render(request, 'membership/profile.html', {
