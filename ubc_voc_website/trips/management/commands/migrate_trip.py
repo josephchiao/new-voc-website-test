@@ -1,10 +1,16 @@
+"""
+SELECT id, name, organizerid, tentative, cancelled, starttime, endtime, blurb, usesignup, questions, maxparticipants, interestedstart, interestedend, committedstart, committedend, goingstart, goingend, pretriptime, pretriploc, needtodrive FROM `tripagenda` 
+"""
+
 from django.core.management import BaseCommand
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 from trips.models import Trip
 
 import csv
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+pacific_timezone = ZoneInfo("America/Vancouver")
 
 User = get_user_model()
 
@@ -31,6 +37,8 @@ class Command(BaseCommand):
                 "interestedend",
                 "committedstart",
                 "committedend",
+                "goingstart",
+                "goingend",
                 "pretriptime",
                 "pretriploc",
                 "needtodrive"
@@ -53,13 +61,14 @@ class Command(BaseCommand):
                 if row['endtime'] == "0000-00-00 00:00:00":
                     end_time = None
                 else:
-                    end_time = timezone.make_aware(datetime.strptime(row['endtime'], "%Y-%m-%d %H:%M:%S"))
+                    end_time = datetime.strptime(row['endtime'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
+
 
                 trip, created = Trip.objects.get_or_create(
                     old_id=int(row['id']),
                     defaults={
                         'name': row['name'],
-                        'start_time': timezone.make_aware(datetime.strptime(row['starttime'], "%Y-%m-%d %H:%M:%S")),
+                        'start_time': datetime.strptime(row['starttime'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
                     }
                     
                 )
@@ -71,7 +80,7 @@ class Command(BaseCommand):
 
                 trip.published = True
                 trip.status = status
-                trip.start_time = timezone.make_aware(datetime.strptime(row['starttime'], "%Y-%m-%d %H:%M:%S"))
+                trip.start_time = datetime.strptime(row['starttime'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
                 trip.end_time = end_time
                 trip.in_clubroom = False
                 trip.description = row['blurb'] if row["blurb"] != "NULL" else None
@@ -81,17 +90,21 @@ class Command(BaseCommand):
                     trip.signup_question = row['questions'] if row["questions"] != "NULL" else None
                     trip.max_participants = int(row['maxparticipants'])
                     if row['interestedstart'] != "0000-00-00 00:00:00":
-                        trip.interested_start = timezone.make_aware(datetime.strptime(row['interestedstart'], "%Y-%m-%d %H:%M:%S"))
+                        trip.interested_start = datetime.strptime(row['interestedstart'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
                     if row['interestedend'] != "0000-00-00 00:00:00":
-                        trip.interested_end = timezone.make_aware(datetime.strptime(row['interestedend'], "%Y-%m-%d %H:%M:%S"))
+                        trip.interested_end = datetime.strptime(row['interestedend'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
                     if row['committedstart'] != "0000-00-00 00:00:00":
-                        trip.committed_start = timezone.make_aware(datetime.strptime(row['committedstart'], "%Y-%m-%d %H:%M:%S"))
+                        trip.committed_start = datetime.strptime(row['committedstart'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
                     if row['committedend'] != "0000-00-00 00:00:00":
-                        trip.committed_end = timezone.make_aware(datetime.strptime(row['committedend'], "%Y-%m-%d %H:%M:%S"))
+                        trip.committed_end = datetime.strptime(row['committedend'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
+                    if row['goingstart'] != "0000-00-00 00:00:00":
+                        trip.going_start = datetime.strptime(row['goingstart'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
+                    if row['goingend'] != "0000-00-00 00:00:00":
+                        trip.going_end = datetime.strptime(row['goingend'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
 
                 trip.use_pretrip = row['pretriptime'] != "0000-00-00 00:00:00"
                 if trip.use_pretrip:
-                    trip.pretrip_time = timezone.make_aware(datetime.strptime(row['pretriptime'], "%Y-%m-%d %H:%M:%S"))
+                    trip.pretrip_time = datetime.strptime(row['pretriptime'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
                     trip.pretrip_location = row['pretriploc']
 
                 trip.drivers_required = row['needtodrive'] == "1"

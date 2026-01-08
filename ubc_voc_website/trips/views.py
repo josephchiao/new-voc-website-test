@@ -19,20 +19,20 @@ from types import SimpleNamespace
 
 User = get_user_model()
 
-pacific_timezone = pytz.timezone('America/Vancouver')
+pacific_timezone = pytz.timezone("America/Vancouver")
 
 def trips(request):
-    trips = Trip.objects.filter(start_time__gt=timezone.now(), published=True).order_by('start_time', 'end_time', 'name')
+    trips = Trip.objects.filter(start_time__gt=timezone.now(), published=True).order_by("start_time", "end_time", "name")
     trips_list = {}
     all_trip_tags = set()
     for trip in trips:
-        month = trip.start_time.strftime('%B %Y')
+        month = trip.start_time.strftime("%B %Y")
         if month not in trips_list:
             trips_list[month] = []
         trips_list[month].append(trip)
         for tag in trip.tags.all():
             all_trip_tags.add(tag)
-    trips_list = dict(sorted(trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y')))
+    trips_list = dict(sorted(trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], "%B %Y")))
 
     trips_calendar = []
     for trip in trips:
@@ -42,23 +42,23 @@ def trips(request):
             end_time = trip.end_time
 
         trips_calendar.append({
-            'id': trip.id,
-            'title': trip.name,
-            'start': trip.start_time.isoformat(),
-            'end': end_time.isoformat(),
-            'color': trip.tags.all()[0].colour if trip.tags.exists() else '#808080',
-            'tags': [tag.name for tag in trip.tags.all()]
+            "id": trip.id,
+            "title": trip.name,
+            "start": trip.start_time.isoformat(),
+            "end": end_time.isoformat(),
+            "color": trip.tags.all()[0].colour if trip.tags.exists() else "#808080",
+            "tags": [tag.name for tag in trip.tags.all()]
         })
 
-    return render(request, 'trips/trip_agenda.html', {
-        'all_trip_tags': list(all_trip_tags),
-        'trips_list': trips_list, 
-        'trips_calendar': json.dumps(trips_calendar)
+    return render(request, "trips/trip_agenda.html", {
+        "all_trip_tags": list(all_trip_tags),
+        "trips_list": trips_list, 
+        "trips_calendar": json.dumps(trips_calendar)
     })
 
 @Members
 def trip_organizer_message(request):
-    return render(request, 'trips/trip_organizer_message.html')
+    return render(request, "trips/trip_organizer_message.html")
 
 @Members
 def trip_create(request):
@@ -70,16 +70,16 @@ def trip_create(request):
             if action == "publish":
                 trip.published = True
                 trip.save()
-            return redirect('trips')
+            return redirect("trips")
     else:
         form = TripForm(user=request.user)
-    return render(request, 'trips/trip_form.html', {'form': form})
+    return render(request, "trips/trip_form.html", {"form": form})
 
 @Members
 def trip_edit(request, id):
     trip = get_object_or_404(Trip, id=id)
     if not trip.organizers.filter(pk=request.user.pk).exists():
-        return render(request, 'access_denied.html', status=403)
+        return render(request, "access_denied.html", status=403)
     else:
         if request.method == "POST":
             form = TripForm(request.POST, instance=trip, user=request.user)
@@ -90,14 +90,14 @@ def trip_edit(request, id):
                     trip.published = True
 
                 trip.save()
-                return redirect('trips')
+                return redirect("trips")
             else:
                 print(form.errors)
         else:
             form = TripForm(instance=trip, user=request.user)
-        return render(request, 'trips/trip_form.html', {
-            'form': form,
-            'published': trip.published
+        return render(request, "trips/trip_form.html", {
+            "form": form,
+            "published": trip.published
         })
     
 @Members
@@ -105,21 +105,21 @@ def trip_delete(request, id):
     trip = get_object_or_404(Trip, id=id)
 
     if not trip.organizers.filter(pk=request.user.pk).exists():
-        return render(request, 'access_denied.html', status=403)
+        return render(request, "access_denied.html", status=403)
     else:
         trip.delete()
-        return redirect('trips')
+        return redirect("trips")
 
 def trip_details(request, id):
     trip = get_object_or_404(Trip, id=id)
 
     try:
-        description = json.loads(trip.description).get('html', '')
+        description = json.loads(trip.description).get("html", "")
     except json.JSONDecodeError:
         description = trip.description
 
     organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
-            'user__id', 'first_name', 'last_name'
+            "user__id", "first_name", "last_name"
         )
 
     if request.user.is_authenticated and is_member(request.user):
@@ -133,17 +133,17 @@ def trip_details(request, id):
                 car_spots = 0
                 for signup in signups:
                     signup_list.append({
-                        'id': signup.user.id,
-                        'name': signup.user.profile.full_name_with_pronouns,
-                        'email': signup.user.email,
-                        'signup_answer': signup.signup_answer,
-                        'car_spots': signup.car_spots if signup.can_drive else 0
+                        "id": signup.user.id,
+                        "name": signup.user.profile.full_name_with_pronouns,
+                        "email": signup.user.email,
+                        "signup_answer": signup.signup_answer,
+                        "car_spots": signup.car_spots if signup.can_drive else 0
                     })
                     emails.append(signup.user.email)
                     if signup.can_drive:
                         car_spots += signup.car_spots
                 return signup_list, emails, car_spots
-            signups = TripSignup.objects.filter(trip=trip).select_related('user__profile').order_by('-signup_time')
+            signups = TripSignup.objects.filter(trip=trip).select_related("user__profile").order_by("-signup_time")
 
             interested_list, interested_emails, interested_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.INTERESTED))
             committed_list, committed_emails, committed_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.COMMITTED))
@@ -161,11 +161,11 @@ def trip_details(request, id):
                 valid_type_changes = valid_signup_changes(signup.type, trip.valid_signup_types) if signup else []
                 valid_type_changes = [{"type": type, "name": signup_type_as_str(type)} for type in valid_type_changes]
             
-            return render(request, 'trips/trip.html', {
-                'trip': trip, 
-                'organizers': organizers,
-                'description': description,
-                'signups': SimpleNamespace(
+            return render(request, "trips/trip.html", {
+                "trip": trip, 
+                "organizers": organizers,
+                "description": description,
+                "signups": SimpleNamespace(
                     interested=interested_list,
                     committed=committed_list,
                     going=going_list,
@@ -174,26 +174,26 @@ def trip_details(request, id):
                     no_longer_going=no_longer_going_list
                     
                 ),
-                'signup_emails': SimpleNamespace(
+                "signup_emails": SimpleNamespace(
                     interested=interested_emails,
                     committed=committed_emails,
                     going=going_emails
                 ),
-                'user_can_signup': user_can_signup,
-                'user_signup': signup,
-                'valid_type_changes': valid_type_changes,
-                'form': form,
-                'car_spots': SimpleNamespace(
+                "user_can_signup": user_can_signup,
+                "user_signup": signup,
+                "valid_type_changes": valid_type_changes,
+                "form": form,
+                "car_spots": SimpleNamespace(
                     interested=interested_car_spots,
                     committed=committed_car_spots,
                     going=going_car_spots
                 ) if trip.drivers_required else None,
             })
 
-    return render(request, 'trips/trip.html', {
-        'trip': trip,
-        'organizers': organizers,
-        'description': description
+    return render(request, "trips/trip.html", {
+        "trip": trip,
+        "organizers": organizers,
+        "description": description
     })
     
 @Members
@@ -206,14 +206,14 @@ def trip_signup(request, trip_id):
             if form.is_valid():
                 form.save()
         
-    return redirect('trip_details', id=trip_id)
+    return redirect("trip_details", id=trip_id)
     
 @Members
 def change_signup_type(request, signup_id, new_type):
     signup = get_object_or_404(TripSignup, id=signup_id)
     trip = signup.trip
     if signup.user != request.user or not is_signup_type_change_valid(signup.type, new_type, trip.valid_signup_types):
-        return render(request, 'access_denied.html', status=403)
+        return render(request, "access_denied.html", status=403)
     else:
         signup.type = new_type
         signup.signup_time = timezone.now()
@@ -227,7 +227,7 @@ def mark_as_going(request, trip_id, user_id):
     trip = Trip.objects.get(id=trip_id)
 
     if not trip.organizers.filter(pk=request.user.pk).exists():
-        return render(request, 'access_denied.html', status=403)
+        return render(request, "access_denied.html", status=403)
     else:
         # edit existing signup to going if it exists, else create a new one
         trip_signup, created = TripSignup.objects.get_or_create(
@@ -255,41 +255,41 @@ def clubroom_calendar(request):
                     gear_hour = gear_hour,
                     date = date
                 )
-            return redirect('clubroom_calendar')
+            return redirect("clubroom_calendar")
         else:
             form = GearHourForm(request.POST, user=request.user)
             if form.is_valid():
                 form.save()
-            return redirect('clubroom_calendar')
+            return redirect("clubroom_calendar")
     else:
         events_calendar = []
 
         upcoming_clubroom_events = Trip.objects.filter(in_clubroom=True).values(
-            'id', 'name', 'start_time', 'end_time'
+            "id", "name", "start_time", "end_time"
         )
         for event in upcoming_clubroom_events:
             events_calendar.append({
-                'id': event['id'],
-                'title': event['name'],
-                'start': event['start_time'].isoformat(),
-                'end': event['end_time'].isoformat(),
-                'color': '#0000FF',
-                'type': "trip"
+                "id": event["id"],
+                "title": event["name"],
+                "start": event["start_time"].isoformat(),
+                "end": event["end_time"].isoformat(),
+                "color": "#0000FF",
+                "type": "trip"
             })
 
         upcoming_clubroom_pretrips = Trip.objects.filter(pretrip_location="VOC Clubroom").values(
-            'id', 'name', 'pretrip_time'
+            "id", "name", "pretrip_time"
         )
         for pretrip in upcoming_clubroom_pretrips:
-            end_time = pretrip['pretrip_time'] + datetime.timedelta(hours=1)
+            end_time = pretrip["pretrip_time"] + datetime.timedelta(hours=1)
 
             events_calendar.append({
-                'id': pretrip['id'], # passing in the trip ID, so clicking the pretrip calendar event will link to trip details page
-                'title': f"Pretrip Meeting - {pretrip['name']}",
-                'start': pretrip['pretrip_time'].isoformat(),
-                'end': end_time.isoformat(),
-                'color': "#00FF00",
-                'type': "pretrip"
+                "id": pretrip["id"], # passing in the trip ID, so clicking the pretrip calendar event will link to trip details page
+                "title": f"Pretrip Meeting - {pretrip['name']}",
+                "start": pretrip["pretrip_time"].isoformat(),
+                "end": end_time.isoformat(),
+                "color": "#00FF00",
+                "type": "pretrip"
             })
 
         meeting_sets = Meeting.objects.all()
@@ -297,11 +297,11 @@ def clubroom_calendar(request):
             start_time = set.start_date.astimezone(pacific_timezone)
             while start_time.date() <= set.end_date:
                 events_calendar.append({
-                    'title': set.name,
-                    'start': start_time.isoformat(),
-                    'end': (start_time + datetime.timedelta(minutes=set.duration)).isoformat(),
-                    'color': "#FF0000",
-                    'type': "meeting"
+                    "title": set.name,
+                    "start": start_time.isoformat(),
+                    "end": (start_time + datetime.timedelta(minutes=set.duration)).isoformat(),
+                    "color": "#FF0000",
+                    "type": "meeting"
                 })
                 start_time += datetime.timedelta(days=7)
 
@@ -319,18 +319,19 @@ def clubroom_calendar(request):
                     end_datetime = start_datetime + datetime.timedelta(minutes=gear_hour.duration)
 
                     events_calendar.append({
-                        'title': f"Gear Hours - {qm_name}",
-                        'start': start_datetime.isoformat(),
-                        'end': end_datetime.isoformat()
+                        "title": f"Gear Hours - {qm_name}",
+                        "start": start_datetime.isoformat(),
+                        "end": end_datetime.isoformat()
                     })
                 date = date + datetime.timedelta(days=7)
 
-        if is_exec(request.user):
+        form = None
+        if request.user.is_authenticated and is_exec(request.user):
             form = GearHourForm(user=request.user)
 
-        return render(request, 'trips/clubroom_calendar.html', {
-            'trips_calendar': json.dumps(events_calendar),
-            'form': form
+        return render(request, "trips/clubroom_calendar.html", {
+            "trips_calendar": json.dumps(events_calendar),
+            "form": form
         })
 
 
