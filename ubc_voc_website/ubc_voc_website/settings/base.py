@@ -139,3 +139,5 @@ SITE_ID = 1
 
 WP_SSO_SECRET = os.getenv("WP_SSO_SECRET")
 WP_SSO_URL = "http://wp.localhost:8001/login"
+
+API_KEY = os.getenv("API_KEY")
