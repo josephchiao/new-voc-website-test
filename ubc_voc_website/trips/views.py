@@ -150,7 +150,7 @@ def trip_details(request, id):
                     if signup.can_drive:
                         car_spots += signup.car_spots
                 return signup_list, emails, car_spots
-            signups = TripSignup.objects.filter(trip=trip).select_related("user__profile").order_by("-signup_time")
+            signups = TripSignup.objects.filter(trip=trip).select_related("user__profile").order_by("signup_time")
 
             interested_list, interested_emails, interested_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.INTERESTED))
             committed_list, committed_emails, committed_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.COMMITTED))
