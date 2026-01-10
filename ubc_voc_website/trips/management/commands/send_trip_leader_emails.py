@@ -6,15 +6,22 @@ from django.utils import timezone
 
 from trips.models import Trip
 
+import datetime
+import pytz
+
+pacific_timezone = pytz.timezone("America/Vancouver")
+
 class Command(BaseCommand):
     help = "Send trip leader email to organizers whose trips are a week away"
 
     def handle(self, *args, **kwargs):
         today = timezone.localdate()
-        target_trip_date = today + timezone.timedelta(days=7)
+        target_trip_date = today + datetime.timedelta(days=7)
 
         trips = Trip.objects.filter(
-            start_time__date=target_trip_date, published=True
+            start_time__gte=pacific_timezone.localize(datetime.datetime.combine(target_trip_date, datetime.time.min)), 
+            start_time__lte=pacific_timezone.localize(datetime.datetime.combine(target_trip_date, datetime.time.max)),
+            published=True
         ).exclude(
             status=Trip.TripStatus.CANCELLED
         ).prefetch_related("organizers")
