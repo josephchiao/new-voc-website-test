@@ -18,6 +18,11 @@
                 initialView: 'dayGridMonth',
                 events: events,
                 displayEventEnd: true,
+                eventTimeFormat: {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                },
                 eventClick: function(info) {
                     document.getElementById('modal-title').textContent = info.event.title;
                     document.getElementById('modal-body').innerHTML = `${info.event.start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - ${info.event.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;

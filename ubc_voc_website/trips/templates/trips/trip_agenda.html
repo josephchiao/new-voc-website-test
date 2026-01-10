@@ -52,6 +52,11 @@
                 eventClick: function(info) {
                     window.location.href = '/trips/details/' + info.event._def.publicId;
                 },
+                eventTimeFormat: {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                },
                 firstDay: 1
             });
 
