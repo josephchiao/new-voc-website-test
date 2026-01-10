@@ -25,9 +25,6 @@ class Command(BaseCommand):
         start_utc = pacific_start.astimezone(datetime.timezone.utc)
         end_utc = pacific_end.astimezone(datetime.timezone.utc)
 
-        # debug output, remove when done
-        self.stdout.write(f"Computed Pacific target date: {target_trip_date} -> UTC range: {start_utc} to {end_utc}")
-
         trips = Trip.objects.filter(
             start_time__gte=start_utc,
             start_time__lte=end_utc,
