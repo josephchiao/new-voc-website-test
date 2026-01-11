@@ -29,7 +29,7 @@ class Command(BaseCommand):
                 "guardian_name",
                 "studentnumber",
                 "signature",
-                "paper_waiver"
+                "paper_waiver",
                 "saved"
             ])
 
