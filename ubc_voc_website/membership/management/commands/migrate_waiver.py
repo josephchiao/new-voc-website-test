@@ -37,7 +37,11 @@ class Command(BaseCommand):
                 try:
                     membership = Membership.objects.get(id=int(row["membership_id"]))
                 except Membership.DoesNotExist:
-                    self.stdout.write(self.style.WARNING(f"Membership not found with old_id {int(row["membership_id"])}"))
+                    self.stdout.write(self.style.WARNING(f"Membership not found with old_id {int(row['membership_id'])}"))
+
+                if not row["signature"]:
+                    self.stdout.write(self.style.WARNING(f"Skipping waiver for membership with old_id {int(row['membership_id'])} - signature is empty"))
+                    continue
 
                 signature_svg_data = row["signature"].split(",", 1)[1]
                 siganture_svg_bytes = base64.b64decode(signature_svg_data)
