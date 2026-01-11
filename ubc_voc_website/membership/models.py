@@ -72,6 +72,8 @@ class Membership(models.Model):
             )
         ]
 
+    old_id = models.IntegerField(blank=True, null=True)
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE,

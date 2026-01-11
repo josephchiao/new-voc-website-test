@@ -22,7 +22,7 @@ class Command(BaseCommand):
         path = "memberships.csv"
 
         with open(path, newline="", encoding="utf-8") as f:
-            reader = csv.DictReader(f, fieldnames=["member_id", "startdate", "enddate", "type_id", "active"])
+            reader = csv.DictReader(f, fieldnames=["id", "member_id", "startdate", "enddate", "type_id", "active"])
 
             for row in reader:
                 try:
@@ -35,6 +35,7 @@ class Command(BaseCommand):
                     user=user,
                     start_date=datetime.strptime(row['startdate'], "%Y-%m-%d").date(),
                     defaults={
+                        'old_id': int(row['old_id']),
                         'end_date': datetime.strptime(row['enddate'], "%Y-%m-%d").date(),
                         'type': MEMBERSHIP_TYPE_MAPPINGS[row['type_id']],
                         'active': row['active'] == "1"
@@ -43,6 +44,9 @@ class Command(BaseCommand):
 
                 # Update active flag if membership already exists because I messed up the first time
                 membership.active = row['active'] == "1"
+
+                # Another bug fix... old_id needs to be added to everything already imported to match memberships to waivers
+                membership.old_id = int(row['id'])
 
                 membership.save()
 

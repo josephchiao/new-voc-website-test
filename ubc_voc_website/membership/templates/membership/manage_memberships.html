@@ -70,7 +70,7 @@
                 </thead>
                 <tbody>
                     {% for profile in profiles %}
-                        <tr data-id="{{ profile.user.id }}">
+                        <tr data-id="{{ profile.user.id }}" class="align-middle">
                             <td>{{ profile.first_name }} {{ profile.last_name }}</td>
                             <td>{{ profile.user.email }}</td>
                             <td>{{ profile.phone }}</td>
