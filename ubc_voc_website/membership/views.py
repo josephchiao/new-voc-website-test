@@ -251,7 +251,7 @@ def manage_memberships(request):
             if membership.active and membership.end_date >= timezone.now().date():
                 profile.membership_status = "Active"
             elif membership.active:
-                profile.membership_stats = "Expired"
+                profile.membership_status = "Expired"
             else:
                 profile.membership_status = "Inactive"
 
