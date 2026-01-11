@@ -70,6 +70,8 @@ class Command(BaseCommand):
                 waiver.paper_waiver = row["paper_waiver"] == "1"
                 waiver.created = datetime.strptime(row["saved"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
 
+                waiver.save()
+
                 if created:
                     self.stdout.write(self.style.SUCCESS(f"Created waiver for membership with old_id {int(row['membership_id'])}"))
                 else:
