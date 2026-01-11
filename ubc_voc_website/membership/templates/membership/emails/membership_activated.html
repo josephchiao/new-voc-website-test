@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Welcome to the VOC!</title>
+    </head>
+    <body>
+        <p>Hello {{ name }},</p>
+        <p>
+            Welcome to the Varsity Outdoor Club! We are a group of outdooor enthusiasts dedicated to learning, teaching,
+            adventuring, and fun. Whether your outdoor interests lie in hiking, climbing, skiing, kayaking, or elsewhere,
+            you are sure to find others that are passionate and knowledgeable in the club!
+        </p>
+
+        <p>Your membership has now been activated, and will expire on {{ end_date }}</p>
+        <p>To familiarize yourself with the club, here are a few helpful tips and links:</p>
+        <ul>
+            <li>
+                Before anything else, check out the <a href="{{ site_url }}/">VOC Website</a>. 
+                Here you will find our <a href="{{ site_url }}/trips/">Trip Agenda</a>, <a href="https://wiki.ubc-voc.com/index.php/">Wiki</a>,
+                and <a href="{{ site_url }}/trip-reports/">trip reports</a> chronicling club adventures.
+            </li>
+            <li>
+                Read through the <a href="https://wiki.ubc-voc.com/index.php/VOC_Handbook">Membership Handbook</a> 
+                and <a href="https://wiki.ubc-voc.com/index.php/Faq">Frequently Asked Questions</a>
+            </li>
+            <li>
+                The <a href="https://discord.gg/VGXKEUGGRu">VOC Discord</a> is an excellent resource. Unofficial trips are posted here, 
+                members discuss gear and local events, and there is always someone with an answer for your questions!
+            </li>
+            <li>
+                Verify that the contact information in your <a href="{{ site_url}}/edit-profile/">VOC Profile</a> is correct
+            </li>
+            <li>
+                If you choose to do so, you will receive our monthly newsletter, the VOCene, at this email. It contains events, trip reports highlights, 
+                and advice from Mx. Manners. You can opt in or out of the VOCene in your <a href="{{ site_url}}/edit-profile/">VOC Profile</a>
+            </li>
+        </ul>
+        <p>
+            You can stop by the clubroom to rent gear, chat about the club, or just say hi. 
+            We're located in the <a href="{{ site_url }}/about/">basement of the Nest</a>.
+            The schedule for Gear Hours and other clubroom events can be found <a href="{{ site_url}}/clubroom-calendar/">here</a>.
+            The clubroom is also often open around lunchtime on weekdays, but note that we cannot offer gear rental/return outside of designated gear hours.
+        </p>
+        <p>We look forward to seeing you on trips! If you have any questions or concerns, don't hesitate to <a href="{{ site_url }}/contact/">contact us</a>.</p>
+        <p>Your friendly VOC Exec</p>
+    </body>
+</html>

@@ -1,0 +1,52 @@
+Hello {{ name }},
+
+Welcome to the Varsity Outdoor Club! We are a group of outdoor enthusiasts dedicated to learning, teaching,
+adventuring, and fun. Whether your outdoor interests lie in hiking, climbing, skiing, kayaking, or elsewhere,
+you are sure to find others that are passionate and knowledgeable in the club!
+
+Your membership has now been activated and will expire on {{ end_date }}.
+
+To familiarize yourself with the club, here are a few helpful tips and links:
+
+- Before anything else, check out the VOC Website ({{ site_url }}/)
+
+  Here you will find our:
+  - Trip Agenda [{{ site_url }}/trips/]
+  - Wiki (https://wiki.ubc-voc.com/index.php/)
+  - Trip Reports ({{ site_url }}/trip-reports/)
+  chronicling club adventures.
+
+- Read through the Membership Handbook
+  (https://wiki.ubc-voc.com/index.php/VOC_Handbook)
+  and Frequently Asked Questions
+  (https://wiki.ubc-voc.com/index.php/Faq)
+
+- The VOC Discord is an excellent resource
+  (https://discord.gg/VGXKEUGGRu)
+
+  Unofficial trips are posted here, members discuss gear and local events,
+  and there is always someone with an answer for your questions!
+
+- Verify that the contact information in your VOC Profile is correct
+  ({{ site_url }}/edit-profile/)
+
+- If you choose to do so, you will receive our monthly newsletter, the VOCene,
+  at this email. It contains events, trip report highlights, and advice from
+  Mx. Manners. You can opt in or out of the VOCene in your VOC Profile
+  ({{ site_url }}/edit-profile/)
+
+You can stop by the clubroom to rent gear, chat about the club, or just say hi.
+We're located in the basement of the Nest
+({{ site_url }}/about/)
+
+The schedule for Gear Hours and other clubroom events can be found here:
+{{ site_url }}/clubroom-calendar/
+
+The clubroom is also often open around lunchtime on weekdays, but note that we
+cannot offer gear rental or return outside of designated gear hours.
+
+We look forward to seeing you on trips! If you have any questions or concerns,
+don’t hesitate to contact us
+({{ site_url }}/contact/)
+
+Your friendly VOC Exec

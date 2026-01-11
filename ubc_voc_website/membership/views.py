@@ -254,10 +254,34 @@ def get_memberships_for_user(request, id):
 
 @Execs
 def toggle_membership(request, membership_id):
-    membership = get_object_or_404(Membership, id=membership_id)
+    membership = get_object_or_404(Membership.objects.select_related("user", "user__profile"), id=membership_id)
 
     membership.active = not membership.active
     membership.save()
+
+    # Send welcome email for activated membership
+    if membership.active:
+        context = {
+            "name": membership.user.profile.full_name,
+            "end_date": membership.end_date,
+            "site_url": settings.SITE_URL
+        }
+        text_body = render_to_string(
+            "membership/emails/membership_activated.txt",
+            context
+        )
+        html_body = render_to_string(
+            "membership/emails/membership_activated.html",
+            context
+        )
+        message = EmailMultiAlternatives(
+            subject=f"Welcome to the VOC!",
+            body=text_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[membership.user.email]
+        )
+        message.attach_alternative(html_body, "text/html")
+        message.send()
 
     return redirect('manage_memberships')
 
