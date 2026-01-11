@@ -57,8 +57,8 @@ class Command(BaseCommand):
                 waiver.created = datetime.strptime(row["saved"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
 
                 if created:
-                    self.stdout.write(self.style.SUCCESS(f"Created waiver for membership with old_id {int(row["membership_id"])}"))
+                    self.stdout.write(self.style.SUCCESS(f"Created waiver for membership with old_id {int(row['membership_id'])}"))
                 else:
-                    self.stdout.write(f"Waiver already exists for membership with old_id {{int(row["membership_id"])}}")
+                    self.stdout.write(f"Waiver already exists for membership with old_id {{int(row['membership_id'])}}")
 
             self.stdout.write(self.style.SUCCESS(f"Waiver migration complete"))
