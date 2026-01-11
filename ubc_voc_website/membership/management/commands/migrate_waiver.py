@@ -41,6 +41,7 @@ class Command(BaseCommand):
                     membership = Membership.objects.get(id=int(row["membership_id"]))
                 except Membership.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"Membership not found with old_id {int(row['membership_id'])}"))
+                    continue
 
                 if not row["signature"]:
                     self.stdout.write(self.style.WARNING(f"Skipping waiver for membership with old_id {int(row['membership_id'])} - signature is empty"))

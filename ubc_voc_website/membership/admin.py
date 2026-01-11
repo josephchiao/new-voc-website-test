@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Exec, Membership, Profile, PSG
+from .models import Exec, Membership, Profile, PSG, Waiver
 
 @admin.register(Membership)
 class MembershipAdmin(admin.ModelAdmin):
@@ -42,3 +42,17 @@ class PSGAdmin(admin.ModelAdmin):
 
     def last_name(self, obj):
         return obj.user.profile.last_name
+    
+@admin.register(Waiver)
+class WaiverAdmin(admin.ModelAdmin):
+    list_display = ('email', 'first_name', 'last_name')
+    search_fields = ('membership__user__email', 'membership__user__profile__first_name', 'membership__user__profile__last_name')
+
+    def email(self, obj):
+        return obj.membership.user.email
+    
+    def first_name(self, obj):
+        return obj.membership.user.profile.first_name
+    
+    def last_name(self, obj):
+        return obj.membership.user.profile.last_name
