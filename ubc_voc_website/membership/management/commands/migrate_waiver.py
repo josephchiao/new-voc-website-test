@@ -11,6 +11,7 @@ import base64
 from cairosvg import svg2png
 import csv
 from datetime import datetime
+import re
 import uuid
 from zoneinfo import ZoneInfo
 
@@ -21,6 +22,16 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         path = "waivers.csv"
+
+        def safe_b64decode(data):
+            data = re.sub(r'^data:image\/[^;]+;base64,', '', data)
+            data = re.sub(r'\s+', '', data)
+
+            missing_padding = len(data) % 4
+            if missing_padding:
+                data += '=' * (4 - missing_padding)
+            return base64.base64decode(data)
+        
 
         with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=[
@@ -44,7 +55,7 @@ class Command(BaseCommand):
                     continue
 
                 signature_svg_data = row["signature"].split(",", 1)[1]
-                siganture_svg_bytes = base64.b64decode(signature_svg_data)
+                siganture_svg_bytes = safe_b64decode(signature_svg_data)
                 signature_png_bytes = svg2png(bytestring=siganture_svg_bytes)
                 signature_filename = f"signature_{uuid.uuid4().hex}.png"
                 signature = ContentFile(signature_png_bytes, signature_filename)
