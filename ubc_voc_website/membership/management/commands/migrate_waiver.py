@@ -23,15 +23,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         path = "waivers.csv"
 
-        def safe_b64decode(data):
-            data = re.sub(r'^data:image\/[^;]+;base64,', '', data)
-            data = re.sub(r'\s+', '', data)
-
-            missing_padding = len(data) % 4
-            if missing_padding:
-                data += '=' * (4 - missing_padding)
-            return base64.b64decode(data)
-        
+        skipped = 0
 
         with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=[
@@ -55,8 +47,14 @@ class Command(BaseCommand):
                     continue
 
                 signature_svg_data = row["signature"].split(",", 1)[1]
-                siganture_svg_bytes = safe_b64decode(signature_svg_data)
-                signature_png_bytes = svg2png(bytestring=siganture_svg_bytes)
+                try:
+                    signature_svg_bytes = base64.b64decode(signature_svg_data)
+                except Exception as e:
+                    self.stdout.write(self.style.ERROR(f"Skippping waiver for membership with old_id {int(row['membership_id'])} - signature is invalid svg"))
+                    skipped += 1
+                    continue
+
+                signature_png_bytes = svg2png(bytestring=signature_svg_bytes)
                 signature_filename = f"signature_{uuid.uuid4().hex}.png"
                 signature = ContentFile(signature_png_bytes, signature_filename)
                 
@@ -74,6 +72,7 @@ class Command(BaseCommand):
                 if created:
                     self.stdout.write(self.style.SUCCESS(f"Created waiver for membership with old_id {int(row['membership_id'])}"))
                 else:
-                    self.stdout.write(f"Waiver already exists for membership with old_id {{int(row['membership_id'])}}")
+                    self.stdout.write(f"Waiver already exists for membership with old_id {int(row['membership_id'])}")
 
             self.stdout.write(self.style.SUCCESS(f"Waiver migration complete"))
+            self.stdout.write(self.style.WARNING(f"Skipped {skipped} waivers due to invalid SVG"))
