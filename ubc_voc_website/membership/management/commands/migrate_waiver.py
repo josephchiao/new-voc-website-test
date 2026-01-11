@@ -10,7 +10,7 @@ from membership.models import Membership, Waiver
 import base64
 from cairosvg import svg2png
 import csv
-import datetime
+from datetime import datetime
 import uuid
 from zoneinfo import ZoneInfo
 
