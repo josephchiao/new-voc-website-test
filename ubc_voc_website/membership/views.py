@@ -242,12 +242,18 @@ def manage_memberships(request):
         )
 
         for profile in profiles:
-            active_memberships = Membership.objects.filter(
+            membership = Membership.objects.filter(
                 user=profile.user,
-                active=True,
-                end_date__gte=timezone.now().date()
-            )
-            profile.is_active = active_memberships.exists()
+            ).order_by(
+                "-end_date"
+            ).first()
+
+            if membership.active and membership.end_date >= timezone.now().date():
+                profile.membership_status = "Active"
+            elif membership.active:
+                profile.membership_stats = "Expired"
+            else:
+                profile.membership_status = "Inactive"
 
     return render(request, "membership/manage_memberships.html", {
         "profiles": profiles,

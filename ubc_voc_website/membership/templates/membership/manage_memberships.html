@@ -76,10 +76,11 @@
                             <td>{{ profile.phone }}</td>
                             <td>
                                 <span class="badge 
-                                    {% if profile.is_active %}bg-success
-                                    {% else %}bg-danger
+                                    {% if profile.membership_status == 'Active' %}bg-success
+                                    {% elif profile.membership_status == 'Inactive' %}bg-danger
+                                    {% else %}bg-secondary
                                     {% endif %}">
-                                    {% if profile.is_active %}Active{% else %}Inactive{% endif %}
+                                    {{ profile.membership_status }}
                                 </span>
                             </td>
                             <td class="dropdown-control" style="cursor: pointer;">
