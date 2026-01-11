@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 signature_svg_data = row["signature"].split(",", 1)[1]
                 siganture_svg_bytes = base64.b64decode(signature_svg_data)
                 signature_png_bytes = svg2png(bytestring=siganture_svg_bytes)
-                signature_filename = f"signature_{uuid.uuid().hex}.png"
+                signature_filename = f"signature_{uuid.uuid4().hex}.png"
                 signature = ContentFile(signature_png_bytes, signature_filename)
                 
                 waiver, created = Waiver.objects.get_or_create(
