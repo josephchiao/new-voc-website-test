@@ -35,7 +35,7 @@ class Command(BaseCommand):
                     user=user,
                     start_date=datetime.strptime(row['startdate'], "%Y-%m-%d").date(),
                     defaults={
-                        'old_id': int(row['old_id']),
+                        'old_id': int(row['id']),
                         'end_date': datetime.strptime(row['enddate'], "%Y-%m-%d").date(),
                         'type': MEMBERSHIP_TYPE_MAPPINGS[row['type_id']],
                         'active': row['active'] == "1"
