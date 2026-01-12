@@ -16,6 +16,16 @@ today = timezone.localdate()
 
 @Execs
 def rentals(request):
+    def sort_rentals(rentals):
+        return sorted(
+            rentals,
+            key=lambda r: (
+                -(r.due_date.toordinal()),
+                r.member.profile.first_name.lower(),
+                r.member.profile.last_name.lower()
+            )
+        )
+
     q = request.GET.get("q")
     rentals_from_search = []
 
@@ -39,26 +49,26 @@ def rentals(request):
         book_rentals_from_search = list(BookRental.objects.filter(member__in=users))
         for rental in book_rentals_from_search:
             rental.type = "book"
-        
-        rentals_from_search = gear_rentals_from_search + book_rentals_from_search
+
+        rentals_from_search = sort_rentals(gear_rentals_from_search + book_rentals_from_search)
 
     current_gear_rentals = list(GearRental.objects.filter(return_date__isnull=True))
     for rental in current_gear_rentals:
         rental.type = "gear"
-    overdue_gear_rentals = [rental for rental in current_gear_rentals if rental.due_date < today]
-    lost_gear_rentals = [rental for rental in current_gear_rentals if rental.lost]
 
     current_book_rentals = list(BookRental.objects.filter(return_date__isnull=True))
     for rental in current_book_rentals:
         rental.type = "book"
-    overdue_book_rentals = [rental for rental in current_book_rentals if rental.due_date < today]
-    lost_book_rentals = [rental for rental in current_book_rentals if rental.lost]
+
+    current_rentals = sort_rentals(current_gear_rentals + current_book_rentals)
+    overdue_rentals = [rental for rental in current_rentals if rental.due_date < today]
+    lost_rentals = [rental for rental in current_rentals if rental.lost]
 
     return render(request, 'gear/gearmaster.html', {
         'rentals': {
-            'current': current_gear_rentals + current_book_rentals,
-            'overdue': overdue_gear_rentals + overdue_book_rentals,
-            'lost': lost_gear_rentals + lost_book_rentals,
+            'current': current_rentals,
+            'overdue': overdue_rentals,
+            'lost': lost_rentals,
             'search': rentals_from_search
         }
     })
