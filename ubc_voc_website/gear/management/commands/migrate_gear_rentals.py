@@ -17,7 +17,7 @@ class Command(BaseCommand):
     help="Migrate gearmaster entries from CSV"
 
     def handle(self, *args, **kwargs):
-        path = "gearmaster.csv"
+        path = "gear.csv"
 
         def parse_deposit(deposit):
             if deposit is None:
