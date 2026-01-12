@@ -50,7 +50,7 @@ class Command(BaseCommand):
                     continue
 
                 qm = None
-                if row["qmname"]:
+                if row["qmname"] and row["qmname"] != "NULL":
                     qm_first_name, qm_last_name = row["qmname"].split()
                     qm = User.objects.get(
                         profile__first_name=qm_first_name,
