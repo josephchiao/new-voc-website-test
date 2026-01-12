@@ -5,7 +5,7 @@ SELECT id, memberid, outdate, duedate, returndate, what, deposit, notes, extensi
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
-from gear.models import BookRental, GearRental
+from gear.models import Rental, RentalTypes
 
 import csv
 from datetime import datetime, timedelta
@@ -70,76 +70,41 @@ class Command(BaseCommand):
                     # Seems that old gearmaster allowed empty duedates. There are only about 5 of these, so default to outdate + 1 week
                     due_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date() + timedelta(weeks=1)
 
-                if row["type"] == "0" or row["type"] == "2": # Gear
-                    rental, created = GearRental.objects.get_or_create(
-                        old_id=int(row["id"]),
-                        defaults={
-                            'member': user,
-                            'what': row["what"],
-                            'start_date': datetime.strptime(row["outdate"], "%Y-%m-%d").date(), 
-                            'qm': qm,
-                            'deposit': parse_deposit(row["deposit"]),
-                            'due_date': due_date,
-                            'return_date': return_date,
-                            'extensions': int(row["extensions"]),
-                            'notes': row["notes"] if row["notes"] else None,
-                            'lost': row["appropriated"] == "1"
-                        }
-                    )
+                rental, created = Rental.objects.get_or_create(
+                    old_id=int(row["id"]),
+                    defaults={
+                        'type': RentalTypes.GEAR if row["type"] == 0 or row["type"] == 2 else RentalTypes.LIBRARY
+                        'member': user,
+                        'what': row["what"],
+                        'start_date': datetime.strptime(row["outdate"], "%Y-%m-%d").date(), 
+                        'qm': qm,
+                        'deposit': parse_deposit(row["deposit"]),
+                        'due_date': due_date,
+                        'return_date': return_date,
+                        'extensions': int(row["extensions"]),
+                        'notes': row["notes"] if row["notes"] else None,
+                        'lost': row["appropriated"] == "1"
+                    }
+                )
 
-                    if not created:
-                        rental.member = user
-                        rental.what = row["what"]
-                        rental.start_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date()
-                        rental.qm = qm
-                        rental.deposit = parse_deposit(row["deposit"])
-                        rental.due_date = due_date
-                        rental.return_date = return_date
-                        rental.extensions = int(row["extensions"])
-                        rental.notes = row["notes"] if row["notes"] else None
-                        rental.lost = row["appropriated"] == "1"
+                if not created:
+                    rental.type = RentalTypes.GEAR if row["type"] == 0 or row["type"] == 2 else RentalTypes.LIBRARY
+                    rental.member = user
+                    rental.what = row["what"]
+                    rental.start_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date()
+                    rental.qm = qm
+                    rental.deposit = parse_deposit(row["deposit"])
+                    rental.due_date = due_date
+                    rental.return_date = return_date
+                    rental.extensions = int(row["extensions"])
+                    rental.notes = row["notes"] if row["notes"] else None
+                    rental.lost = row["appropriated"] == "1"
 
-                    rental.save()
+                rental.save()
 
-                    if created:
-                        self.stdout.write(self.style.SUCCESS(f"Created gear rental for user with old_id {user.old_id}"))
-                    else:
-                        self.stdout.write(f"Updated gear rental for user with old_id {user.old_id}")
-
-                else: #Library
-                    rental, created = BookRental.objects.get_or_create(
-                        old_id=int(row["id"]),
-                        defaults={
-                            'member': user,
-                            'what': row["what"],
-                            'start_date': datetime.strptime(row["outdate"], "%Y-%m-%d").date(), 
-                            'qm': qm,
-                            'deposit': parse_deposit(row["deposit"]),
-                            'due_date': due_date,
-                            'return_date': return_date,
-                            'extensions': int(row["extensions"]),
-                            'notes': row["notes"] if row["notes"] else None,
-                            'lost': row["appropriated"] == "1"
-                        }
-                    )
-
-                    if not created:
-                        rental.member = user
-                        rental.what = row["what"]
-                        rental.start_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date()
-                        rental.qm = qm
-                        rental.deposit = parse_deposit(row["deposit"])
-                        rental.due_date = due_date
-                        rental.return_date = return_date
-                        rental.extensions = int(row["extensions"])
-                        rental.notes = row["notes"] if row["notes"] else None
-                        rental.lost = row["appropriated"] == "1"
-
-                    rental.save()
-                    
-                    if created:
-                        self.stdout.write(self.style.SUCCESS(f"Created book rental for user with old_id {user.old_id}"))
-                    else:
-                        self.stdout.write(f"Updated book rental for user with old_id {user.old_id}")
+                if created:
+                    self.stdout.write(self.style.SUCCESS(f"Created rental with old_id {rental.old_id}"))
+                else:
+                    self.stdout.write(f"Updated rental with old_id {rental.old_id}")
 
             self.stdout.write(self.style.SUCCESS(f"Gearmaster import completed"))
