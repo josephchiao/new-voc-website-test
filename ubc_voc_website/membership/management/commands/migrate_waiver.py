@@ -11,7 +11,6 @@ import base64
 from cairosvg import svg2png
 import csv
 from datetime import datetime
-import re
 import uuid
 from zoneinfo import ZoneInfo
 

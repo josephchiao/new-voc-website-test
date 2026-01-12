@@ -71,10 +71,10 @@
                 <tbody>
                     {% for profile in profiles %}
                         <tr data-id="{{ profile.user.id }}" class="align-middle">
-                            <td>{{ profile.first_name }} {{ profile.last_name }}</td>
-                            <td>{{ profile.user.email }}</td>
-                            <td>{{ profile.phone }}</td>
-                            <td>
+                            <td class="align-middle">{{ profile.first_name }} {{ profile.last_name }}</td>
+                            <td class="align-middle">{{ profile.user.email }}</td>
+                            <td class="align-middle">{{ profile.phone }}</td>
+                            <td class="align-middle">
                                 <span class="badge 
                                     {% if profile.membership_status == 'Active' %}bg-success
                                     {% elif profile.membership_status == 'Inactive' %}bg-danger
@@ -83,7 +83,7 @@
                                     {{ profile.membership_status }}
                                 </span>
                             </td>
-                            <td class="dropdown-control" style="cursor: pointer;">
+                            <td class="dropdown-control align-middle" style="cursor: pointer;">
                                 <button class="btn btn-primary show-memberships" data-user-id="{{ profile.user.id }}">Membership Details</button>
                             </td>
                         </tr>

@@ -52,7 +52,9 @@ class Rental(models.Model):
     qm = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete = models.PROTECT,
-        related_name="+"
+        related_name="+",
+        blank=True,
+        null=True
     )
     member = models.ForeignKey(
         settings.AUTH_USER_MODEL,
