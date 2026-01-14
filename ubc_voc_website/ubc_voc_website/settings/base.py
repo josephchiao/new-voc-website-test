@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from datetime import timedelta
 import os
 from pathlib import Path
 
@@ -99,7 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-
 USE_I18N = True
 
 USE_TZ = True
@@ -118,8 +118,7 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend"
 ]
 
-# allauth settings
-
+# Authentication settings
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
@@ -137,7 +136,15 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "/"
 
 SITE_ID = 1
 
-WP_SSO_SECRET = os.getenv("WP_SSO_SECRET")
-WP_SSO_URL = "http://wp.localhost:8001/login"
-
 API_KEY = os.getenv("API_KEY")
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}

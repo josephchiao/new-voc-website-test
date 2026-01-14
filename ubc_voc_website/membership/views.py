@@ -162,7 +162,7 @@ def profile(request, id):
     else:
         profile = Profile.objects.get(user=user)
 
-        organized_trips = Trip.objects.filter(organizers=user)
+        organized_trips = Trip.objects.filter(organizers=user).order_by("start_time")
         if user != request.user:
             organized_trips = organized_trips.filter(published=True)
 
@@ -175,7 +175,7 @@ def profile(request, id):
         organized_trips_list = dict(sorted(organized_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
 
         # signups = TripSignup.objects.filter(user=user).exclude(trip__organizers=user)
-        signups = TripSignup.objects.filter(user=user)
+        signups = TripSignup.objects.filter(user=user).order_by("trip__start_time")
         attended_trips = [{'trip': signup.trip, 'type': signup_type_as_str(signup.type)} for signup in signups]
         attended_trips_list = {}
         for trip in attended_trips:

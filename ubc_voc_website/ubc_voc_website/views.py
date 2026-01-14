@@ -1,23 +1,17 @@
-from django.shortcuts import render, redirect
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render
 
-import jwt
-import random
-import time
-from photologue.models import Gallery
+from ubc_voc_website.decorators import MembersAPI
+from ubc_voc_website.utils import is_exec
+
+from rest_framework.decorators import api_view
+from rest_framework_simplejwt.tokens import AccessToken
+
 
 PHOTO_CONTEST_ALBUM = "photo-contest-2025"
 
 def home(request):
-    try:
-        photo_contest_gallery = Gallery.objects.get(slug=PHOTO_CONTEST_ALBUM)
-        photos = list(photo_contest_gallery.photos.all())
-        photo = random.choice(photos) if photos else None
-    except Gallery.DoesNotExist:
-        photo = None
-
-    return render(request, 'home.html', {'photo': photo})
+    return render(request, 'home.html')
 
 def about(request):
     return render(request, 'about.html')
@@ -25,26 +19,23 @@ def about(request):
 def contact(request):
     return render(request, 'contact.html')
 
-@login_required
-def wordpress_sso(request):
-    user = request.user
+@api_view(["POST"])
+@MembersAPI
+def wp_sso_token(request):
+    token = AccessToken.for_user(request.user)
 
-    payload = {
-        "iss": "django",
-        "iat": int(time.time()),
-        "exp": int(time.time()) + 300,
-        "sub": str(user.id),
-        "email": user.email,
-        "name": user.profile.full_name(),
-        "roles": ["author"],
-    }
+    token["email"] = request.user.email
+    token["first_name"] = request.user.profile.first_name
+    token["last_name"] = request.user.profile.last_name
+    token["member"] = True
 
-    token = jwt.encode(
-        payload,
-        settings.WP_SSO_SECRET,
-        algorithm="HS256"
-    )
+    if request.user.is_superuser or request.user.is_staff:
+        token["wp_role"] = "administrator"
+    elif is_exec(request.user):
+        token["wp_role"] = "editor"
+    else:
+        token["wp_role"] = "author"
 
-    return redirect(
-        f"{settings.WP_SSO_URL}?sso={token}"
-    )
+    return JsonResponse({
+        "token": str(token)
+    })

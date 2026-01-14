@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 
 from django.urls import path, include
-from .views import about, contact, home, wordpress_sso
+from .views import about, contact, home
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -32,5 +32,4 @@ urlpatterns = [
     path("membership/", include("membership.urls")),
     path("photologue/", include("photologue.urls", namespace="photologue")),
     path("trips/", include("trips.urls")),
-    path("wp/sso/", wordpress_sso, name="wordpress_sso")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
