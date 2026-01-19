@@ -22,7 +22,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         path="message_board_threads.csv"
 
-        forums = {old_id: Forum.objects.get(slug=slug) for old_id, slug in FORUMS}
+        forums = {old_id: Forum.objects.get(slug=slug) for old_id, slug in FORUMS.items()}
 
         with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=[
