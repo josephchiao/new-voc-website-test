@@ -19,6 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from .decorators import Members
 from .views import about, contact, home
 
 from machina import urls as machina_urls
@@ -31,7 +32,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("gear/", include("gear.urls")),
     path("membership/", include("membership.urls")),
-    path("message-board/", include(machina_urls)),
+    path("message-board/", Members(include(machina_urls))),
     path("photologue/", include("photologue.urls", namespace="photologue")),
     path("trips/", include("trips.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
