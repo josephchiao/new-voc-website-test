@@ -11,9 +11,9 @@ from datetime import datetime
 User = get_user_model()
 
 FORUMS = {
-    1: "voc-message-board-1",
-    3: "voc-trips-2",
-    4: "voc-executive-3"
+    1: 1,
+    3: 2,
+    4: 3
 }
 
 class Command(BaseCommand):
@@ -22,7 +22,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         path="message_board_threads.csv"
 
-        forums = {old_id: Forum.objects.get(slug=slug) for old_id, slug in FORUMS.items()}
+        forums = {old_id: Forum.objects.get(id=new_id) for old_id, new_id in FORUMS.items()}
 
         with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=[
