@@ -40,9 +40,6 @@ class Command(BaseCommand):
             ])
 
             for row in reader:
-                if not row["message_id"].isdigit():
-                    continue
-
                 try:
                     user = User.objects.get(id=int(row["user_id"]))
                 except User.DoesNotExist:
@@ -55,7 +52,7 @@ class Command(BaseCommand):
                     time = make_aware(datetime.fromtimestamp(timestamp))
                 except (ValueError, TypeError):
                     self.stdout.write(self.style.ERROR(f"Malformed row: {row["subject"]}"))
-                    break
+                    continue
 
                 topic, created = Topic.objects.get_or_create(
                     forum=forums.get(forum_id),
@@ -70,11 +67,26 @@ class Command(BaseCommand):
                     }
                 )
 
-                if not created:
-                    self.stdout.write(self.style.WARNING(f"Topic already exists: {row["subject"]}"))
-                else:
-                    self.stdout.write(self.style.SUCCESS(f"Migrated topic: {row["subject"]}"))
-
                 Topic.objects.filter(pk=topic.pk).update(created=time, updated=time)
+                post, post_created = Post.objects.get_or_create(
+                    topic=topic,
+                    created=time,
+                    defaults={
+                        "poster": user,
+                        "poster_username": message_id,
+                        "subject": row["subject"],
+                        "content": row["body"]
+                    }
+                )
+
+                Post.objects.filter(pk=post.pk).update(created=time, updated=time)
+
+                topic.save()
+                post.save()
+
+                if created:
+                    self.stdout.write(self.style.SUCCESS(f"Created Topic and Post for: {row["subject"][:30]}"))
+                else:
+                    self.stdout.write(self.style.WARNING(f"Topic already exists: {row["subject"][:30]}"))
             
             self.stdout.write(self.style.SUCCESS(f"Message board topic migration complete"))
