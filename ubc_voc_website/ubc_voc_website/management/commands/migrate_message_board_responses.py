@@ -40,7 +40,7 @@ class Command(BaseCommand):
                 if not parent_post:
                     self.stdout.write(self.style.WARNING(f"Parent thread not found for old thread id {row["thread"]}"))
                     continue
-                
+
                 topic = parent_post.topic
 
                 post, created = Post.objects.get_or_create(
@@ -62,9 +62,9 @@ class Command(BaseCommand):
                 Forum.objects.filter(pk=topic.forum.pk).update(last_post_on=time)
 
                 if created:
-                    self.stdout.write(self.style.SUCCESS(f"Created Post for {user.display_name} on: {row["subject"][:30]}"))
+                    self.stdout.write(self.style.SUCCESS(f"Created Post for {user.display_name} on thread with id {row["thread"]}"))
                 else:
-                    self.stdout.write(self.style.WARNING(f"Post already exists for {user.display_name} on: {row["subject"][:30]}"))
+                    self.stdout.write(self.style.WARNING(f"Post already exists for {user.display_name} on thread with id {row["thread"]}"))
 
             self.stdout.write(f"Synchronizing forum statistics")
             for f in Forum.objects.all():
