@@ -1,5 +1,5 @@
 """
-SELECT parent_id, user_id, body, datestamp FROM `phorum_messages` WHERE parent_id!=0  order by datestamp asc
+SELECT message_id, parent_id, user_id, body, datestamp FROM `phorum_messages` WHERE parent_id!=0  order by datestamp asc
 """
 
 from django.contrib.auth import get_user_model
@@ -22,6 +22,7 @@ class Command(BaseCommand):
 
         with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=[
+                "message_id",
                 "parent_id",
                 "user_id",
                 "body",
@@ -35,7 +36,8 @@ class Command(BaseCommand):
                     continue
                 
                 time = make_aware(datetime.fromtimestamp(int(row["datestamp"])))
-                topic = Post.objects.filter(username=row["parent_id"]).first().topic
+                parent_post = Post.objects.filter(username=row["parent_id"]).first()
+                topic = parent_post.topic
 
                 post, created = Post.objects.get_or_create(
                     topic=topic,
@@ -43,7 +45,8 @@ class Command(BaseCommand):
                     poster=user,
                     defaults={
                         "subject": f"Re: {topic.subject}",
-                        "content": row["body"]
+                        "content": row["body"],
+                        "username": row["message_id"]
                     }
                 )
 
