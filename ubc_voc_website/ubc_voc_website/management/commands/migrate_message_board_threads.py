@@ -80,7 +80,7 @@ class Command(BaseCommand):
 
                 Topic.objects.filter(pk=topic.pk).update(created=time, updated=time, last_post_on=time)
                 Post.objects.filter(pk=post.pk).update(created=time, updated=time)
-                Forum.objects.filter(pk=forums.get(forum_id)).update(last_post_on=time)
+                Forum.objects.filter(id=forums.get(forum_id)).update(last_post_on=time)
 
                 if created:
                     self.stdout.write(self.style.SUCCESS(f"Created Topic and Post for: {row["subject"][:30]}"))
