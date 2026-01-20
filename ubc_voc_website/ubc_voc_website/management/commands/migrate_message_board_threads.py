@@ -80,10 +80,16 @@ class Command(BaseCommand):
 
                 Topic.objects.filter(pk=topic.pk).update(created=time, updated=time, last_post_on=time)
                 Post.objects.filter(pk=post.pk).update(created=time, updated=time)
+                Forum.objects.filter(pk=forums.get(forum_id)).update(last_post_on=time)
 
                 if created:
                     self.stdout.write(self.style.SUCCESS(f"Created Topic and Post for: {row["subject"][:30]}"))
                 else:
                     self.stdout.write(self.style.WARNING(f"Topic already exists: {row["subject"][:30]}"))
+
+            self.stdout.write(f"Synchronizing forum statistics")
+            for f in Forum.objects.all():
+                f.refresh_from_db()
+            Forum.objects.rebuild()
             
             self.stdout.write(self.style.SUCCESS(f"Message board topic migration complete"))
