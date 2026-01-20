@@ -58,6 +58,7 @@ class Command(BaseCommand):
                     forum=forums.get(forum_id),
                     subject=row["subject"],
                     poster=user,
+                    created=time,
                     defaults={
                         "type": 0,
                         "status": 0
