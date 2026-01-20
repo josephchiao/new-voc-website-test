@@ -60,7 +60,6 @@ class Command(BaseCommand):
                     created=time,
                     defaults={
                         "poster": user,
-                        "status": Topic.TOPIC_APPROVED,
 
                         # Since I don't have control over Machina models to add an old_id field, use the unused username field
                         "poster_username": message_id
