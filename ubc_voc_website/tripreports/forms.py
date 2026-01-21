@@ -3,13 +3,23 @@ from django import forms
 from .models import Comment, TripReport
 from trips.models import Trip
 
-from django_quill.forms import QuillFormField, QuillWidget
+from django_quill.forms import QuillFormField
 import json
+from wagtail.rich_text import RichText
 
 class TripReportForm(forms.ModelForm):
     class Meta:
         model = TripReport
         fields = ["title", "body", "trip"]
+
+    def clean_body(self):
+        body_data = self.cleaned_data.get("body")
+        try:
+            body_json = json.loads(body_data)
+            body_html = body_json.get("html", "")
+            return RichText(body_html)
+        except (ValueError, KeyError, TypeError):
+            raise forms.ValidationError("Invalid trip report body format")
 
     title = forms.CharField(
         widget=forms.TextInput(attrs={
@@ -22,23 +32,7 @@ class TripReportForm(forms.ModelForm):
         label="Trip (optional)",
         required=False
     )
-    body = QuillFormField(
-        widget=QuillWidget(attrs={
-            "style": "min-height: 400px;"
-        })
-    )
-
-    def clean(self):
-        cleaned_data = super().clean()
-        body_str = cleaned_data.get('body')
-        if body_str:
-            body_json = json.loads(body_str)
-            html_content = body_json.get("html", "")
-            cleaned_data["body"] = html_content.strip() if html_content else ""
-        else:
-            cleaned_data["body"] = ""
-        
-        return cleaned_data
+    body = QuillFormField(label="Trip Report Content")  
 
 class CommentForm(forms.ModelForm):
     class Meta:

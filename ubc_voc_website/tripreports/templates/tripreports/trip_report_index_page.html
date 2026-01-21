@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        {{ trip_report.body.html|truncatewords:50|safe }}
+                        {{ trip_report.body|safe|truncatewords:50 }}
                     </div>
                     <div class="card-footer text-end">
                         <a href="{{ trip_report.url }}">Read more &rarr;</a>

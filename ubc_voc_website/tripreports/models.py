@@ -10,7 +10,7 @@ from wagtail.fields import RichTextField
 from wagtail.models import Page
 
 class TripReport(Page):
-    body = RichTextField(features=["bold", "italic", "link", "image"])
+    body = RichTextField(features=["bold", "italic", "link", "image", "ol", "ul"])
     trip = models.ForeignKey(
         "trips.Trip",
         null=True,

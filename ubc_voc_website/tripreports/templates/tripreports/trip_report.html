@@ -14,7 +14,7 @@
                 <small class="text-muted">posted {{ page.first_published_at|date:"M d, Y H:i" }}</small>
             </div>
             {% if page.trip %}
-                <p>put link to trip posting here</p>
+                <a href="{% url 'trip' trip.id %}">View original trip posting</a>
             {% endif %}
             {{ page.body|safe }}
         </article>

@@ -14,11 +14,17 @@
                         <div class="card-header">
                             <h4 class="card-title">{{ trip_report.title }}</h4>
                             <div>
-                                <span class="badge bg-secondary">Put publish status here</span>
+                                {% if trip_report.live %}
+                                    <span class="badge bg-success">Published</span>
+                                {% elif trip_report.current_workflow_state %}
+                                    <span class="bg bg-warning">Waiting for Approval</span>
+                                {% else %}
+                                    <span class="bg bg-secondary">Draft</span>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="card-body">
-                            {{ trip_report.body|striptags|truncatewords:20 }}
+                            {{ trip_report.body|safe|truncatewords:50 }}
                         </div>
                         <div class="card-footer text-end">
                             <a href="{% url 'trip_report_edit' trip_report.id %}">Edit &rarr;</a>
