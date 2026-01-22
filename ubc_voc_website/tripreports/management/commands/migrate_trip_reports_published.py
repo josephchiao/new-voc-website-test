@@ -83,7 +83,7 @@ class Command(BaseCommand):
                         is_private=row["post_status"] == "private"
                     )
 
-                    parent.add_child(trip_report)
+                    parent.add_child(instance=trip_report)
                     trip_report.save_revision().publish()
 
                 except Exception as e:
