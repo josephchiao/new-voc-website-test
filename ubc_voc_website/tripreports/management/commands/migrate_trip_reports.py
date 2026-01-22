@@ -63,7 +63,7 @@ class Command(BaseCommand):
                     parent.add_child(instance=trip_report)
                     revision = trip_report.save_revision()
                 except ValidationError:
-                    self.stdout.println(self.style.WARNING(f"Skipping {row["post_title"]} - post with this slug already exists"))
+                    self.stdout.write(self.style.WARNING(f"Skipping {row["post_title"]} - post with this slug already exists"))
                     continue
 
                 if row["post_status"] == "publish":
