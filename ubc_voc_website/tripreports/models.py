@@ -29,6 +29,8 @@ class TripReport(Page):
     ]
     parent_page_types = ['tripreports.TripReportIndexPage']
 
+    old_id = models.IntegerField(blank=True, null=True)
+
     def serve(self, request):
         from .forms import CommentForm
         if request.method == "POST":
