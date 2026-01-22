@@ -1,5 +1,7 @@
 """
-SELECT ID, post_author, post_date, post_content, post_title, post_status FROM `wp_posts` where post_type="post" and (post_status="draft" or post_status="pending" or post_status="publish") order by post_status desc
+SELECT p.ID, u.user_email, p.post_date, p.post_content, p.post_title, p.post_status 
+FROM `wp_posts` as p inner join `wp_users` as u on p.post_author = u.ID 
+where post_type="post" and (post_status="draft" or post_status="pending" or post_status="publish") order by post_status desc 
 """
 from django.core.exceptions import ValidationError
 from django.core.management import BaseCommand
@@ -28,7 +30,7 @@ class Command(BaseCommand):
         with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=[
                 "ID",
-                "post_author",
+                "post_author_email",
                 "post_date",
                 "post_content",
                 "post_title",
@@ -37,7 +39,7 @@ class Command(BaseCommand):
 
             for row in reader:
                 try:
-                    user = User.objects.get(old_id=row["post_author"])
+                    user = User.objects.get(email=row["post_author_email"])
                 except User.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"User not found with old_id {row["post_author"]}"))
                     continue
@@ -58,11 +60,11 @@ class Command(BaseCommand):
                         old_id=int(row["ID"]),
                         first_published_at=datetime.strptime(row["post_date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
                     )
+                    parent.add_child(instance=trip_report)
+                    revision = trip_report.save_revision()
                 except ValidationError:
-                    self.stdout.println(self.style.WARNING(f"Skipping {row["post_title"]} - post wiht this slug already exists"))
-
-                parent.add_child(instance=trip_report)
-                revision = trip_report.save_revision()
+                    self.stdout.println(self.style.WARNING(f"Skipping {row["post_title"]} - post with this slug already exists"))
+                    continue
 
                 if row["post_status"] == "publish":
                     revision.publish()
