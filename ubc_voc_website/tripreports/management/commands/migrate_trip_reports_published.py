@@ -87,7 +87,7 @@ class Command(BaseCommand):
                     trip_report.save_revision().publish()
 
                 except Exception as e:
-                    self.stdout.write(self.style.ERROR(f"Failed to create trip report for '{row["post_title"]}'"))
+                    self.stdout.write(self.style.ERROR(f"Failed to create trip report for '{row["post_title"]}': {e}"))
 
             self.stdout.write(self.style.SUCCESS(f"Published trip report migration complete"))
             self.stdout.write(self.style.WARNING(f"Orphaned emails: {orphaned_emails}"))
