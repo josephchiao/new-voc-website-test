@@ -40,13 +40,13 @@ class Command(BaseCommand):
                 "post_status"
             ])
 
-            orphaned_emails = []
+            orphaned_emails = set()
 
             for row in reader:
                 try:
                     user = User.objects.get(email=row["post_author_email"])
                 except User.DoesNotExist:
-                    orphaned_emails.append(row["post_author_email"])
+                    orphaned_emails.add(row["post_author_email"])
                     self.stdout.write(self.style.WARNING(f"User not found with email {row['post_author_email']}"))
                     continue
 
