@@ -51,7 +51,7 @@
                 <button type="submit" class="btn btn-primary">Post</button>
             </form>
         {% else %}
-            <p><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to comment</p>
+            <p><a href="{% url 'account_login' %}?next={{ request.path }}">Log in</a> to comment</p>
         {% endif %}
     </div>
 {% endblock %}
