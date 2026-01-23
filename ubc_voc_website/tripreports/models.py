@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
+from django.utils import timezone
 
 from ubc_voc_website.utils import is_member
 
@@ -77,7 +78,7 @@ class Comment(models.Model):
         on_delete=models.PROTECT
     )
     body = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(default=timezone.now)
 
 class TripReportIndexPage(Page):
     intro = RichTextField(blank=True)
