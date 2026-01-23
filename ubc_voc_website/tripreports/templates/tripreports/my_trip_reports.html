@@ -12,16 +12,34 @@
                 {% for trip_report in trip_reports %}
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header">
-                            <h4 class="card-title">{{ trip_report.title }}</h4>
-                            <div>
-                                {% if trip_report.live %}
-                                    <span class="badge bg-success">Published</span>
-                                {% elif trip_report.current_workflow_state %}
-                                    <span class="bg bg-warning">Waiting for Approval</span>
-                                {% else %}
-                                    <span class="bg bg-secondary">Draft</span>
-                                {% endif %}
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class=card-title">{{ trip_report.title }}</h4>
+                                    <div>
+                                        {% if trip_report.live %}
+                                            <span class="badge bg-success">Published</span>
+                                        {% elif trip_report.current_workflow_state %}
+                                            <span class="badge bg-warning">Waiting for Approval</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Draft</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    {% for category in trip_report.categories.all %}
+                                        <span class="badge rounded-pill bg-secondary ms-1">
+                                            {{ category.name }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
                             </div>
+                            {% if trip_report.live %}
+                                <div>
+                                    <small class="text-muted">
+                                        posted {{ trip_report.first_published_at|date:"M d, Y H:i" }}
+                                    </small>
+                                </div>
+                            {% endif %}
                         </div>
                         {% if not trip_report.legacy_pdf %}
                             <div class="card-body">
@@ -29,7 +47,11 @@
                             </div>
                         {% endif %}
                         <div class="card-footer text-end">
-                            <a href="{% url 'trip_report_edit' trip_report.id %}">Edit &rarr;</a>
+                            {% if trip_report.live %}
+                                <a href="{{ trip_report.url }}">Read more &rarr;</a>
+                            {% else %}
+                                <a href="{% url 'trip_report_edit' trip_report.id %}">Edit &rarr;</a>
+                            {% endif %}
                         </div>
                     </div>
                 {% endfor %}

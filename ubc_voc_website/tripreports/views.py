@@ -10,7 +10,7 @@ def trip_report_create(request):
     if request.method == "POST":
         form = TripReportForm(request.POST)
         if form.is_valid():
-            trip_report = form.save(commit=False)
+            trip_report = form.save()
             trip_report.owner = request.user
             trip_report.live = False
 
@@ -20,12 +20,13 @@ def trip_report_create(request):
             if "submit" in request.POST: # Submit for approval
                 revision.submit_for_moderation()
 
-            return redirect(parent.url)
+            return redirect("my_trip_reports")
     else:
         form = TripReportForm()
 
     return render(request, "tripreports/trip_report_form.html", {
-        "form": form
+        "form": form,
+        "action": "create"
     })
 
 @Members
@@ -33,7 +34,7 @@ def trip_report_edit(request, id):
     trip_report = get_object_or_404(TripReport, id=id)
 
     if trip_report.live:
-        return redirect(trip_report.get_parent().url)
+        return redirect(trip_report.url)
 
     if trip_report.owner != request.user:
         return render(request, 'access_denied.html', status=403)
@@ -41,21 +42,23 @@ def trip_report_edit(request, id):
     if request.method == "POST":
         form = TripReportForm(request.POST, instance=trip_report)
         if form.is_valid():
-            trip_report = form.save(commit=False)
+            trip_report = form.save()
             revision = trip_report.save_revision(user=request.user)
+
             if "submit" in request.POST: # Submit for approval
                 revision.submit_for_moderation()
-            return redirect(trip_report.url)
+            return redirect("my_trip_reports")
     else:
         form = TripReportForm(instance=trip_report)
 
     return render(request, "tripreports/trip_report_form.html", {
-        "form": form
+        "form": form,
+        "action": "edit"
     })
 
 @Members
 def my_trip_reports(request):
-    trip_reports = TripReport.objects.filter(owner=request.user)
+    trip_reports = TripReport.objects.filter(owner=request.user).order_by("live", "-first_published_at")
     return render(request, "tripreports/my_trip_reports.html", {
         "trip_reports": trip_reports
     })

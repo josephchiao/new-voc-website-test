@@ -1,6 +1,8 @@
 
 {% extends 'base.html' %}
 
+{% block title %}{% if action == "create"%}Create{% else %}Edit{% endif%} Trip Report{% endblock %}
+
 {% block head_content %}
     {% include 'django_quill/media.html' %}
 
@@ -59,7 +61,11 @@
 
 {% block content %}
     <div class="container">
-        <h2>Create Trip Report</h2>
+        {% if action == "create" %}
+            <h2>Create Trip Report</h2>
+        {% else %}
+            <h2>Edit Trip Report</h2>
+        {% endif %}
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}

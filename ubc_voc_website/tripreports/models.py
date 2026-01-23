@@ -27,6 +27,7 @@ class TripReport(Page):
     content_panels = Page.content_panels + [
         FieldPanel('body'),
         FieldPanel('trip'),
+        FieldPanel('categories'),
         FieldPanel('is_private'),
         FieldPanel("legacy_pdf")
     ]
