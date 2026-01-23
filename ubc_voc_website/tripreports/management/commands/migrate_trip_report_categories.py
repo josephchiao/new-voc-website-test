@@ -50,6 +50,7 @@ class Command(BaseCommand):
                     continue
 
                 trip_report.categories.add(category)
+                trip_report.save_revision().publish()
                 self.stdout.write(self.style.SUCCESS(f"Added category {row["category_name"]} to trip report with old_id {int(row["post_id"])}"))
 
             self.stdout.write(self.style.SUCCESS("Trip report category migration complete"))
