@@ -40,6 +40,7 @@ class Command(BaseCommand):
             ])
 
             orphaned_emails = set()
+            missing_pdfs = set()
 
             for row in reader:
                 try:
@@ -66,7 +67,9 @@ class Command(BaseCommand):
                             pdf.save()
                             self.stdout.write(self.style.SUCCESS(f"Attached pdf file for '{row["post_title"]}'"))
                     else:
+                        missing_pdfs.add(int(row["ID"]))
                         self.stdout.write(self.style.ERROR(f"No pdf found for '{row["post_title"]}'"))
+                        continue
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f"Error processing pdf for '{row["post_title"]}': {e}"))
 
@@ -90,4 +93,5 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS(f"Published trip report migration complete"))
             self.stdout.write(self.style.WARNING(f"Orphaned emails: {orphaned_emails}"))
+            self.stdout.write(self.style.WARNING(f"Trip report IDs for missing PDF files: {missing_pdfs}"))
             
