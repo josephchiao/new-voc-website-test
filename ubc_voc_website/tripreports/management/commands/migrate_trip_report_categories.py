@@ -14,6 +14,7 @@ INNER JOIN
 WHERE 
     p.post_type = 'post' 
     AND p.post_status = 'publish'
+    AND t.slug != "trip-reports"
     AND tax.taxonomy = 'category';
 """
 from django.core.management import BaseCommand
@@ -43,7 +44,7 @@ class Command(BaseCommand):
                     continue
 
                 try:
-                    category = TripReportCategory.get(name=row["category_name"])
+                    category = TripReportCategory.objects.get(name=row["category_name"])
                 except TripReportCategory.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"Trip report category {row["category_name"]} does not exist"))
                     continue
