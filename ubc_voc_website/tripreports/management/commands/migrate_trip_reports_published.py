@@ -1,7 +1,7 @@
 """
 SELECT p.ID, u.user_email, p.post_date, p.post_title, p.post_status
 FROM `wp_posts` as p inner join `wp_users` as u on p.post_author = u.ID 
-where post_type="post" and post_status="publish"
+where post_type="post" and (post_status="publish" or post_status="private")
 """
 from django.contrib.auth import get_user_model
 from django.core.files import File

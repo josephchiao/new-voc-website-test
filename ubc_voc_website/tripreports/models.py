@@ -63,7 +63,7 @@ class TripReport(Page):
 
         context = super().get_context(request)
         context["form"] = form
-        context["comments"] = self.comments.all()
+        context["comments"] = self.comments.all().order_by("timestamp")
         return TemplateResponse(request, self.get_template(request), context)
 
 class Comment(models.Model):
