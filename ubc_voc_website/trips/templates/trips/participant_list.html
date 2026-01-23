@@ -154,12 +154,12 @@
         <tbody>
             {% for p in participants %}
                 <tr>
-                    <td>{{ p.user.profile__full_name_with_pronouns }}</td>
+                    <td>{{ p.user.profile.full_name_with_pronouns }}</td>
                     <td>{{ p.user.email }}</td>
-                    <td>{{ p.user.profile__phone|default:"-" }}</td>
-                    <td>{{ p.user.profile__inreach_address|default:"-" }}</td>
+                    <td>{{ p.user.profile.phone|default:"-" }}</td>
+                    <td>{{ p.user.profile.inreach_address|default:"-" }}</td>
                     <td>
-                        {{ p.user.profile__emergency_info|default:"-"|linebreaksbr }}
+                        {{ p.user.profile.emergency_info|default:"-"|linebreaksbr }}
                     </td>
                 </tr>
             {% empty %}

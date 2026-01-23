@@ -274,7 +274,6 @@ def download_participant_list(request, trip_id):
         ).order_by("user__profile__first_name", "user__profile__last_name")
 
         organizers = trip.organizers.all().select_related("profile").order_by("profile__first_name", "profile__last_name")
-        print(organizers.first().email)
 
         html_content = render_to_string("trips/participant_list.html", {
             "trip": trip,
