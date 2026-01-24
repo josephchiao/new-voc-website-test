@@ -212,7 +212,6 @@ def trip_details(request, id):
         "trip": trip,
         "organizers": organizers,
         "description": description,
-        "user_can_signup": False
     })
     
 @Members
