@@ -73,7 +73,7 @@
                     <div class="carousel-inner shadow-sm rounded">
                         {% for photo in photos %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                <img src="{{ photo.get_display_url }}" class="d-block w-100" alt="{{ photo.title }}">
+                                <img src="{{ photo.image.url }}" class="d-block w-100" alt="{{ photo.title }}">
                                 <div class="carousel-caption custom-caption">
                                     {% if photo.caption %}
                                         <p>{{ photo.caption }}</p>
