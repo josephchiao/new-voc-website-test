@@ -211,7 +211,8 @@ def trip_details(request, id):
     return render(request, "trips/trip.html", {
         "trip": trip,
         "organizers": organizers,
-        "description": description
+        "description": description,
+        "user_can_signup": False
     })
     
 @Members
