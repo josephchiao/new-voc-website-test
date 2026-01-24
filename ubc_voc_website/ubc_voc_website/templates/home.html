@@ -7,19 +7,50 @@
         .carousel-container {
             height: 100%;
             min-height: 400px;
-        };
+        }
 
         .carousel-container img {
-            height: 200px;
+            height: 400px;
             object-fit: cover;
             border-radius: 8px;
-        };
+        }
+
+        .carousel-inner {
+            position: relative;
+            overflow: hidden;
+        }
 
         .text-section {
             display: flex;
             flex-direction: column;
             justify-content: center;
-        };
+        }
+
+        .custom-caption {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 70%, transparent 100%);
+            border-radius: 0 0 8px 8px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 40px 20px 15px 20px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .custom-caption h5 {
+            margin-bottom: 2px;
+            font-size: 1.25rem;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            font-weight: 600;
+        }
+
+        .custom-caption p {
+            margin-bottom: 0;
+            font-size: 1rem;
+            color: #ffffff;
+            opacity: 0.9;
+        }
     </style>
 {% endblock %}
 
@@ -39,13 +70,15 @@
         <div class="col-lg-6 carousel-container">
             {% if photos %}
                 <div id="carousel" class="carousel slide mb-4" data-bs-ride="carousel">
-                    <div class="carousel-inner">
+                    <div class="carousel-inner shadow-sm rounded">
                         {% for photo in photos %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
                                 <img src="{{ photo.get_display_url }}" class="d-block w-100" alt="{{ photo.title }}">
-                                <div class="carousel-caption d-none">
+                                <div class="carousel-caption custom-caption">
                                     <h5>{{ photo.title }}</h5>
-                                    <p>{{ photo.caption }}</p>
+                                    {% if photo.caption %}
+                                        <p>{{ photo.caption }}</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endfor %}
