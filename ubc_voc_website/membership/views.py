@@ -1,9 +1,10 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.db.models import Q
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -206,7 +207,14 @@ def profile(request, id):
 @Members
 def view_waiver(request, id):
     membership = get_object_or_404(Membership.objects.select_related("user"), id=id)
-    waiver = get_object_or_404(Waiver, membership=membership)
+    waiver = Waiver.objects.filter(membership=membership).first()
+    if not waiver:
+        messages.warning(request, "This membership has no associated waiver")
+        referer = request.META.get("HTTP_REFERER")
+        if referer:
+            return HttpResponseRedirect(referer)
+        else:
+            return redirect("manage_memberships")
 
     if membership.user != request.user and not is_exec(request.user):
         # custom access control - Execs can see all waivers but non-Execs can only see their own

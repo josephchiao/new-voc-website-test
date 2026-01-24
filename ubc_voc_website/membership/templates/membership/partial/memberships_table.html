@@ -15,7 +15,7 @@
             <td>{{ membership.type_display_name }}</td>
             <td>{{ membership.start_date }}</td>
             <td>{{ membership.end_date }}</td>
-            <td><a href="{% url 'view_waiver' membership.id %}" target="_blank">View Waiver</a></td>
+            <td><a href="{% url 'view_waiver' membership.id %}">View Waiver</a></td>
             <td>
                 <span class="badge 
                     {% if membership.mapped_status == 'Active' %}bg-success

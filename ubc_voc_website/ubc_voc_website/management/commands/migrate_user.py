@@ -1,3 +1,6 @@
+"""
+select id, email from members_table
+"""
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.utils.crypto import get_random_string
