@@ -1,6 +1,14 @@
 from django.contrib import admin
 
-from .models import Rental
+from .models import GearHour, Rental
+
+@admin.register(GearHour)
+class GearHourAdmin(admin.ModelAdmin):
+    list_display = ("qm_name", "start_date", "end_date", "start_time", "duration")
+    search_fields = ("qm_name",)
+
+    def qm_name(self, obj):
+        return obj.qm.display_name
 
 @admin.register(Rental)
 class RentalAdmin(admin.ModelAdmin):
