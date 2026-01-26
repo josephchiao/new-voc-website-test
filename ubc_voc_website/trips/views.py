@@ -376,6 +376,7 @@ def clubroom_calendar(request):
                     end_datetime = start_datetime + datetime.timedelta(minutes=gear_hour.duration)
 
                     events_calendar.append({
+                        "id": f"{gear_hour.id}:{date.isoformat()}",
                         "title": f"Gear Hours - {qm_name}",
                         "start": start_datetime.isoformat(),
                         "end": end_datetime.isoformat()
