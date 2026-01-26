@@ -89,6 +89,20 @@
                 });
             }
             tripTagFilter.addEventListener("change", applyTripTagFilters);
+
+            // Add visited trip links to localStorage to highlight them
+            // Using the default :visited class didn't seem to work, so I did it manually
+            const tripLinks = document.querySelectorAll('#upcoming-table tbody tr td a[href*="/trips/details/"]');
+            console.log('Found trip links:', tripLinks.length);
+            tripLinks.forEach(link => {
+                const storageKey = 'visited_' + link.href;
+                if (localStorage.getItem(storageKey)) {
+                    link.classList.add('visited-trip');
+                }
+                link.addEventListener('click', function() {
+                    localStorage.setItem('visited_' + this.href, 'true');
+                });
+            });
         });
     </script>
     <style>
@@ -100,8 +114,8 @@
         .fc-event-time, .fc-event-title {
             padding: 0 1px;
             white-space: normal;
-        };
-        table#upcoming-table tbody tr td a:visited {
+        }
+        #upcoming-table tbody tr td a.visited-trip {
             color: #6f42c1 !important;
         }
     </style>
