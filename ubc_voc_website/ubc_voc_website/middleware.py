@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render
+from django.urls import reverse
 
 from ubc_voc_website.utils import is_member
 
@@ -9,7 +10,7 @@ class MessageBoardMembershipMiddleware:
     def __call__(self, request):
         if request.path.startswith("/message-board/"):
             if not request.user.is_authenticated:
-                return redirect('account_login')
+                return redirect(f"{reverse('account_login')}?next={request.get_full_path()}")
             
             if not is_member(request.user):
                 return render(request, "access_denied.html", status=403)
