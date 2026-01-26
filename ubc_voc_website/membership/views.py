@@ -60,7 +60,8 @@ def join(request):
 
 @login_required
 def join_complete(request):
-    return render(request, "membership/join_complete.html")
+    membership = Membership.objects.filter(user=request.user, end_date=get_end_date(timezone.localdate())).first()
+    return render(request, "membership/join_complete.html", { "active": membership.active })
 
 @login_required
 def edit_profile(request):
