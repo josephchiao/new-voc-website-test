@@ -69,7 +69,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'about' %}">About the VOC</a></li>
                             <li><a class="dropdown-item" href="{% url 'contact' %}">Contact Us</a></li>
-                            <li><a class="dropdown-item" href="https://wiki.ubc-voc.com">Wiki</a></li>
+                            <li><a class="dropdown-item" href="https://wiki.ubc-voc.com/Main_Page">Wiki</a></li>
                             {% if request.user|is_member %}
                                 <li><a class="dropdown-item" href="{% url 'forum:index' %}">Message Board</a></li>
                             {% endif %}
