@@ -78,14 +78,6 @@ class TripForm(forms.ModelForm):
                                so if you don't know the exact end time, just give your best guess""")
         
         if use_signup:
-            required_fields = [
-                'signup_question',
-                'max_participants',
-            ]
-            for field in required_fields:
-                if not cleaned_data.get(field):
-                    self.add_error(field, "This field is required when 'Use signup' is selected")
-
             interested_start_choice = cleaned_data.get("interested_start_choice")
             if interested_start_choice == "never":
                 cleaned_data["interested_start"] = None
