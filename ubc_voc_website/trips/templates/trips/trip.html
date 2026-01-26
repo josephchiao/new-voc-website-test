@@ -553,6 +553,14 @@
         </div>
     </div>
 
+    <!------------------------------- Pretrip info ------------------------------->
+    {% if request.user|is_member and trip.use_pretrip %}
+        <hr>
+        <h5>Pretrip Meeting</h5>
+        <p><b>Time:</b> {{ trip.pretrip_time|date:"M. j, Y"  }}, {{ trip.pretrip_time|time:"g:i A" }}</p>
+        <p><b>Location:</b> {{ trip.pretrip_location }}</p>
+    {% endif %}
+
     <!------------------------------- Signup form ------------------------------->
     {% if trip.use_signup %}
         {% if user_can_signup and not user_signup %} <!-- Excludes inactive honorary members -->
