@@ -48,6 +48,9 @@ def trips(request):
 
     trips_calendar = []
     for trip in trips:
+        if trip.status == Trip.TripStatus.CANCELLED:
+            continue
+
         if not trip.end_time:
             end_time = trip.start_time + datetime.timedelta(hours=1)
         else:
@@ -323,7 +326,9 @@ def clubroom_calendar(request):
     else:
         events_calendar = []
 
-        upcoming_clubroom_events = Trip.objects.filter(in_clubroom=True).values(
+        upcoming_clubroom_events = Trip.objects.filter(in_clubroom=True).exclude(
+            status=Trip.TripStatus.CANCELLED
+        ).values(
             "id", "name", "start_time", "end_time"
         )
         for event in upcoming_clubroom_events:
