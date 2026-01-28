@@ -90,7 +90,7 @@ class TripForm(forms.ModelForm):
                 else:
                     cleaned_data["interested_start"] = interested_start_custom
 
-            if not cleaned_data["interested_start"]:
+            if not cleaned_data.get("interested_start", None):
                 cleaned_data["interested_end"] = None
             else:
                 interested_end_choice = cleaned_data.get("interested_end_choice")
@@ -114,7 +114,7 @@ class TripForm(forms.ModelForm):
             elif committed_start_choice == "now":
                 cleaned_data["committed_start"] = timezone.now()
             else:
-                committed_start_custom = cleaned_data.get("committed_start")
+                committed_start_custom = cleaned_data.get("committed_start", None)
                 if not committed_start_custom:
                     self.add_error("committed_start", "Please choose a date and time")
                 else:
@@ -150,10 +150,10 @@ class TripForm(forms.ModelForm):
                 else:
                     cleaned_data["going_start"] = going_start_custom
 
-            if not cleaned_data["going_start"]:
+            if not cleaned_data.get("going_start", None):
                 cleaned_data["going_end"] = None
             else:
-                going_end_choice = cleaned_data.get("going_end_choice")
+                going_end_choice = cleaned_data.get("going_end_choice", None)
                 if going_end_choice == "pretrip":
                     if not cleaned_data.get("use_pretrip"):
                         self.add_error("going_end_choice", "Trip does not have a pretrip meeting")
