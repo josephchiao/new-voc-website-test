@@ -46,8 +46,12 @@
                     tags: event.tags || []
                 }
             }));
+
+            // const isMobile = () => window.innerWidth < 768;
+
             calendar = new FullCalendar.Calendar(calendar, {
-                initialView: 'dayGridMonth',
+                // initialView: isMobile() ? "dayGridWeek" : "dayGridMonth",
+                initialView: "dayGridMonth",
                 events: extendedEvents,
                 eventClick: function(info) {
                     window.location.href = '/trips/details/' + info.event._def.publicId;
@@ -57,7 +61,13 @@
                     minute: '2-digit',
                     hour12: true
                 },
-                firstDay: 1
+                firstDay: 1,
+                height: "auto",
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: ''
+                },
             });
 
             // Initialize Choices dropdown for trip tag filters
@@ -93,7 +103,6 @@
             // Add visited trip links to localStorage to highlight them
             // Using the default :visited class didn't seem to work, so I did it manually
             const tripLinks = document.querySelectorAll('#upcoming-table tbody tr td a[href*="/trips/details/"]');
-            console.log('Found trip links:', tripLinks.length);
             tripLinks.forEach(link => {
                 const storageKey = 'visited_' + link.href;
                 if (localStorage.getItem(storageKey)) {
@@ -111,12 +120,26 @@
             justify-content: space-between;
             margin: 10px;
         }
-        .fc-event-time, .fc-event-title {
-            padding: 0 1px;
-            white-space: normal;
-        }
         #upcoming-table tbody tr td a.visited-trip {
             color: #6f42c1 !important;
+        }
+        .fc-daygrid-event {
+            white-space: normal !important;
+            align-items: flex-start !important;
+        }
+
+        .fc-daygrid-event-dot {
+            margin-top: 5px;
+        }
+
+        .fc-event-title {
+            padding: 1px 3px;
+            display: inline-block;
+            word-wrap: break-word;
+        }
+
+        .fc-daygrid-event-harness {
+            margin-bottom: 2px;
         }
     </style>
 
