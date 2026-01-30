@@ -17,7 +17,7 @@
             const isMobile = () => window.innerWidth < 1000;
 
             const calendar = new FullCalendar.Calendar(calendarDiv, {
-                initialView: isMobile() ? "timeGridThreeDay" : "dayGridMonth",
+                initialView: isMobile() ? "timeGridThreeDay" : "timeGridWeek",
                 views: {
                     timeGridThreeDay: {
                         type: "timeGrid",
