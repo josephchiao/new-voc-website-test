@@ -4,9 +4,11 @@ from django.db import models
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 
 from ubc_voc_website.utils import is_member
 
+import json
 from modelcluster.fields import ParentalManyToManyField
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
@@ -14,7 +16,7 @@ from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
 class TripReport(Page):
-    body = RichTextField(features=["bold", "italic", "link", "image", "ol", "ul"])
+    body = models.TextField()
     trip = models.ForeignKey(
         "trips.Trip",
         null=True,
@@ -43,6 +45,13 @@ class TripReport(Page):
         on_delete=models.SET_NULL,
         related_name="+"
     )
+
+    def get_body_html(self):
+        try:
+            data = json.loads(self.body)
+            return mark_safe(data.get("html", ""))
+        except (json.JSONDecodeError, TypeError, AttributeError):
+            return self.body
 
     def serve(self, request):
         if getattr(self, "is_private", False):
