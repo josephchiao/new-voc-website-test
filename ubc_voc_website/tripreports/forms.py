@@ -25,12 +25,15 @@ class TripReportForm(forms.ModelForm):
         except (ValueError, KeyError, TypeError):
             raise forms.ValidationError("Invalid trip report body format")
         
-    def save(self):
+    def save(self, commit=True):
         trip_report = super().save(commit=False)
         if "categories" in self.cleaned_data:
             trip_report.categories.clear()
             for category in self.cleaned_data["categories"]:
                 trip_report.categories.add(category)
+        
+        if commit:
+            trip_report.save()
 
         return trip_report
 
