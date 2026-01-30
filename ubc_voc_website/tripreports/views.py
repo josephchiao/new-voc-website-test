@@ -45,6 +45,8 @@ def trip_report_edit(request, id):
         if form.is_valid():
             trip_report = form.save()
             revision = trip_report.save_revision(user=request.user)
+            trip_report.latest_revision = revision
+            trip_report.save()
 
             if "submit" in request.POST: # Submit for approval
                 workflow = trip_report.get_workflow()
