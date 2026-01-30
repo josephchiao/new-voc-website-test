@@ -3,6 +3,7 @@ from django import forms
 from .models import Comment, TripReport, TripReportCategory
 from trips.models import Trip
 
+from bs4 import BeautifulSoup
 from django_quill.forms import QuillFormField
 import json
 from wagtail.rich_text import RichText
@@ -17,7 +18,10 @@ class TripReportForm(forms.ModelForm):
         try:
             body_json = json.loads(body_data)
             body_html = body_json.get("html", "")
-            return RichText(body_html)
+            normalized_html = body_html.replace("<br>", "<p></p>")
+            soup = BeautifulSoup(normalized_html, "html.parser")
+            cleaned_html = soup.decode()
+            return RichText(cleaned_html)
         except (ValueError, KeyError, TypeError):
             raise forms.ValidationError("Invalid trip report body format")
         
