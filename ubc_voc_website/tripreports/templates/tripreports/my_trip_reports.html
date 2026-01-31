@@ -1,6 +1,8 @@
 
 {% extends 'base.html' %}
 
+{% load html_filters %}
+
 {% block title %}My Trip Reports{% endblock %}
 
 {% block content %}
@@ -45,7 +47,7 @@
                         </div>
                         {% if not trip_report.legacy_pdf %}
                             <div class="card-body">
-                                {{ trip_report.get_body_html|truncatewords_html:50 }}
+                                {{ trip_report.get_body_html|strip_images|truncatewords_html:50 }}
                             </div>
                         {% endif %}
                         <div class="card-footer text-end">
