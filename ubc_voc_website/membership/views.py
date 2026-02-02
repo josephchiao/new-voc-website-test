@@ -234,25 +234,32 @@ def view_waiver(request, id):
 @Execs
 def manage_memberships(request):
     q = request.GET.get("q")
+    user_id = request.GET.get("id")
 
-    profiles = []
+    profiles = Profile.objects.none()
 
-    if q:
-        name_filter = Q()
-        for term in q.strip().split():
-            name_filter &= (
-                Q(first_name__icontains=term) |
-                Q(last_name__icontains=term)
+    if q or user_id:
+        base_query = Profile.objects.select_related("user")
+        if user_id:
+            profiles = base_query.filter(user__id=user_id)
+        elif q:
+            name_filter = Q()
+            for term in q.strip().split():
+                name_filter &= (
+                    Q(first_name__icontains=term) |
+                    Q(last_name__icontains=term)
+                )
+
+            profiles = (
+                Profile.objects.select_related("user").filter(
+                    name_filter |
+                    Q(user__email__icontains=q)
+                ).filter(
+                    user__in=Membership.objects.all().values("user")
+                )
             )
 
-        profiles = (
-            Profile.objects.select_related("user").filter(
-                name_filter |
-                Q(user__email__icontains=q)
-            ).filter(
-                user__in=Membership.objects.all().values("user")
-            ).order_by("first_name", "last_name")
-        )
+        profiles = profiles.order_by("first_name", "last_name")
 
         for profile in profiles:
             membership = Membership.objects.filter(

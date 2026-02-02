@@ -56,7 +56,7 @@ def send_honorary_member_request_email(request):
         "full_name": request.user.get_full_name(),
         "email": request.user.email,
         "admin_url": (
-            f"{request.build_absolute_uri('/membership/admin')}?id={request.user.id}"
+            f"{request.build_absolute_uri('/membership/manage-memberships')}?id={request.user.id}"
         ),
     }
 
