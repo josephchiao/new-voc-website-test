@@ -75,7 +75,7 @@ def send_honorary_member_request_email(request):
         subject=subject,
         body=text_body,
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to=["webmaster@ubc-voc.com"]
+        to=["membership@ubc-voc.com"]
     )
     email.attach_alternative(html_body, "text/html")
     email.send()
