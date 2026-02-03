@@ -131,6 +131,9 @@
             <hr>
             <h3 class="my-3">Signup</h3>
             <a href="#signup-form">Jump to signup form</a>
+            {% if trip.max_participants %}
+                <p><b>Max Group Size: </b> {{ trip.max_participants }}</p>
+            {% endif %}
             {% if trip.signup_question %}
                 <p class="my-0"><b>The trip organizer has asked participants to answer the following question:</b></p>
                 <p><i>{{ trip.signup_question }}</i></p>
