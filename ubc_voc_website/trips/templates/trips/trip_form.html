@@ -13,8 +13,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    {% include 'django_quill/media.html' %}
-        
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Setup tags searchable dropdown
@@ -27,38 +25,52 @@
             });
 
             // Setup image upload handler for description rich text box
-            const quill = document.querySelector(".django-quill-widget").__quill;
-            const toolbar = quill.getModule("toolbar");
-            toolbar.addHandler("image", function () {
-                const input = document.createElement("input");
-                input.setAttribute("type", "file");
-                input.setAttribute("accept", "image/*");
-                input.click();
+            const quill = document.querySelector(".django-quill-widget");
+            if (quill && quill.__quill) {
+                intializeQuill(quilWidget.__quill);
+            } else {
+                const checkQuill = setInterval(() => {
+                    const retryWidget = document.querySelector(".django-quill-widget");
+                    if (retryWidget && retryWidget.__quill) {
+                        initializeQuill(retryWidget.__quill);
+                        clearInterval(checkQuill);
+                    }
+                }, 50); 
+            }
 
-                input.onchange = async () => {
-                    const file = input.files[0];
-                    const formData = new FormData();
-                    formData.append("image", file);
+            function initializeQuill(quill) {
+                const toolbar = quill.getModule("toolbar");
+                toolbar.addHandler("image", function () {
+                    const input = document.createElement("input");
+                    input.setAttribute("type", "file");
+                    input.setAttribute("accept", "image/*");
+                    input.click();
 
-                    const response = await fetch("{% url 'quill_image_upload' %}", {
-                        method: "POST",
-                        body: formData,
-                        headers: {
-                            "X-CSRFToken": "{{ csrf_token }}"
+                    input.onchange = async () => {
+                        const file = input.files[0];
+                        const formData = new FormData();
+                        formData.append("image", file);
+
+                        const response = await fetch("{% url 'quill_image_upload' %}", {
+                            method: "POST",
+                            body: formData,
+                            headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            }
+                        });
+
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            const range = quill.getSelection();
+                            quill.insertEmbed(range.index, "image", result.url);
                         }
-                    });
-
-                    const result = await response.json();
-
-                    if (response.ok) {
-                        const range = quill.getSelection();
-                        quill.insertEmbed(range.index, "image", result.url);
-                    }
-                    else {
-                        alert("Upload failed: " + (result.error || "Unknown error"));
-                    }
-                };
-            });
+                        else {
+                            alert("Upload failed: " + (result.error || "Unknown error"));
+                        }
+                    };
+                });
+            }
 
             // Setup signup tools checkbox
             const signup_tool_checkbox = document.querySelector('#id_use_signup');
@@ -169,6 +181,7 @@
 
 {% block content %}
     <h2>Post a New Trip/Event</h2>
+    {{ form.media }}
     <form method="post" id="trip-form">
         {% csrf_token %}
         {% if form.non_field_errors %}
