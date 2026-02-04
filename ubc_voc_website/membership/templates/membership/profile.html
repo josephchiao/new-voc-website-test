@@ -73,6 +73,27 @@
 
     <hr>
 
+    {% if former_exec_roles %}
+        <div class="mb-3">
+            <a class="collapse-trigger collapsed h4 mb-0" data-bs-toggle="collapse" href="#formerExecRoles" role="button" aria-expanded="false" aria-controls="formerExecRoles">
+                Former Exec Roles
+                <i class="bi bi-chevron-right ms-2 fs-6"></i>
+            </a>
+        </div>
+        <div class="collapse" id="formerExecRoles">
+            <table class="table mb-3">
+                <tbody>
+                    {% for role in former_exec_roles %}
+                        <tr>
+                            <td>{{ role.exec_role }}</td>
+                            <td>{{ role.end_year|add:"-1" }} - {{ role.end_year }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
     <div class="mb-3">
         <a class="collapse-trigger collapsed h4 mb-0" data-bs-toggle="collapse" href="#organizedTrips" role="button" aria-expanded="false" aria-controls="organizedTrips">
             Organized Trips 

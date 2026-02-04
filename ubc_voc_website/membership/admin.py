@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Exec, Membership, Profile, PSG, Waiver
+from .models import Exec, FormerExec, Membership, Profile, PSG, Waiver
 
 @admin.register(Membership)
 class MembershipAdmin(admin.ModelAdmin):
@@ -31,6 +31,13 @@ class ExecAdmin(admin.ModelAdmin):
 
     def last_name(self, obj):
         return obj.user.profile.last_name
+    
+@admin.register(FormerExec)
+class FormerExecAdmin(admin.ModelAdmin):
+    list_display = ('user', 'exec_role', 'end_year')
+    autocomplete_fields = ('user',)
+    search_fields = ('user__email', 'user__profile__first_name', 'user__profile__last_name', 'exec_role', 'end_year')
+    ordering = ('-end_year', 'user__profile__first_name', 'user__profile__last_name')
 
 @admin.register(PSG)
 class PSGAdmin(admin.ModelAdmin):

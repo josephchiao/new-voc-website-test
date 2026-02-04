@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .forms import MembershipForm, ProfileForm, WaiverForm
-from .models import Exec, Membership, Profile, PSG, Waiver
+from .models import Exec, FormerExec, Membership, Profile, PSG, Waiver
 from .utils import *
 from tripreports.models import TripReport
 from trips.models import Trip, TripSignup
@@ -165,6 +165,8 @@ def profile(request, id):
     else:
         profile = Profile.objects.get(user=user)
 
+        former_exec_roles = FormerExec.objects.filter(user=user).order_by("-end_year")
+
         organized_trips = Trip.objects.filter(organizers=user).order_by("start_time")
         if user != request.user:
             organized_trips = organized_trips.filter(published=True)
@@ -195,14 +197,15 @@ def profile(request, id):
 
         return render(request, 'membership/profile.html', {
             'user': user, 
-            'profile': profile, 
+            'profile': profile,
             'trips': {
                 'organized': organized_trips_list,
                 'attended': attended_trips_list
             },
             'trip_reports': trip_reports,
             'own_profile': user == request.user,
-            'exec_role': exec_role
+            'exec_role': exec_role,
+            'former_exec_roles': former_exec_roles
         })
 
 @Members

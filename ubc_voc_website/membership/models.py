@@ -121,6 +121,14 @@ class Exec(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.exec_role}'
+    
+class FormerExec(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    exec_role = models.CharField(max_length=32)
+    end_year = models.IntegerField()
 
 class PSG(models.Model):
     user = models.OneToOneField(
