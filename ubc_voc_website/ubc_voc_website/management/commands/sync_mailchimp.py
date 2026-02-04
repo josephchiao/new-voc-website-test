@@ -8,6 +8,7 @@ from membership.models import Membership
 from ubc_voc_website.utils import mailchimp_sync_user
 
 from mailchimp3 import MailChimp
+import time
 
 User = get_user_model()
 
@@ -31,6 +32,10 @@ class Command(BaseCommand):
             vocene = getattr(user.profile, "vocene", False)
             is_member = len(user.active_memberships) > 0
 
-            mailchimp_sync_user(user, mailchimp_client, mailchimp_list_id, (vocene and is_member))
+            try:
+                mailchimp_sync_user(user, mailchimp_client, mailchimp_list_id, (vocene and is_member))
+                time.sleep(0.1)
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f"Failed to sync {user.email}"))
 
         self.stdout.write(self.style.SUCCESS("MailChimp sync complete"))
