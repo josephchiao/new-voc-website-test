@@ -1,0 +1,18 @@
+<html>
+<body>
+    <p>Dear {{ name }},</p>
+
+    On {{ rental.start_date }}, you borrowed 
+    '<em>{{ rental.what }}</em>', which is to be returned 
+    <strong>{{ days_until_due|pluralize:"tomorrow,in 2 days" }} ({{ rental.due_date }})</strong>.</p>
+
+    <p>Please return your items on time - by not returning items on time you deprive other members of the opportunity to use this free service. Please come by the clubroom during gear hours to return or renew. Gear hours are available on the <a href="https://www.ubc-voc.com/trips/clubroom-calendar/">clubroom calendar</a>
+
+    <p><strong>Note:</strong> Memberships will be deactivated after gear is 2 weeks overdue. Deactivated memberships will be reactivated once gear is returned.</p>
+
+    <p>Remember that gear rental is a privilege of members who have completed or are signed up for a workhike. If you don't know what workhike to sign up for, ask a quartermaster to help you find one next time you visit the club room.</p>
+
+    <p>Thanks,<br>
+    Your friendly, volunteer, VOC exec</p>
+</body>
+</html>

@@ -1,0 +1,13 @@
+Dear {{ name }},
+
+On {{ rental.start_date }}, you borrowed '{{ rental.what }}' which was to be returned on {{ rental.due_date }}. It is now {{ days_overdue }} day{{ days_overdue|pluralize }} late.
+
+By not returning items on time you deprive other members of the opportunity to use this free service. Please come by the clubroom during gear hours to return or renew your rental. Gear hours are available on the clubroom calendar:
+https://www.ubc-voc.com/trips/clubroom-calendar/
+
+Your membership will be deactivated once gear is more than 2 weeks overdue. It will be reactivated when you return the gear.
+
+Remember that gear rental is a privilege of members who have completed or are signed up for a workhike. If you don’t know what workhike to sign up for ask a quartermaster to help you find one next time you visit the club room.
+
+Thanks,
+Your friendly, volunteer, VOC exec

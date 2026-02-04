@@ -2,7 +2,6 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.core.management import BaseCommand
 from django.template.loader import render_to_string
-
 from django.utils import timezone
 
 from trips.models import Trip
