@@ -83,3 +83,6 @@ class Rental(models.Model):
             return Rental.RentalStatus.OUT_LATE
         else:
             return Rental.RentalStatus.OUT_ON_TIME
+        
+    class Meta:
+        ordering = ["-due_date", "member__profile__first_name", "member__profile__last_name"]

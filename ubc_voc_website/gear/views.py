@@ -31,9 +31,9 @@ def rentals(request):
                 Q(email__icontains=q)
             )
         
-        rentals_from_search = list(Rental.objects.filter(member__in=users).order_by("-due_date", "member__profile__first_name", "member__profile__last_name"))
+        rentals_from_search = list(Rental.objects.filter(member__in=users))
 
-    current_rentals = Rental.objects.filter(return_date__isnull=True).order_by("-due_date", "member__profile__first_name", "member__profile__last_name")
+    current_rentals = Rental.objects.filter(return_date__isnull=True)
     overdue_rentals = [rental for rental in current_rentals if rental.due_date < today]
     lost_rentals = [rental for rental in current_rentals if rental.lost]
 
