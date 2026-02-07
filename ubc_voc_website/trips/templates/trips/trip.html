@@ -84,7 +84,16 @@
         The trips go into wilderness areas where assistance is unavailable and unexpected events can occur. 
         You could be seriously injured or die. You are responsible for your own actions. Please use caution.
     </div>
-    <h2>{{ trip.name }}</h2>
+    <div class="row align-items-center mb-4">
+                <div class="col-auto">
+                    <h3 class="mb-0">{{ trip.name }}</h3>
+                </div>
+                {% if request.user in trip.organizers.all %}
+                    <div class="col-auto d-flex align-items-center gap-3">
+                        <a href="{% url 'trip_edit' trip.id %}" class="btn btn-outline-secondary"><i class="bi bi-pencil-fill me-2"></i> Edit This Trip</a>
+                    </div>
+                {% endif %}
+            </div>
     <h5>{{ trip.trip_date_as_str_long }}</h5>
 
     <p>
